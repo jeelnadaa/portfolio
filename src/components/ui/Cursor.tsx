@@ -155,14 +155,14 @@ export function Cursor() {
       <div
         ref={dotRef}
         aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-[99999] -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-bone mix-blend-difference"
+        className="pointer-events-none fixed top-0 left-0 z-[9999999] -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-bone mix-blend-difference"
       />
 
       {/* 44px Reticle Ring with 4 tick marks */}
       <div
         ref={ringRef}
         aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-[99998] -translate-x-1/2 -translate-y-1/2 mix-blend-difference flex items-center justify-center transition-[width,height,background-color,border-color] duration-150 ease-out"
+        className="pointer-events-none fixed top-0 left-0 z-[9999998] -translate-x-1/2 -translate-y-1/2 mix-blend-difference flex items-center justify-center transition-[width,height,background-color,border-color] duration-150 ease-out"
         style={{
           width: cursorState.isHover ? 54 : cursorState.isText ? 2 : 44,
           height: cursorState.isHover ? 54 : cursorState.isText ? 22 : 44,
@@ -194,14 +194,14 @@ export function Cursor() {
       <div
         ref={pulseRef}
         aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-[99997] -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-sun opacity-0"
+        className="pointer-events-none fixed top-0 left-0 z-[9999997] -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-sun opacity-0"
       />
 
       {/* Click Slash Line Segment */}
       <div
         ref={slashRef}
         aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-[99997] -translate-x-1/2 -translate-y-1/2 w-8 h-[1.5px] bg-sun opacity-0 origin-center"
+        className="pointer-events-none fixed top-0 left-0 z-[9999997] -translate-x-1/2 -translate-y-1/2 w-8 h-[1.5px] bg-sun opacity-0 origin-center"
       />
     </>
   );

@@ -36,18 +36,19 @@ export function Lightbox({ project, onClose, onNext, onPrev }: LightboxProps) {
       role="dialog"
       aria-modal="true"
       aria-label={`${project.title} Lightbox`}
-      className="fixed inset-0 z-[100000] flex items-center justify-center p-4 sm:p-8"
+      className="fixed inset-0 z-[80000] flex items-center justify-center p-4 sm:p-8"
     >
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-bg/85 backdrop-blur-md animate-in fade-in duration-200"
+        data-cursor="CLOSE"
+        className="fixed inset-0 bg-bg/85 backdrop-blur-md animate-in fade-in duration-200 cursor-pointer"
       />
 
       {/* Modal Card */}
       <div
         ref={modalRef}
-        className="relative w-full max-w-4xl border border-bone/60 bg-surface shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 z-10 flex flex-col"
+        className="relative w-full max-w-4xl border border-bone/60 bg-surface shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 z-10 flex flex-col cursor-default"
       >
         {/* Top Bar */}
         <div className="flex items-center justify-between border-b border-rule px-6 py-3 bg-bg/50">
