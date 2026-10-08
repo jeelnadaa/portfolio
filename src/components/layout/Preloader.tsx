@@ -83,6 +83,8 @@ export function Preloader({ onComplete }: PreloaderProps) {
       "<"
     );
 
+    let hasSliced = false;
+
     // 2. Metal slice cut precisely across the orange circle
     tl.to(
       slash,
@@ -92,6 +94,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
         duration: 0.22,
         ease: "power3.inOut",
         onStart: () => {
+          hasSliced = true;
           playMetalSlice();
         },
       },
@@ -148,7 +151,11 @@ export function Preloader({ onComplete }: PreloaderProps) {
 
     const handleSkip = () => {
       hasPreloadedThisSession = true;
-      playMetalSlice();
+      // Only play metal slice sound if clicked before the slice cut occurred
+      if (!hasSliced) {
+        hasSliced = true;
+        playMetalSlice();
+      }
       setVisible(false);
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));

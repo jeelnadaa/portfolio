@@ -113,8 +113,8 @@ export function Armory() {
       <div className="max-w-7xl mx-auto space-y-16">
         {/* Section Header Pattern */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-rule pb-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-dossier text-muted">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted">
               <span className="text-sun font-bold">04 //</span>
               <span>ARMORY MANIFEST</span>
               <span className="text-muted/40">✦</span>
@@ -123,13 +123,13 @@ export function Armory() {
             <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-bone font-light tracking-tight">
               Everything I reach for.
             </h2>
-            <p className="font-mono text-xs text-muted tracking-dossier uppercase">
+            <p className="font-mono text-xs sm:text-sm text-muted tracking-dossier uppercase">
               TECHNICAL REPERTOIRE // RECORDED WITHOUT ARBITRARY PERCENTAGE GAUGES
             </p>
           </div>
 
           {/* Search/Filter Bar */}
-          <div className="flex items-center gap-2 border border-rule px-3 py-1.5 bg-surface/50 max-w-xs w-full">
+          <div className="flex items-center gap-2 border border-rule px-3.5 py-2 bg-surface/50 max-w-xs w-full">
             <span className="font-mono text-xs text-sun">&gt;</span>
             <input
               ref={searchInputRef}
@@ -137,12 +137,12 @@ export function Armory() {
               value={filterQuery}
               onChange={(e) => setFilterQuery(e.target.value)}
               placeholder="Filter armory (press /)..."
-              className="w-full bg-transparent font-mono text-sm uppercase tracking-dossier text-bone placeholder:text-muted/60 focus:outline-none"
+              className="w-full bg-transparent font-mono text-sm uppercase tracking-dossier text-bone placeholder:text-muted/60 focus:outline-none font-medium"
             />
             {filterQuery && (
               <button
                 onClick={() => setFilterQuery("")}
-                className="font-mono text-xs text-muted hover:text-sun"
+                className="font-mono text-xs sm:text-sm text-muted hover:text-sun"
               >
                 ESC ✕
               </button>
@@ -152,28 +152,28 @@ export function Armory() {
 
         {/* Big Counter Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 border border-rule bg-surface/30 p-6 sm:p-8 font-mono select-none">
-          <div className="space-y-1">
-            <div className="text-xs tracking-dossier uppercase text-muted">PRIMARY LANGUAGES</div>
+          <div className="space-y-2">
+            <div className="text-xs sm:text-sm tracking-dossier uppercase text-muted font-medium">PRIMARY LANGUAGES</div>
             <div className="font-display text-4xl sm:text-5xl text-bone">
               <span ref={langCountRef}>0</span>
             </div>
-            <div className="text-xs text-bone/70 tracking-dossier">C++, TYPESCRIPT, PYTHON & MORE</div>
+            <div className="text-xs sm:text-sm text-bone/70 tracking-dossier font-medium">C++, TYPESCRIPT, PYTHON & MORE</div>
           </div>
 
-          <div className="space-y-1 sm:border-l sm:border-rule sm:pl-8">
-            <div className="text-xs tracking-dossier uppercase text-muted">FRAMEWORKS & ENGINES</div>
+          <div className="space-y-2 sm:border-l sm:border-rule sm:pl-8">
+            <div className="text-xs sm:text-sm tracking-dossier uppercase text-muted font-medium">FRAMEWORKS & ENGINES</div>
             <div className="font-display text-4xl sm:text-5xl text-bone">
               <span ref={frameCountRef}>0</span>
             </div>
-            <div className="text-xs text-bone/70 tracking-dossier">NEXT.JS, THREE.JS, PYTORCH</div>
+            <div className="text-xs sm:text-sm text-bone/70 tracking-dossier font-medium">NEXT.JS, THREE.JS, PYTORCH</div>
           </div>
 
-          <div className="space-y-1 sm:border-l sm:border-rule sm:pl-8">
-            <div className="text-xs tracking-dossier uppercase text-muted">SYSTEMS SHIPPED</div>
+          <div className="space-y-2 sm:border-l sm:border-rule sm:pl-8">
+            <div className="text-xs sm:text-sm tracking-dossier uppercase text-muted font-medium">SYSTEMS SHIPPED</div>
             <div className="font-display text-4xl sm:text-5xl text-sun">
               <span ref={projCountRef}>0</span>
             </div>
-            <div className="text-xs text-bone/70 tracking-dossier">VERIFIED OPEN SOURCE BUILDS</div>
+            <div className="text-xs sm:text-sm text-bone/70 tracking-dossier font-medium">VERIFIED OPEN SOURCE BUILDS</div>
           </div>
         </div>
 
@@ -182,26 +182,26 @@ export function Armory() {
           {filteredGroups.map((grp) => (
             <div
               key={grp.id}
-              className="border border-rule bg-surface/40 p-6 flex flex-col justify-between space-y-6"
+              className="border border-rule bg-surface/40 p-6 sm:p-7 flex flex-col justify-between space-y-6"
             >
               {/* Block Header */}
-              <div className="flex items-center justify-between border-b border-rule pb-3 font-mono text-sm uppercase tracking-dossier">
-                <div className="flex items-center gap-2 text-bone font-semibold">
+              <div className="flex items-center justify-between border-b border-rule pb-3.5 font-mono text-sm sm:text-base uppercase tracking-dossier">
+                <div className="flex items-center gap-2.5 text-bone font-semibold">
                   <span className="text-sun font-bold">{grp.badge}</span>
                   <span>// {grp.title}</span>
                 </div>
-                <span className="text-muted text-xs">{grp.skills.length} PACKAGES</span>
+                <span className="text-muted text-xs sm:text-sm font-medium">{grp.skills.length} PACKAGES</span>
               </div>
 
               {/* Skills Manifest List */}
-              <div className="space-y-3 font-mono text-[13px]">
+              <div className="space-y-3 font-mono text-xs sm:text-sm">
                 {grp.skills.map((skill) => (
                   <div
                     key={skill.name}
                     onMouseEnter={() => setHoveredSkill(skill.name)}
                     onMouseLeave={() => setHoveredSkill(null)}
                     className={cn(
-                      "group relative pl-3 py-1.5 transition-all flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-rule/20",
+                      "group relative pl-3.5 py-2 transition-all flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-rule/20",
                       hoveredSkill === skill.name && "border-sun/60 bg-surface/80",
                       hoveredSkill !== null && hoveredSkill !== skill.name && "opacity-50"
                     )}
@@ -210,14 +210,14 @@ export function Armory() {
                     <span
                       aria-hidden="true"
                       className={cn(
-                        "absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3 bg-sun transition-opacity",
+                        "absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-3.5 bg-sun transition-opacity",
                         hoveredSkill === skill.name ? "opacity-100" : "opacity-0"
                       )}
                     />
 
                     <div>
-                      <span className="text-bone font-semibold mr-2">{skill.name}</span>
-                      <span className="text-muted text-xs font-normal leading-normal">
+                      <span className="text-bone font-semibold text-sm sm:text-base mr-2">{skill.name}</span>
+                      <span className="text-muted text-xs sm:text-sm font-normal leading-normal">
                         {skill.description}
                       </span>
                     </div>

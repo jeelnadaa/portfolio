@@ -241,8 +241,9 @@ async function processSingleImage(fileName, baseName) {
     .raw()
     .toBuffer({ resolveWithObject: true });
 
-  // 1. Flood-fill edge mask
-  const rawMask = createEdgeFloodFillMask(rawRgba, width, height, thresholdVal);
+  // 1. Flood-fill edge mask (use strict low threshold 3 for hero-hercules to preserve hair/head)
+  const effectiveThreshold = baseName.includes("hercules") ? 3 : thresholdVal;
+  const rawMask = createEdgeFloodFillMask(rawRgba, width, height, effectiveThreshold);
   // Erode 1px
   const erodedMask = erodeMask(rawMask, width, height);
 

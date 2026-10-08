@@ -67,9 +67,9 @@ export function WhatItIs() {
 
       <div className="max-w-7xl mx-auto space-y-16">
         {/* Section Label Pattern */}
-        <div className="flex items-center gap-4 font-mono text-xs uppercase tracking-dossier text-muted border-b border-rule pb-3">
+        <div className="flex items-center gap-4 font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted border-b border-rule pb-3.5">
           <span className="text-sun font-bold">{glyphs.whatItIs.numeral} //</span>
-          <span>{glyphs.whatItIs.englishLabel}</span>
+          <span className="font-medium text-bone/80">{glyphs.whatItIs.englishLabel}</span>
           <span className="text-muted/40">✦</span>
           <span className="font-greek text-bone/60">{glyphs.whatItIs.greekWord}</span>
         </div>
@@ -93,10 +93,10 @@ export function WhatItIs() {
 
             {/* Pull Quote */}
             <div className="pt-4 border-l-2 border-sun pl-4">
-              <p className="font-display italic text-lg sm:text-xl text-bone/80">
+              <p className="font-display italic text-xl sm:text-2xl text-bone/90">
                 &ldquo;the repo is the portfolio.&rdquo;
               </p>
-              <span className="font-mono text-xs text-muted tracking-dossier uppercase block mt-1">
+              <span className="font-mono text-xs sm:text-sm text-muted tracking-dossier uppercase block mt-1.5 font-medium">
                 FIRST PRINCIPLE // SOURCE-DRIVEN VERIFICATION
               </span>
             </div>
@@ -115,7 +115,7 @@ export function WhatItIs() {
               />
 
               {/* Caption */}
-              <div className="absolute bottom-3 left-3 bg-bg/80 border border-rule px-2.5 py-1 font-mono text-xs uppercase tracking-dossier text-bone/90">
+              <div className="absolute bottom-3 left-3 bg-bg/90 border border-rule px-3 py-1.5 font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone font-medium">
                 ΒΑΣΗ // BASE
               </div>
 

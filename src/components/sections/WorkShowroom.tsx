@@ -71,8 +71,8 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-rule pb-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-dossier text-muted">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted">
               <span className="text-sun font-bold">03 //</span>
               <span>WORK SHOWROOM</span>
               <span className="text-muted/40">✦</span>
@@ -81,17 +81,17 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
             <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-bone font-light tracking-tight">
               See it running.
             </h2>
-            <p className="font-mono text-xs text-muted tracking-dossier uppercase">
+            <p className="font-mono text-xs sm:text-sm text-muted tracking-dossier uppercase">
               SELECTED PRODUCTION CODE AND LOW-LATENCY SYSTEMS ({featured.length})
             </p>
           </div>
 
           {/* View Mode Toggle: Grid vs List */}
-          <div className="flex items-center border border-rule font-mono text-xs uppercase tracking-dossier p-0.5">
+          <div className="flex items-center border border-rule font-mono text-xs sm:text-sm uppercase tracking-dossier p-0.5 font-medium">
             <button
               onClick={() => setViewMode("grid")}
               className={cn(
-                "px-3 py-1 transition-colors",
+                "px-3.5 py-1.5 transition-colors",
                 viewMode === "grid" ? "bg-bone text-bg font-semibold" : "text-muted hover:text-bone"
               )}
               data-cursor="CLICK"
@@ -101,7 +101,7 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
             <button
               onClick={() => setViewMode("list")}
               className={cn(
-                "px-3 py-1 transition-colors",
+                "px-3.5 py-1.5 transition-colors",
                 viewMode === "list" ? "bg-bone text-bg font-semibold" : "text-muted hover:text-bone"
               )}
               data-cursor="CLICK"
@@ -122,7 +122,7 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
                 onMouseLeave={() => setHoveredIndex(null)}
                 data-cursor="VIEW"
                 className={cn(
-                  "group relative border border-rule bg-surface/50 p-6 flex flex-col justify-between transition-all duration-300 cursor-pointer select-none",
+                  "group relative border border-rule bg-surface/50 p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 cursor-pointer select-none",
                   "hover:-translate-y-1.5 hover:border-bone/70 hover:shadow-xl",
                   hoveredIndex !== null && hoveredIndex !== idx && "opacity-45",
                   // Offset second row slightly for asymmetric look
@@ -130,7 +130,7 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
                 )}
               >
                 {/* Top Tile Bar */}
-                <div className="flex items-center justify-between font-mono text-xs tracking-dossier uppercase text-muted border-b border-rule pb-2 mb-4">
+                <div className="flex items-center justify-between font-mono text-xs sm:text-sm tracking-dossier uppercase text-muted border-b border-rule pb-2.5 mb-4">
                   <div className="flex items-center gap-2">
                     <span className="text-sun font-bold">{p.glyph}</span>
                     <span>0{p.order}</span>
@@ -157,18 +157,18 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
 
                 {/* Info */}
                 <div className="space-y-2">
-                  <h3 className="font-display text-2xl text-bone font-light group-hover:text-sun transition-colors">
+                  <h3 className="font-display text-2xl sm:text-3xl text-bone font-light group-hover:text-sun transition-colors">
                     {p.title}
                   </h3>
-                  <p className="font-mono text-[13px] text-muted leading-relaxed line-clamp-2">
+                  <p className="font-mono text-sm sm:text-base text-muted leading-relaxed line-clamp-2">
                     {p.tagline}
                   </p>
                 </div>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-1.5 pt-4 mt-2 border-t border-rule/40 font-mono text-xs text-muted">
+                <div className="flex flex-wrap gap-1.5 pt-4 mt-2 border-t border-rule/40 font-mono text-xs sm:text-sm text-muted">
                   {p.stack.slice(0, 3).map((tool) => (
-                    <span key={tool} className="border border-rule/60 px-2 py-0.5">
+                    <span key={tool} className="border border-rule/60 px-2 py-0.5 font-medium">
                       {tool}
                     </span>
                   ))}

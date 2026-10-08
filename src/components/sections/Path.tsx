@@ -95,8 +95,8 @@ export function Path() {
       <div className="max-w-7xl mx-auto space-y-16">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-rule pb-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-dossier text-muted">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted">
               <span className="text-sun font-bold">06 //</span>
               <span>PATH & CHRONOLOGY</span>
               <span className="text-muted/40">✦</span>
@@ -105,7 +105,7 @@ export function Path() {
             <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-bone font-light tracking-tight">
               The trajectory.
             </h2>
-            <p className="font-mono text-xs text-muted tracking-dossier uppercase">
+            <p className="font-mono text-xs sm:text-sm text-muted tracking-dossier uppercase">
               ACADEMIC FOUNDATION, PRODUCTION INTERNSHIPS, AND HACKATHONS
             </p>
           </div>
@@ -113,7 +113,7 @@ export function Path() {
           <Link
             href="/resume"
             data-cursor="OPEN"
-            className="font-mono text-xs uppercase tracking-dossier text-bone hover:text-sun border border-rule hover:border-sun px-4 py-2 transition-colors inline-block"
+            className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone hover:text-sun border border-rule hover:border-sun px-4 py-2.5 transition-colors inline-block font-medium"
           >
             VIEW FULL RÉSUMÉ ↗
           </Link>
@@ -171,32 +171,32 @@ export function Path() {
                       isEven ? "md:pr-12 md:text-right" : "md:pl-12 md:text-left"
                     )}
                   >
-                    <div className="border border-rule bg-surface/40 p-6 space-y-3 hover:border-bone/60 transition-colors">
+                    <div className="border border-rule bg-surface/40 p-6 sm:p-7 space-y-3.5 hover:border-bone/60 transition-colors">
                       {/* Top Bar with Year in Fraunces Italic */}
                       <div
                         className={cn(
-                          "flex items-baseline justify-between gap-4 border-b border-rule pb-2",
+                          "flex items-baseline justify-between gap-4 border-b border-rule pb-2.5",
                           isEven ? "md:flex-row-reverse" : "md:flex-row"
                         )}
                       >
-                        <span className="font-display italic text-2xl text-sun font-medium">
+                        <span className="font-display italic text-2xl sm:text-3xl text-sun font-medium">
                           {milestone.year}
                         </span>
-                        <span className="font-mono text-xs tracking-dossier uppercase text-muted border border-rule px-2 py-0.5">
+                        <span className="font-mono text-xs sm:text-sm tracking-dossier uppercase text-muted border border-rule px-2.5 py-1 font-medium">
                           {milestone.badge || "MILESTONE"}
                         </span>
                       </div>
 
-                      <div className="space-y-1">
-                        <h3 className="font-display text-xl text-bone font-light">
+                      <div className="space-y-1.5">
+                        <h3 className="font-display text-xl sm:text-2xl text-bone font-light">
                           {milestone.role}
                         </h3>
-                        <div className="font-mono text-sm text-muted">
+                        <div className="font-mono text-sm sm:text-base text-muted font-medium">
                           {milestone.organization} · {milestone.location}
                         </div>
                       </div>
 
-                      <p className="font-sans text-sm text-bone/90 leading-relaxed">
+                      <p className="font-sans text-base sm:text-lg text-bone/90 leading-relaxed">
                         {milestone.description}
                       </p>
 

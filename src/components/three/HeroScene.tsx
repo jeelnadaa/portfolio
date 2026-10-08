@@ -74,13 +74,13 @@ function ShaderMesh({
     material.uniforms.uTorch.value.copy(lerpedTorch.current);
   });
 
-  // Calculate plane aspect ratio to preserve statue proportions
+  // Calculate plane aspect ratio to preserve statue proportions and prevent top cut-off
   const imageAspect = 3388 / 5056; // 0.67
-  const planeHeight = viewport.height * 0.92;
+  const planeHeight = Math.min(viewport.height * 0.86, viewport.width * 1.05);
   const planeWidth = planeHeight * imageAspect;
 
   return (
-    <mesh ref={meshRef}>
+    <mesh ref={meshRef} position={[0, -viewport.height * 0.02, 0]}>
       <planeGeometry args={[planeWidth, planeHeight, 1, 1]} />
       <shaderMaterial
         vertexShader={heroVertexShader}

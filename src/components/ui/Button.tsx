@@ -34,7 +34,7 @@ export const Button = forwardRef<
     ref
   ) => {
     const baseClasses = cn(
-      "group relative inline-flex items-center justify-center font-mono text-xs uppercase tracking-dossier px-5 py-3 select-none transition-all duration-200",
+      "group relative inline-flex items-center justify-center font-mono text-xs sm:text-sm font-medium uppercase tracking-dossier px-5 py-3 select-none transition-all duration-200",
       variant === "outline" && "border border-bone text-bone btn-dossier",
       variant === "sun" && "btn-dossier-sun border border-sun",
       variant === "ghost" && "text-muted hover:text-bone hover:border-b hover:border-bone",

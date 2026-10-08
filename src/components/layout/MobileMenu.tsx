@@ -18,6 +18,7 @@ const NAV_LINKS = [
   { href: "/path", label: "Path", greek: glyphs.path.greekWord, numeral: "Γ" },
   { href: "/about", label: "About", greek: glyphs.about.greekWord, numeral: "Δ" },
   { href: "/log", label: "Log", greek: glyphs.log.greekWord, numeral: "Ε" },
+  { href: "/resume", label: "Resume", greek: glyphs.resume.greekWord, numeral: "Ϛ" },
   { href: "/contact", label: "Contact", greek: glyphs.contact.greekWord, numeral: "Ζ" },
 ];
 

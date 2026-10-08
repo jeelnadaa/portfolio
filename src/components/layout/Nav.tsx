@@ -22,6 +22,8 @@ const NAV_ITEMS = [
   { href: "/path", label: "Path", numeral: "Γ" },
   { href: "/about", label: "About", numeral: "Δ" },
   { href: "/log", label: "Log", numeral: "Ε" },
+  { href: "/resume", label: "Resume", numeral: "Ϛ" },
+  { href: "/contact", label: "Contact", numeral: "Ζ" },
 ];
 
 export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
@@ -117,7 +119,7 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
           </Link>
 
           {/* Center: Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-7 font-mono text-[13px] uppercase tracking-dossier text-bone/90">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-6 font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone/90 font-medium">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
@@ -153,7 +155,7 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
           <div className="flex items-center gap-3">
             {/* Live Bengaluru Time */}
             <span
-              className="hidden lg:inline-block font-mono text-xs tracking-dossier text-muted border border-rule px-2.5 py-1"
+              className="hidden xl:inline-block font-mono text-xs tracking-dossier text-muted border border-rule px-2.5 py-1"
               title="Current time in Bengaluru (IST)"
             >
               {blrTime}
@@ -164,7 +166,7 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
               href={siteConfig.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1.5 font-mono text-xs tracking-dossier text-muted hover:text-bone border border-rule px-2.5 py-1 transition-colors"
+              className="hidden sm:flex items-center gap-1.5 font-mono text-xs sm:text-sm tracking-dossier text-muted hover:text-bone border border-rule px-2.5 py-1 transition-colors font-medium"
               title="GitHub Profile"
               data-cursor="OPEN"
             >
@@ -172,16 +174,6 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
               <span>{githubStats.stars}</span>
               <span className="text-muted/60">/</span>
               <span>{githubStats.repos}</span>
-            </a>
-
-            {/* Resume Button */}
-            <a
-              href={siteConfig.resumePdf}
-              download={siteConfig.resumeDownloadName}
-              className="hidden sm:inline-flex items-center font-mono text-xs tracking-dossier uppercase text-bone hover:text-bg hover:bg-bone border border-bone px-3 py-1 transition-colors select-none"
-              data-cursor="OPEN"
-            >
-              Resume ↓
             </a>
 
             {/* Mobile Menu Toggle */}

@@ -52,8 +52,8 @@ export function GithubBlock({ data }: GithubBlockProps) {
       <div className="max-w-7xl mx-auto space-y-16">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-rule pb-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-dossier text-muted">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted">
               <span className="text-sun font-bold">05 //</span>
               <span>GITHUB TELEMETRY</span>
               <span className="text-muted/40">✦</span>
@@ -62,7 +62,7 @@ export function GithubBlock({ data }: GithubBlockProps) {
             <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-bone font-light tracking-tight">
               Code in the open.
             </h2>
-            <p className="font-mono text-xs text-muted tracking-dossier uppercase">
+            <p className="font-mono text-xs sm:text-sm text-muted tracking-dossier uppercase">
               LIVE REPOSITORIES, COMMIT DENSITY, AND CONTRIBUTIONS (ISR CACHED)
             </p>
           </div>
@@ -72,7 +72,7 @@ export function GithubBlock({ data }: GithubBlockProps) {
             target="_blank"
             rel="noopener noreferrer"
             data-cursor="OPEN"
-            className="font-mono text-xs uppercase tracking-dossier text-bone hover:text-sun border border-rule hover:border-sun px-4 py-2 flex items-center gap-2 transition-colors self-start md:self-auto"
+            className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone hover:text-sun border border-rule hover:border-sun px-4 py-2.5 flex items-center gap-2 transition-colors self-start md:self-auto font-medium"
           >
             <span>VIEW @{data.user.login}</span>
             <span>↗</span>
@@ -81,42 +81,42 @@ export function GithubBlock({ data }: GithubBlockProps) {
 
         {/* Big Mono Counters */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 border border-rule bg-surface/30 p-6 sm:p-8 font-mono select-none">
-          <div className="space-y-1">
-            <div className="text-xs tracking-dossier text-muted uppercase">REPOSITORIES</div>
-            <div className="font-display text-3xl sm:text-4xl text-bone">
+          <div className="space-y-2">
+            <div className="text-xs sm:text-sm tracking-dossier text-muted uppercase font-medium">REPOSITORIES</div>
+            <div className="font-display text-3xl sm:text-5xl text-bone">
               <span ref={reposCountRef}>0</span>
             </div>
           </div>
-          <div className="space-y-1 border-l border-rule pl-6">
-            <div className="text-xs tracking-dossier text-muted uppercase">STARS EARNED</div>
-            <div className="font-display text-3xl sm:text-4xl text-bone">
+          <div className="space-y-2 border-l border-rule pl-6">
+            <div className="text-xs sm:text-sm tracking-dossier text-muted uppercase font-medium">STARS EARNED</div>
+            <div className="font-display text-3xl sm:text-5xl text-bone">
               <span ref={starsCountRef}>0</span>
             </div>
           </div>
-          <div className="space-y-1 border-l border-rule pl-6">
-            <div className="text-xs tracking-dossier text-muted uppercase">FOLLOWERS</div>
-            <div className="font-display text-3xl sm:text-4xl text-bone">
+          <div className="space-y-2 border-l border-rule pl-6">
+            <div className="text-xs sm:text-sm tracking-dossier text-muted uppercase font-medium">FOLLOWERS</div>
+            <div className="font-display text-3xl sm:text-5xl text-bone">
               <span ref={followersCountRef}>0</span>
             </div>
           </div>
-          <div className="space-y-1 border-l border-rule pl-6">
-            <div className="text-xs tracking-dossier text-muted uppercase">COMMITS (YR)</div>
-            <div className="font-display text-3xl sm:text-4xl text-sun">
+          <div className="space-y-2 border-l border-rule pl-6">
+            <div className="text-xs sm:text-sm tracking-dossier text-muted uppercase font-medium">COMMITS (YR)</div>
+            <div className="font-display text-3xl sm:text-5xl text-sun">
               <span ref={commitsCountRef}>0</span>
             </div>
           </div>
         </div>
 
-        {/* Custom SVG Contribution Heatmap */}
-        <div className="border border-rule bg-surface/40 p-6 space-y-4">
-          <div className="flex items-center justify-between font-mono text-xs uppercase tracking-dossier text-muted border-b border-rule pb-2">
-            <span>ANNUAL ACTIVITY MATRIX (52 WEEKS)</span>
-            <div className="flex items-center gap-1.5 text-xs">
+        {/* Custom Contribution Heatmap */}
+        <div className="border border-rule bg-surface/40 p-6 sm:p-8 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted border-b border-rule pb-3">
+            <span className="font-semibold text-bone/90">ANNUAL ACTIVITY MATRIX (52 WEEKS)</span>
+            <div className="flex items-center gap-2 text-xs sm:text-sm">
               <span>LESS</span>
               {TINT_COLORS.map((col, idx) => (
                 <span
                   key={idx}
-                  className="w-2.5 h-2.5 rounded-sharp inline-block"
+                  className="w-3 h-3 rounded-sharp inline-block border border-rule/30"
                   style={{ backgroundColor: col }}
                 />
               ))}
@@ -125,9 +125,9 @@ export function GithubBlock({ data }: GithubBlockProps) {
           </div>
 
           <div className="overflow-x-auto py-2">
-            <div className="inline-flex gap-1 min-w-[700px]">
+            <div className="w-full min-w-[760px] flex justify-between gap-1 sm:gap-1.5">
               {data.contributionWeeks.map((week, wIdx) => (
-                <div key={wIdx} className="flex flex-col gap-1">
+                <div key={wIdx} className="flex-1 flex flex-col justify-between gap-1 sm:gap-1.5">
                   {week.days.map((day) => (
                     <div
                       key={day.date}
@@ -140,7 +140,7 @@ export function GithubBlock({ data }: GithubBlockProps) {
                         });
                       }}
                       onMouseLeave={() => setTooltip(null)}
-                      className="w-[11px] h-[11px] rounded-sharp transition-transform hover:scale-125 cursor-crosshair"
+                      className="w-full aspect-square rounded-sharp transition-transform hover:scale-125 cursor-crosshair"
                       style={{
                         backgroundColor: TINT_COLORS[day.level] || TINT_COLORS[0],
                       }}

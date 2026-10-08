@@ -50,18 +50,20 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
 
     if (prefersReduced) return;
 
-    let isVanished = false;
-    let flipTimers: NodeJS.Timeout[] = [];
+    let flipTimers: (NodeJS.Timeout | number)[] = [];
 
     const clearFlipTimers = () => {
-      flipTimers.forEach((t) => clearInterval(t));
+      flipTimers.forEach((t) => {
+        clearInterval(t as number);
+        clearTimeout(t as number);
+      });
       flipTimers = [];
     };
 
-    // Entrance / Reform animation:
-    // Fades in slowly, scrambling Greek letters (proportional size 0.74em) into Fraunces English glyphs
-    const playFadeInWithGreek = () => {
-      isVanished = false;
+    // In-place Greek scramble:
+    // Flips strictly IN PLACE (no y movement or dropping down) from English to Greek,
+    // pauses briefly, then returns strictly in place to English.
+    const scrambleInPlace = () => {
       clearFlipTimers();
 
       letterRefs.current.forEach((el, idx) => {
@@ -70,120 +72,45 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         let flipCount = 0;
         const totalFlips = 6;
 
-        // Proportional Greek font size to prevent towering over lowercase Fraunces
-        el.style.fontSize = "0.74em";
-        el.style.fontFamily = "var(--font-didot)";
-        el.textContent = GREEK_FLIP_CHARS[idx % GREEK_FLIP_CHARS.length];
+        const timeout = setTimeout(() => {
+          const flipInterval = setInterval(() => {
+            flipCount++;
+            if (flipCount >= totalFlips) {
+              clearInterval(flipInterval);
+              el.textContent = finalChar;
+              el.style.fontFamily = "var(--font-fraunces)";
+              el.style.fontSize = "";
+            } else {
+              el.textContent = GREEK_FLIP_CHARS[(idx + flipCount) % GREEK_FLIP_CHARS.length];
+              el.style.fontFamily = "var(--font-didot)";
+              el.style.fontSize = "0.76em";
+            }
+          }, 80);
+          flipTimers.push(flipInterval as unknown as number);
+        }, idx * 40);
 
-        const flipInterval = setInterval(() => {
-          flipCount++;
-          if (flipCount >= totalFlips) {
-            clearInterval(flipInterval);
-            el.textContent = finalChar;
-            el.style.fontFamily = "var(--font-fraunces)";
-            el.style.fontSize = "";
-          } else {
-            el.textContent = GREEK_FLIP_CHARS[(idx + flipCount) % GREEK_FLIP_CHARS.length];
-            el.style.fontFamily = "var(--font-didot)";
-            el.style.fontSize = "0.74em";
-          }
-        }, 80 + idx * 8);
-        flipTimers.push(flipInterval);
-
-        gsap.to(el, {
-          yPercent: 0,
-          opacity: 1,
-          duration: 1.25,
-          delay: idx * 0.035,
-          ease: "power2.out",
-        });
+        flipTimers.push(timeout as unknown as number);
       });
-
-      if (sunDiscRef.current) {
-        gsap.to(sunDiscRef.current, {
-          opacity: 1,
-          scale: 1,
-          duration: 1.3,
-          ease: "power2.out",
-        });
-      }
     };
 
-    // Check if preloader is active or already completed in this session
+    // Trigger upon load or when preloader completes
     if (isPreloadedSession()) {
-      playFadeInWithGreek();
+      scrambleInPlace();
     } else {
-      // Keep hidden until sliced orange circle preloader finishes and fades
-      letterRefs.current.forEach((el) => {
-        if (el) gsap.set(el, { opacity: 0, yPercent: 20 });
-      });
-      if (sunDiscRef.current) {
-        gsap.set(sunDiscRef.current, { opacity: 0, scale: 0.8 });
-      }
-
       let entranceTriggered = false;
       const onPreloaderDone = () => {
         if (entranceTriggered) return;
         entranceTriggered = true;
-        playFadeInWithGreek();
+        scrambleInPlace();
       };
 
       window.addEventListener("solarquack:preloader-done", onPreloaderDone, { once: true });
-      setTimeout(onPreloaderDone, 2400); // Safety fallback
+      const fallbackTimer = setTimeout(onPreloaderDone, 2000);
+      flipTimers.push(fallbackTimer as unknown as number);
     }
 
-    // Vanish on scroll down:
-    // Pure smooth fade out without converting to Greek letters, slow visible pace
-    const triggerVanish = () => {
-      if (isVanished) return;
-      isVanished = true;
-      clearFlipTimers();
-
-      // Filter only mounted non-null letter elements to prevent null _gsap crashes
-      const validLetters = letterRefs.current.filter((el): el is HTMLSpanElement => Boolean(el));
-
-      // Keep letters as English brand letters on fade out (no Greek letters)
-      validLetters.forEach((el, idx) => {
-        el.textContent = brandChars[idx] || "";
-        el.style.fontFamily = "var(--font-fraunces)";
-        el.style.fontSize = "";
-      });
-
-      if (validLetters.length > 0) {
-        gsap.killTweensOf(validLetters);
-        gsap.to(validLetters, {
-          opacity: 0,
-          yPercent: -8,
-          duration: 0.28,
-          ease: "power2.out",
-          stagger: 0.01,
-        });
-      }
-
-      if (sunDiscRef.current) {
-        gsap.killTweensOf(sunDiscRef.current);
-        gsap.to(sunDiscRef.current, {
-          opacity: 0,
-          scale: 0.8,
-          duration: 0.28,
-          ease: "power2.out",
-        });
-      }
-    };
-
-    // Scroll trigger: start fading immediately as soon as user scrolls down even 2px
-    const handleScroll = () => {
-      const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
-      if (scrollY > 2) {
-        triggerVanish();
-      } else if (scrollY <= 2) {
-        if (isVanished) {
-          playFadeInWithGreek();
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Increased frequency: recurring in-place scramble loop every 7.5 seconds
+    const recurringInterval = setInterval(scrambleInPlace, 7500);
 
     // Ruins parallax zoom
     if (ruinsRef.current) {
@@ -200,11 +127,8 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
     }
 
     return () => {
+      clearInterval(recurringInterval);
       clearFlipTimers();
-      const validLetters = letterRefs.current.filter((el): el is HTMLSpanElement => Boolean(el));
-      gsap.killTweensOf(validLetters);
-      if (sunDiscRef.current) gsap.killTweensOf(sunDiscRef.current);
-      window.removeEventListener("scroll", handleScroll);
     };
   }, [stats, prefersReduced]);
 
@@ -280,12 +204,12 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         }}
       />
 
-      {/* Layer 3: Giant Name "solarquack" sitting behind statue */}
+      {/* Layer 3: Giant Name "solarquack" sitting behind statue, telemetry and specs */}
       <div
         aria-label={siteConfig.brand}
-        className="absolute top-1/2 left-0 right-0 -translate-y-1/2 z-20 flex justify-center items-center pointer-events-none px-4"
+        className="absolute top-1/2 left-0 right-0 -translate-y-1/2 z-20 flex justify-center items-center pointer-events-none px-4 select-none"
       >
-        <h1 className="font-display font-light text-bone tracking-tightest leading-none text-[clamp(4.2rem,16vw,19rem)] flex justify-between w-full max-w-7xl">
+        <h1 className="font-display font-light text-bone/30 tracking-tightest leading-none text-[clamp(4.2rem,16vw,19rem)] flex justify-between w-full max-w-7xl">
           {brandChars.map((char, idx) => (
             <span
               key={idx}
@@ -295,7 +219,7 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
               className="inline-block transition-transform duration-75 will-change-transform"
               style={{
                 fontVariationSettings:
-                  "'wght' 300, 'SOFT' 100, 'opsz' 144, 'WONK' 1",
+                  "'wght' 260, 'SOFT' 100, 'opsz' 144, 'WONK' 1",
               }}
               aria-hidden="true"
             >
@@ -325,17 +249,17 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         className="top-12 left-1/2 -translate-x-1/2 opacity-5"
       />
 
-      {/* HUD Layer (Overlays on top of 3D Canvas) */}
+      {/* HUD Layer (Overlays on top of 3D Canvas, System Specs & Telemetry) */}
       <div className="relative z-50 flex flex-col justify-between h-full p-6 sm:p-10 pointer-events-none pt-24 sm:pt-28">
         {/* HUD Top Bar */}
         <div className="flex items-start justify-between w-full max-w-7xl mx-auto">
           {/* Top Left Dossier Tag */}
-          <div className="space-y-1 pointer-events-auto">
-            <div className="flex items-center gap-2 font-mono text-[13px] uppercase tracking-dossier text-bone font-medium">
-              <span className="w-2 h-2 rounded-full bg-sun animate-pulse" />
+          <div className="space-y-1.5 pointer-events-auto">
+            <div className="flex items-center gap-2.5 font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone font-semibold">
+              <span className="w-2.5 h-2.5 rounded-full bg-sun animate-pulse" />
               <span>{siteConfig.systemLabel}</span>
             </div>
-            <div className="font-mono text-xs uppercase tracking-dossier text-muted">
+            <div className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted">
               {siteConfig.authorDossier}
             </div>
           </div>
@@ -349,8 +273,8 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         {/* HUD Middle Lateral Columns */}
         <div className="flex items-center justify-between w-full max-w-7xl mx-auto my-auto">
           {/* Left Column Spec Rows */}
-          <div className="hidden md:flex flex-col w-72 p-4 border border-rule/60 bg-surface/40 backdrop-blur-xs pointer-events-auto space-y-1">
-            <div className="font-mono text-xs uppercase tracking-dossier text-sun font-bold border-b border-rule pb-1.5 mb-1.5 flex items-center justify-between">
+          <div className="hidden md:flex flex-col w-72 sm:w-80 p-5 border border-rule/70 bg-surface/50 backdrop-blur-sm pointer-events-auto space-y-1.5 shadow-sm">
+            <div className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-sun font-bold border-b border-rule pb-2 mb-2 flex items-center justify-between">
               <span>SYSTEM SPECS</span>
               <span>00 // BASE</span>
             </div>
@@ -360,19 +284,19 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
           </div>
 
           {/* Right Column Stat Counters */}
-          <div className="hidden md:flex flex-col w-64 p-4 border border-rule/60 bg-surface/40 backdrop-blur-xs pointer-events-auto space-y-3">
-            <div className="font-mono text-xs uppercase tracking-dossier text-sun font-bold border-b border-rule pb-1.5 flex items-center justify-between">
+          <div className="hidden md:flex flex-col w-64 sm:w-72 p-5 border border-rule/70 bg-surface/50 backdrop-blur-sm pointer-events-auto space-y-3.5 shadow-sm">
+            <div className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-sun font-bold border-b border-rule pb-2 flex items-center justify-between">
               <span>LIVE TELEMETRY</span>
               <span>GITHUB</span>
             </div>
             {heroConfig.stats.map((st, idx) => (
-              <div key={st.label} className="flex items-baseline justify-between font-mono text-[13px] tracking-dossier uppercase">
-                <span className="text-muted">{st.label}</span>
+              <div key={st.label} className="flex items-baseline justify-between font-mono text-xs sm:text-sm tracking-dossier uppercase">
+                <span className="text-muted font-medium">{st.label}</span>
                 <span
                   ref={(el) => {
                     statValRefs.current[idx] = el;
                   }}
-                  className="text-bone font-bold text-base"
+                  className="text-bone font-bold text-base sm:text-lg"
                 >
                   {st.value}
                 </span>
@@ -382,7 +306,7 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
               href={siteConfig.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-mono tracking-dossier text-muted/70 hover:text-sun text-right block pt-1 border-t border-rule/30"
+              className="text-xs sm:text-sm font-mono tracking-dossier text-muted hover:text-sun text-right block pt-1.5 border-t border-rule/40 font-medium"
               data-cursor="OPEN"
             >
               Tracked live ↗
@@ -393,29 +317,29 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         {/* HUD Bottom Bar */}
         <div className="flex flex-col sm:flex-row items-end sm:items-center justify-between w-full max-w-7xl mx-auto gap-6 pointer-events-auto pb-4">
           {/* Bottom Left Positioning & CTAs */}
-          <div className="space-y-4 max-w-lg">
-            <p className="font-mono text-sm sm:text-base text-bone/90 leading-relaxed uppercase tracking-dossier">
+          <div className="space-y-4 max-w-xl">
+            <p className="font-mono text-base sm:text-lg text-bone/90 leading-relaxed uppercase tracking-dossier font-medium">
               {siteConfig.heroPositioning}
             </p>
             <div className="flex items-center gap-4">
               <Magnetic strength={0.3}>
-                <Button href="#work" variant="sun" arrow>
+                <Button href="#work" variant="sun" arrow className="text-xs sm:text-sm">
                   View work
                 </Button>
               </Magnetic>
               <Magnetic strength={0.3}>
-                <Button href={siteConfig.github} variant="outline" external arrow>
+                <Button href={siteConfig.github} variant="outline" external arrow className="text-xs sm:text-sm">
                   Source code
                 </Button>
               </Magnetic>
-              <span className="hidden sm:inline font-mono text-xs text-muted tracking-dossier">
+              <span className="hidden sm:inline font-mono text-xs sm:text-sm text-muted tracking-dossier font-medium">
                 ★ {stats.stars} stars
               </span>
             </div>
           </div>
 
           {/* Bottom Right Scroll Cue */}
-          <div className="flex items-center gap-3 font-mono text-[13px] uppercase tracking-dossier text-muted select-none">
+          <div className="flex items-center gap-3 font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted select-none font-medium">
             <span>SCROLL ΚΑΤΩ</span>
             <div className="relative w-[1px] h-10 bg-rule overflow-hidden">
               <div

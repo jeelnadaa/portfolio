@@ -79,23 +79,23 @@ void main() {
   float torchDist = length((displacedUv - uTorch) * aspect);
   float torch = smoothstep(uTorchRadius, 0.0, torchDist) * uTorchStrength;
 
-  // 7. Ordered Bayer Dither threshold
+  // 7. Ordered Bayer Dither threshold - deepened for richer, darker sculptural shadows
+  float darkLum = pow(lum, 1.35) * 0.82;
   float threshold = bayer8(gl_FragCoord.xy);
-  float dithered = step(threshold, lum + glintBoost * 0.5);
+  float dithered = step(threshold, darkLum + glintBoost * 0.45);
 
-  // Outside torch: two-tone bone on black, slightly dimmed (0.55 opacity)
-  vec3 ditherColor = mix(vec3(0.0), uBone, dithered) * 0.65;
+  // Outside torch: rich dark marble stone in shadows, bone highlights
+  vec3 ditherColor = mix(vec3(0.04, 0.038, 0.034), uBone * 0.52, dithered);
 
-  // Inside torch: cross-fade to full marble continuous tone with subtle bone rim
-  vec3 litContinuous = colorSample.rgb * 1.15 + uBone * glintBoost * 0.5;
-  // Rim lighting on lit edges
+  // Inside torch: deep contrasted marble continuous tone with subtle rim
+  vec3 litContinuous = colorSample.rgb * 0.88 + uBone * glintBoost * 0.35;
   vec2 torchDir = normalize(displacedUv - uTorch + vec2(0.0001));
-  float rim = max(0.0, dot(vec2(0.0, 1.0), torchDir)) * 0.18 * torch;
+  float rim = max(0.0, dot(vec2(0.0, 1.0), torchDir)) * 0.16 * torch;
   litContinuous += uBone * rim;
 
-  // Final blend between dithered marble and torch continuous tone
+  // Final blend: solid statue silhouette blocks background layers cleanly
   vec3 finalColor = mix(ditherColor, litContinuous, torch);
-  float finalAlpha = mix(dithered * alpha * 0.75, alpha, torch);
+  float finalAlpha = alpha * 0.96;
 
   if (finalAlpha < 0.02) {
     discard;

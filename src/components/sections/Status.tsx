@@ -43,8 +43,8 @@ export function Status() {
       <div className="max-w-7xl mx-auto space-y-16">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-rule pb-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-dossier text-muted">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted">
               <span className="text-sun font-bold">07 //</span>
               <span>HONEST STATUS</span>
               <span className="text-muted/40">✦</span>
@@ -53,7 +53,7 @@ export function Status() {
             <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-bone font-light tracking-tight">
               Honest status.
             </h2>
-            <p className="font-mono text-xs text-muted tracking-dossier uppercase">
+            <p className="font-mono text-xs sm:text-sm text-muted tracking-dossier uppercase">
               LIVE SYSTEM STATE, UNFINISHED EXPERIMENTS, AND LEARNING CURVES
             </p>
           </div>
@@ -63,7 +63,7 @@ export function Status() {
             target="_blank"
             rel="noopener noreferrer"
             data-cursor="OPEN"
-            className="font-mono text-xs uppercase tracking-dossier text-bone hover:text-sun border border-rule px-3 py-1.5 flex items-center gap-2 self-start sm:self-auto"
+            className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone hover:text-sun border border-rule px-3.5 py-2 flex items-center gap-2 self-start sm:self-auto font-medium"
           >
             <span>BETA · PORTFOLIO V{siteConfig.version}</span>
             <span>↗</span>
@@ -105,7 +105,7 @@ export function Status() {
               </div>
 
               {/* Status plate label */}
-              <div className="absolute bottom-3 left-3 bg-bg/85 border border-rule px-2.5 py-1 font-mono text-xs uppercase tracking-dossier text-gold flex items-center gap-1.5">
+              <div className="absolute bottom-3 left-3 bg-bg/85 border border-rule px-3 py-1.5 font-mono text-xs sm:text-sm uppercase tracking-dossier text-gold flex items-center gap-1.5 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
                 <span>KINTSUGI // GOLD SEAMS</span>
               </div>
@@ -118,17 +118,17 @@ export function Status() {
               {honestStatus.items.map((item, idx) => (
                 <div
                   key={item.category}
-                  className="py-5 font-mono space-y-1.5"
+                  className="py-5 font-mono space-y-2"
                 >
-                  <div className="flex items-center justify-between text-[13px] tracking-dossier uppercase">
+                  <div className="flex items-center justify-between text-sm sm:text-base tracking-dossier uppercase">
                     <span className="text-sun font-semibold">
                       <Scramble text={`[ ${item.category} ]`} duration={0.8} />
                     </span>
-                    <span className="text-xs text-muted border border-rule px-2 py-0.5">
+                    <span className="text-xs sm:text-sm text-muted border border-rule px-2.5 py-0.5 font-medium">
                       {item.status.toUpperCase()}
                     </span>
                   </div>
-                  <p className="font-sans text-sm sm:text-base text-bone/90 leading-relaxed font-normal">
+                  <p className="font-sans text-base sm:text-lg text-bone/90 leading-relaxed font-normal">
                     {item.detail}
                   </p>
                 </div>
@@ -136,20 +136,20 @@ export function Status() {
             </div>
 
             {/* Now Reading & Listening */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs border border-rule/60 bg-surface/30 p-4">
-              <div className="space-y-1">
-                <span className="text-xs text-muted uppercase tracking-dossier block">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs sm:text-sm border border-rule/60 bg-surface/30 p-5">
+              <div className="space-y-1.5">
+                <span className="text-xs sm:text-sm text-muted uppercase tracking-dossier block font-medium">
                   NOW READING
                 </span>
-                <span className="text-bone text-[13px] block font-sans">
+                <span className="text-bone text-sm sm:text-base block font-sans">
                   {honestStatus.nowReading}
                 </span>
               </div>
-              <div className="space-y-1 sm:border-l sm:border-rule/60 sm:pl-4">
-                <span className="text-xs text-muted uppercase tracking-dossier block">
+              <div className="space-y-1.5 sm:border-l sm:border-rule/60 sm:pl-5">
+                <span className="text-xs sm:text-sm text-muted uppercase tracking-dossier block font-medium">
                   NOW LISTENING
                 </span>
-                <span className="text-bone text-[13px] block font-sans">
+                <span className="text-bone text-sm sm:text-base block font-sans">
                   {honestStatus.nowListening}
                 </span>
               </div>

@@ -93,15 +93,21 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     };
 
     window.addEventListener("pointerdown", unlock, { once: true, capture: true });
+    window.addEventListener("pointermove", unlock, { once: true, capture: true });
     window.addEventListener("keydown", unlock, { once: true, capture: true });
     window.addEventListener("touchstart", unlock, { once: true, capture: true });
     window.addEventListener("click", unlock, { once: true, capture: true });
+    window.addEventListener("wheel", unlock, { once: true, capture: true });
+    window.addEventListener("scroll", unlock, { once: true, capture: true });
 
     return () => {
       window.removeEventListener("pointerdown", unlock, { capture: true });
+      window.removeEventListener("pointermove", unlock, { capture: true });
       window.removeEventListener("keydown", unlock, { capture: true });
       window.removeEventListener("touchstart", unlock, { capture: true });
       window.removeEventListener("click", unlock, { capture: true });
+      window.removeEventListener("wheel", unlock, { capture: true });
+      window.removeEventListener("scroll", unlock, { capture: true });
     };
   }, []);
 
