@@ -1,0 +1,127 @@
+---
+title: "Quacky — Offline Android Utility Suite"
+slug: "quacky"
+order: 3
+year: "2026"
+role: "Android & Systems Developer"
+duration: "6 weeks"
+status: "live"
+summary: "A privacy-first, 100% offline Android utility suite containing 15+ focused tools, zero network permissions, monochromatic dark aesthetic, and local Room SQLite persistence."
+tagline: "Pure offline Android utility suite with zero network permissions."
+stack:
+  - Kotlin
+  - Android Jetpack
+  - Room SQLite
+  - CameraX
+  - Material 3
+  - Clean Architecture
+tags:
+  - Android
+  - Local-First
+  - Offline-First
+  - Privacy
+  - Mobile Utilities
+github: "https://github.com/jeelnadaa/quacky"
+live: null
+demo_video: null
+cover: null
+gallery: []
+metrics:
+  - label: "TOOLS BUILT"
+    value: "15"
+    suffix: "+"
+  - label: "NETWORK PERMS"
+    value: "0"
+    suffix: ""
+  - label: "TRACKERS"
+    value: "0"
+    suffix: ""
+featured: true
+glyph: "Γ"
+stackReasons:
+  - tool: "Kotlin & Coroutines"
+    reason: "Structured concurrency ensuring intensive on-device text parsing and image hashing run smoothly off the main UI thread."
+  - tool: "Room SQLite"
+    reason: "Strictly offline local persistence for calculation histories with instant one-tap nuclear data wiping."
+architecture:
+  nodes:
+    - id: "ui"
+      label: "Monochromatic UI (Material 3)"
+      type: "client"
+    - id: "viewmodel"
+      label: "Tool ViewModels & StateFlow"
+      type: "service"
+    - id: "engine"
+      label: "On-Device Processing Engines"
+      type: "worker"
+    - id: "hardware"
+      label: "CameraX & Sensors API"
+      type: "worker"
+    - id: "room"
+      label: "Room SQLite Storage"
+      type: "storage"
+  edges:
+    - from: "ui"
+      to: "viewmodel"
+      label: "User Input"
+    - from: "viewmodel"
+      to: "engine"
+      label: "Computation Request"
+    - from: "engine"
+      to: "hardware"
+      label: "Local Hardware Access"
+    - from: "viewmodel"
+      to: "room"
+      label: "Encrypted History Record"
+---
+
+## 01 // PROBLEM
+The modern mobile utility ecosystem is infested with dark patterns: single-purpose calculator or text counting apps request invasive system permissions, run background advertising SDKs, upload user clipboard contents to remote telemetry servers, and lock essential features behind subscription paywalls.
+
+I wanted an uncompromising offline utility suite built on first principles:
+1. Zero internet connectivity: `android.permission.INTERNET` is completely absent from `AndroidManifest.xml`.
+2. Instant startup time with zero telemetry baggage.
+3. Hardware Honesty: if a device lacks a sensor (e.g. gyroscope or camera flash), the app reports it clearly without simulated fakes.
+4. Total privacy: calculation and text processing logs remain strictly inside local device SQLite databases.
+
+## 02 // APPROACH
+I designed Quacky around four core architectural tenets:
+
+1. **Strict Zero-Network Perimeter:** By omitting network permissions entirely, neither the application nor any compiled dependency can transmit data outward.
+2. **Monochromatic Dark Aesthetic:** A hyper-minimalist visual palette (`#0A0A0A`, `#121212`, `#F2F2F2`) where structural UI elements remain stark monochrome, letting only true functional content (camera feeds, color palette extractors) display hue.
+3. **Hardware Honesty Protocol:** Comprehensive sensor inspection queries hardware capability directly via Android CameraManager and SensorManager APIs, providing explicit status messages instead of silent failures.
+4. **Clean Layered Architecture:** Domain use-cases decouple UI components from computational logic, making tools easily unit-testable and modular.
+
+## 03 // BUILD
+The application packages 15+ specialized on-device tools:
+
+- **Text Counter & Lexical Analyzer:** Instant word frequency analysis, syllable estimation, automated reading/speaking time calculation, and system-wide integration with Android `ACTION_PROCESS_TEXT`.
+- **Date & Calendar Arithmetic:** Multi-unit chronological calculators with working-day exclusion and countdown timers.
+- **Physical Dice & Randomizer:** Hardware accelerometer-driven shake-to-roll mechanics with realistic haptic vibration waveforms.
+- **On-Device QR & Barcode Engine:** Real-time CameraX analysis pipeline decoding symbologies locally with zero cloud lookups.
+- **Image Metadata Scrubber:** Strips EXIF metadata, GPS coordinates, and camera serial numbers before exporting.
+
+```kotlin
+// Zero-allocation text stream statistics
+fun analyzeText(input: CharSequence): TextMetrics {
+    var words = 0
+    var chars = input.length
+    var inWord = false
+    
+    for (i in 0 until chars) {
+        val c = input[i]
+        if (c.isWhitespace()) {
+            inWord = false
+        } else if (!inWord) {
+            inWord = true
+            words++
+        }
+    }
+    return TextMetrics(words = words, characters = chars)
+}
+```
+
+## 04 // LEARNED
+Building a fully offline mobile application revealed fundamental truths about user experience:
+- Omitting web calls eliminates loading spinners, timeout retry logic, and connection drop boundaries—making the interface feel instantaneous and predictable.
+- Android system integrations like `ACTION_PROCESS_TEXT` turn an offline app into an operating-system level superpower, allowing users to analyze selected text anywhere in the OS without opening the app manually.

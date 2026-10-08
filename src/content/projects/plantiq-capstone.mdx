@@ -1,0 +1,132 @@
+---
+title: "PlantIQ — Coffee Agronomy & Advisory Platform"
+slug: "plantiq-capstone"
+order: 2
+year: "2026"
+role: "ML & Full-Stack Architect"
+duration: "8 weeks"
+status: "live"
+summary: "End-to-end multimodal coffee agronomy advisory platform and farmer marketplace for smallholder growers in Karnataka's Western Ghats, featuring fine-tuned ResNet-50 vision, 3-stage hybrid RAG, and Kannada vernacular voice/text routing."
+tagline: "Multimodal precision agronomy platform with hybrid RAG and vernacular pre-routing."
+stack:
+  - PyTorch
+  - FastAPI
+  - Hybrid RAG
+  - BM25Okapi
+  - Cross-Encoder
+  - Gemini 2.5 Flash
+  - Capacitor 7
+  - Python
+tags:
+  - Computer Vision
+  - Hybrid RAG
+  - LLMs
+  - Vernacular NLP
+  - Agronomy
+  - Mobile
+github: "https://github.com/jeelnadaa/plantiq-capstone"
+live: null
+demo_video: null
+cover: null
+gallery: []
+metrics:
+  - label: "TOP-1 ACCURACY"
+    value: "96.4"
+    suffix: "%"
+  - label: "CPU INFERENCE"
+    value: "~65"
+    suffix: "ms"
+  - label: "DISEASE CLASSES"
+    value: "5"
+    suffix: ""
+featured: true
+glyph: "Β"
+stackReasons:
+  - tool: "ResNet-50 & PyTorch"
+    reason: "Fine-tuned with weighted cross-entropy and cosine annealing for leaf disease classification under challenging field lighting."
+  - tool: "Hybrid RAG (BM25 + BGE + Cross-Encoder)"
+    reason: "Combines dense semantic search with sparse keyword matching to eliminate chemical dosage hallucinations in advisory answers."
+architecture:
+  nodes:
+    - id: "client"
+      label: "Capacitor 7 Mobile App"
+      type: "client"
+    - id: "prerouter"
+      label: "Vernacular Pre-Router"
+      type: "service"
+    - id: "vision"
+      label: "ResNet-50 Leaf Classifier"
+      type: "worker"
+    - id: "rag"
+      label: "3-Stage Hybrid RAG"
+      type: "worker"
+    - id: "ccri"
+      label: "CCRI Ground Truth Corpus"
+      type: "storage"
+    - id: "llm"
+      label: "Gemini 2.5 Flash / Groq"
+      type: "service"
+  edges:
+    - from: "client"
+      to: "prerouter"
+      label: "Kannada / Kanglish Query"
+    - from: "client"
+      to: "vision"
+      label: "Leaf Image"
+    - from: "vision"
+      to: "rag"
+      label: "Class & Confidence"
+    - from: "rag"
+      to: "ccri"
+      label: "BM25 + BGE Dense"
+    - from: "rag"
+      to: "llm"
+      label: "Contextual Grounding"
+---
+
+## 01 // PROBLEM
+Smallholder coffee growers across Karnataka's Western Ghats (Chikmagalur, Kodagu, Hassan) frequently face catastrophic crop yields due to severe foliar fungal infections like Coffee Leaf Rust, Black Rot, and Cercospora Leaf Spot.
+
+Existing AI solutions present severe practical hurdles:
+1. Standard vision classifiers trained on generic plant datasets fail on actual field photographs taken under harsh tropical sunlight, canopy shadows, and high moisture.
+2. Foundation LLMs hallucinate dangerous chemical dosages and fungicide timing schedules, risking crop burn and export rejection.
+3. Language barriers prevent adoption: farmers communicate primarily in colloquial Kannada and Kanglish, not formal technical English.
+
+## 02 // APPROACH
+I engineered an end-to-end multimodal diagnostic and precision advisory system:
+
+1. **Pathology Vision Model:** Fine-tuned a deep convolutional ResNet-50 network using PyTorch on real field coffee leaf photographs. Applied heavy data augmentation (color jitter, perspective warping, random shadows), class-weighted cross-entropy loss to counteract dataset imbalances, and cosine annealing scheduling, reaching 96.4% Top-1 accuracy across 5 foliar disease classes with ~65ms CPU inference.
+
+2. **3-Stage Hybrid RAG Engine:** Grounded all conversational responses in authoritative Central Coffee Research Institute (CCRI) agronomy manuals:
+   - *Stage 1 (Hybrid Retrieval):* BGE-Base dense vector search combined with BM25Okapi sparse lexical retrieval via Reciprocal Rank Fusion (RRF).
+   - *Stage 2 (Reranking):* Cross-Encoder neural reranker scoring with sigmoid calibration to discard low-relevance passages.
+   - *Stage 3 (Validation Guardrails):* Strict numerical regex guardrails verifying chemical dosages (e.g. Copper Oxychloride percentages) against CCRI guidelines before returning advice.
+
+3. **Sub-Millisecond Vernacular Pre-Router:** Developed a lightweight linguistic detector for Kannada script and Romanized Kanglish, translating intent into agronomic keywords and dispatching to Gemini 2.5 Flash with Groq GPT-OSS 120B fallback.
+
+## 03 // BUILD
+The architecture unites asynchronous backend processing with responsive mobile deployment:
+
+- **FastAPI Asynchronous Gateway:** High-throughput Python service featuring SHA-256 image fingerprinting to deduplicate concurrent requests from identical farm plots.
+- **Microclimate Environmental Telemetry:** Real-time Open-Meteo weather integration injecting local humidity, temperature, and 48-hour precipitation forecasts into the prompt context to assess fungal spore germination risk.
+- **Capacitor 7 Hybrid Client:** Cross-platform Android deployment with audio speech-to-text recording, offline camera capture, and a Haversine-based peer-to-peer estate marketplace enabling direct-to-buyer transactions.
+
+```python
+# Hybrid RRF fusion pipeline
+def hybrid_retrieval(query: str, top_k: int = 5):
+    dense_hits = vector_index.search(query, k=top_k * 2)
+    sparse_hits = bm25_index.get_scores(tokenize(query))
+    
+    combined_scores = defaultdict(float)
+    for rank, hit in enumerate(dense_hits):
+        combined_scores[hit.id] += 1.0 / (60 + rank)
+    for rank, hit in enumerate(sorted(sparse_hits, reverse=True)[:top_k * 2]):
+        combined_scores[hit.id] += 1.0 / (60 + rank)
+        
+    return cross_encoder_rerank(query, combined_scores, top_k)
+```
+
+## 04 // LEARNED
+Deploying AI in rural agronomic contexts demonstrated key real-world lessons:
+- Pure semantic embedding search frequently misses exact chemical active-ingredient concentrations (e.g., "0.5g/L" vs "5g/L"); hybrid sparse-dense retrieval is indispensable for mission-critical tasks.
+- On-device edge pre-filtering of blurred or out-of-focus camera captures prevents sending unprocessable images across bandwidth-limited rural cellular towers.

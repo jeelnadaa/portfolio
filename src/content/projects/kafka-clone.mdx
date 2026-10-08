@@ -1,0 +1,142 @@
+---
+title: "Distributed Message Broker"
+slug: "kafka-clone"
+order: 1
+year: "2026"
+role: "Systems & Concurrency Engineer"
+duration: "4 weeks"
+status: "live"
+summary: "A lightweight, event-driven message queue broker in pure Java built from first principles using raw TCP ServerSockets, an append-only commit log engine, and custom binary wire framing."
+tagline: "Pure Java distributed commit log broker with binary wire framing."
+stack:
+  - Java
+  - TCP Sockets
+  - Java NIO
+  - Multi-Threading
+  - Concurrency
+  - System Design
+tags:
+  - Distributed Systems
+  - Storage Engine
+  - Networking
+  - Concurrency
+github: "https://github.com/jeelnadaa/kafka-clone"
+live: null
+demo_video: null
+cover: null
+gallery: []
+metrics:
+  - label: "WRITE SPEED"
+    value: "O(1)"
+    suffix: " seq"
+  - label: "INDEX LOOKUP"
+    value: "O(log N)"
+    suffix: ""
+  - label: "EXTERNAL DEPS"
+    value: "0"
+    suffix: ""
+featured: true
+glyph: "Α"
+stackReasons:
+  - tool: "Java NIO FileChannel"
+    reason: "Zero-overhead sequential append-only disk writes leveraging OS kernel page cache directly without framework serialization."
+  - tool: "Raw TCP Sockets"
+    reason: "Direct length-prefixed binary wire framing protocol eliminating HTTP header parsing overhead under high throughput."
+architecture:
+  nodes:
+    - id: "producer"
+      label: "Producer Client"
+      type: "client"
+    - id: "acceptor"
+      label: "TCP ServerSocket"
+      type: "service"
+    - id: "partition"
+      label: "Partition Router"
+      type: "worker"
+    - id: "commitlog"
+      label: "Append-Only Commit Log"
+      type: "storage"
+    - id: "binaryindex"
+      label: "Binary Offset Index (.index)"
+      type: "storage"
+    - id: "consumer"
+      label: "Consumer Client"
+      type: "client"
+  edges:
+    - from: "producer"
+      to: "acceptor"
+      label: "Binary Wire Frame"
+    - from: "acceptor"
+      to: "partition"
+      label: "Round-Robin Dispatch"
+    - from: "partition"
+      to: "commitlog"
+      label: "Sequential Write"
+    - from: "partition"
+      to: "binaryindex"
+      label: "Offset Floor Lookup"
+    - from: "commitlog"
+      to: "consumer"
+      label: "Offset Stream"
+---
+
+## 01 // PROBLEM
+Industrial-scale distributed event streaming brokers like Apache Kafka are massive distributed systems with hundreds of thousands of lines of code and extensive external dependencies. Understanding how log-structured storage engines, binary wire framing protocols, and offset indices function under the hood requires stripping away distributed coordination layers and reconstructing the core primitives from first principles.
+
+The architectural requirements were strict:
+1. Zero external web frameworks or third-party serialization libraries—relying purely on standard Java runtime libraries.
+2. High-throughput sequential disk writes that bypass random-access bottlenecks.
+3. Fast offset lookup without loading whole commit logs into main memory.
+4. Reliable crash recovery that can rebuild partition watermarks after unexpected server termination.
+
+## 02 // APPROACH
+I designed the broker around three foundational distributed systems principles:
+
+1. **Append-Only Commit Log Storage Engine:** Message frames are serialized into packed binary arrays with 4-byte magic bytes, CRC32 checksums, timestamps, and payload byte arrays. These frames are appended sequentially to disk using `FileChannel.write()`, ensuring O(1) disk writes that fully saturate drive write heads and benefit from OS page caching.
+
+2. **Binary Offset Indexing:** Instead of linear log scanning, the broker maintains companion `.index` binary files storing 8-byte relative offset to physical file position mappings. Lookups utilize binary search (`O(log N)`) to locate the nearest floor offset before streaming directly from disk.
+
+3. **Custom Binary Wire Framing Protocol:** Communication runs over persistent TCP sockets using a length-prefixed binary framing layout:
+```
++---------------+---------------+--------------------+
+| Length (4B)   | Magic (2B)    | Command Opcode (2B)|
++---------------+---------------+--------------------+
+| Partition (4B)| Payload Size  | Binary Payload ... |
++---------------+---------------+--------------------+
+```
+
+## 03 // BUILD
+The implementation comprises several tightly coupled systems:
+
+- **Socket Handler & Connection Pool:** A multi-threaded worker pool accepting client connections, parsing raw byte streams, and enforcing framing boundaries without memory fragmentation.
+- **Thread-Safe Producer & Consumer APIs:** Client libraries implementing partition hashing, payload serialization, consumer group offset commits (`__consumer_offsets.dat`), and auto-rebalance mechanics.
+- **Log Segment Rotation & Watermarks:** Configurable segment file rolling (e.g. at 100MB thresholds) maintaining high-watermark pointers to track committed message offsets.
+- **Embedded Architecture Dashboard:** A lightweight HTTP server running on a dedicated administrative port that renders real-time partition visualizers and queue telemetry with zero external UI dependencies.
+
+```java
+// Append-Only sequential frame commit
+public synchronized long append(byte[] payload) throws IOException {
+    long currentOffset = nextOffset.getAndIncrement();
+    long physicalPosition = logChannel.position();
+    
+    ByteBuffer buffer = ByteBuffer.allocate(HEADER_SIZE + payload.length);
+    buffer.putInt(payload.length);
+    buffer.putLong(currentOffset);
+    buffer.putLong(System.currentTimeMillis());
+    buffer.put(payload);
+    buffer.flip();
+    
+    while (buffer.hasRemaining()) {
+        logChannel.write(buffer);
+    }
+    
+    indexChannel.write(encodeIndexEntry(currentOffset, physicalPosition));
+    return currentOffset;
+}
+```
+
+## 04 // LEARNED
+Building this broker exposed the mechanics of operating system I/O:
+- Sequential disk writes on modern solid-state and magnetic media perform orders of magnitude faster than random writes because kernel read-ahead buffers and write-back caches work cooperatively.
+- Allocating direct byte buffers (`ByteBuffer.allocateDirect`) prevents JVM garbage collector pauses during sustained high-throughput socket ingestion.
+- Offset index sparsity is a vital tradeoff: indexing every N-th message instead of every single message drastically reduces index file size with negligible scan overhead.

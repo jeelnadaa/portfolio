@@ -218,25 +218,37 @@ export default function ResumePage() {
                   <div className="space-y-4">
                     <div className="space-y-1">
                       <div className="flex items-baseline justify-between gap-4 font-mono text-xs">
-                        <Link href="/work/project-alpha" className="text-bone font-bold hover:text-sun transition-colors">
-                          Project Alpha — High-Throughput Broker ↗
+                        <Link href="/work/kafka-clone" className="text-bone font-bold hover:text-sun transition-colors">
+                          Distributed Message Broker (Kafka Clone) ↗
                         </Link>
                         <span className="text-muted">2026</span>
                       </div>
                       <p className="font-sans text-xs text-muted">
-                        Engineered zero-copy streaming pipeline over ring buffers. Achieved &lt;1.2ms p99 message transit times.
+                        Event-driven broker in pure Java using raw TCP ServerSockets, an append-only commit log engine with O(1) sequential writes, and binary offset indexing.
                       </p>
                     </div>
 
                     <div className="space-y-1">
                       <div className="flex items-baseline justify-between gap-4 font-mono text-xs">
-                        <Link href="/work/project-beta" className="text-bone font-bold hover:text-sun transition-colors">
-                          Project Beta — Quantized Neural Engine ↗
+                        <Link href="/work/plantiq-capstone" className="text-bone font-bold hover:text-sun transition-colors">
+                          PlantIQ — Coffee Agronomy Advisory Platform ↗
                         </Link>
                         <span className="text-muted">2026</span>
                       </div>
                       <p className="font-sans text-xs text-muted">
-                        Dynamic INT8 quantization of embedding transformer layers down to 14MB footprint with 8.4ms inference.
+                        Multimodal coffee agronomy platform with fine-tuned ResNet-50 CNN (96.4% Top-1 accuracy at ~65ms CPU inference), 3-stage Hybrid RAG, and Kannada vernacular pre-routing.
+                      </p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex items-baseline justify-between gap-4 font-mono text-xs">
+                        <Link href="/work/quacky" className="text-bone font-bold hover:text-sun transition-colors">
+                          Quacky — Pure Offline Android Suite ↗
+                        </Link>
+                        <span className="text-muted">2026</span>
+                      </div>
+                      <p className="font-sans text-xs text-muted">
+                        15+ focused on-device tools with zero network permissions (zero internet permission), monochromatic dark design, and local Room SQLite persistence.
                       </p>
                     </div>
                   </div>

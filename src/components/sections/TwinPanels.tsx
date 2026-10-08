@@ -160,16 +160,16 @@ export function TwinPanels() {
                   Strength.
                 </h3>
                 <p className="font-sans text-bone/85 text-base sm:text-lg leading-relaxed max-w-md">
-                  Rigorous data structures, algorithm efficiency, deterministic systems programming, and high-throughput concurrency.
+                  Deterministic systems programming, raw TCP socket wire framing, append-only commit logs, and high-throughput concurrency.
                 </p>
               </div>
             </div>
 
             {/* Mini Spec Rows */}
             <div className="mt-8 pt-4 border-t border-rule space-y-1">
-              <SpecRow label="CORE ALGORITHMS" value="C++20 / STL" />
-              <SpecRow label="CONCURRENCY" value="Event Loops & POSIX" />
-              <SpecRow label="QUERY PLANS" value="PostgreSQL Indexing" />
+              <SpecRow label="CORE BROKER" value="Pure Java / TCP Sockets" />
+              <SpecRow label="STORAGE ENGINE" value="Append-Only Commit Logs" />
+              <SpecRow label="DATA PERSISTENCE" value="MySQL 8 & Room SQLite" />
             </div>
           </div>
 
@@ -218,16 +218,16 @@ export function TwinPanels() {
                   Craft.
                 </h3>
                 <p className="font-sans text-bone/85 text-base sm:text-lg leading-relaxed max-w-md">
-                  Obsessive typography, mathematical motion choreography, tactile reticle cursors, and pixel-precise shaders.
+                  Multimodal AI architectures, hybrid RAG with reranking, zero-permission local-first Android suites, and pixel-precise WebGL shaders.
                 </p>
               </div>
             </div>
 
             {/* Mini Spec Rows */}
             <div className="mt-8 pt-4 border-t border-rule space-y-1">
-              <SpecRow label="CHOREOGRAPHY" value="GSAP / Lenis Virtual" />
-              <SpecRow label="SHADERS" value="GLSL / Bayer Dither" />
-              <SpecRow label="ACCESSIBILITY" value="WCAG AA & Reduced-Motion" />
+              <SpecRow label="COMPUTER VISION" value="ResNet-50 (96.4% Top-1)" />
+              <SpecRow label="HYBRID RAG" value="BM25 + Dense + Cross-Encoder" />
+              <SpecRow label="OFFLINE SUITE" value="100% Offline Android App" />
             </div>
           </div>
         </div>

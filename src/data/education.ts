@@ -9,19 +9,19 @@ export interface EducationRecord {
 
 export const educationRecords: EducationRecord[] = [
   {
-    degree: "B.Tech in Computer Science and Engineering",
+    degree: "Bachelor of Technology in Computer Science",
     institution: "PES University",
     location: "Bengaluru, India",
-    duration: "2023 — 2027 (Expected)",
+    duration: "Aug. 2023 — Present (Expected 2027)",
     grade: "CGPA: 8.43 / 10.0",
     coursework: [
-      "Data Structures & Applications",
-      "Analysis and Design of Algorithms",
-      "Operating Systems & Systems Programming",
-      "Computer Organization & Architecture",
+      "Data Structures and Algorithms",
+      "Object-Oriented Programming",
+      "Web Technologies",
       "Database Management Systems",
+      "Distributed Systems",
       "Computer Networks",
-      "Linear Algebra & Multivariable Calculus",
+      "System Design & Concurrency",
     ],
   },
 ];

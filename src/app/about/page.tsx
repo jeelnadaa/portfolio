@@ -23,11 +23,10 @@ const BEYOND_CODE_PLATES = [
 ];
 
 const TIMELINE_YEARS = [
-  { year: "2021", label: "First Terminal Scripts", desc: "Started writing Python scripts and automating repetitive OS tasks on Linux." },
-  { year: "2023", label: "PES University", desc: "Admitted into B.Tech CSE cohort in Bengaluru. Immersed in algorithms and data structures." },
-  { year: "2024", label: "Collegiate Hackathons", desc: "Built distributed CRDT sync engines over WebSockets under 36-hour sprint constraints." },
-  { year: "2025", label: "Production Internships", desc: "Shipped optimized SQL query pipelines and customer-facing dashboard features." },
-  { year: "2026", label: "Systems & Shader R&D", desc: "Writing vectorized C++ vector indexers and creative WebGL depth shaders." },
+  { year: "2023", label: "PES University & HSC Honors", desc: "Admitted into B.Tech CSE in Bengaluru after ranking top 1,700 statewide in Gujarat HSC." },
+  { year: "2024", label: "DSA Competitions & Backend AI", desc: "Secured 2nd place in DSA treasure hunt; engineered Moody Foody conversational AI ordering backend." },
+  { year: "2025", label: "Nexus AWS Club Core Leadership", desc: "Maintained club web systems, built registration flows, coordinated hackathons, and mentored peers." },
+  { year: "2026", label: "Distributed Brokers & Multimodal AI", desc: "Engineered pure Java Kafka Clone commit log broker, PlantIQ agronomy platform, and Quacky offline Android suite." },
 ];
 
 export default function AboutPage() {
@@ -127,13 +126,13 @@ export default function AboutPage() {
 
           <div className="lg:col-span-7 space-y-8 font-sans text-base sm:text-lg text-bone/80 leading-relaxed">
             <p>
-              I am a third-year Computer Science Engineering student at PES University in Bengaluru (class of 2027, maintaining an 8.43 CGPA). My technical education centers around data structures, compiler design, computer architecture, and distributed databases.
+              I am a third-year Computer Science Engineering student at PES University in Bengaluru (class of 2027, maintaining an 8.43 CGPA). My technical education centers around data structures, object-oriented programming, distributed systems, and database management systems.
             </p>
             <p>
-              What drew me into programming was the immediacy of building tools that solve actual bottlenecks. Rather than chasing ephemeral frameworks, I spend my time understanding memory layouts, cache hierarchies, and how network protocols behave under real-world packet drops.
+              What drew me into programming was the immediacy of building high-performance systems from first principles. Rather than relying on heavyweight abstractions, I spend my time understanding sequential disk I/O, binary wire framing protocols, multi-threaded concurrency, and how distributed commit logs operate under load.
             </p>
             <p>
-              When I build web software, I focus on tactile interaction—zero-lag typography, smooth virtual scrolling, and custom GLSL shaders that make digital software feel like a crafted physical artifact.
+              Beyond systems infrastructure, I build production multimodal applications—from fine-tuning ResNet-50 vision classifiers and architecting 3-stage hybrid RAG pipelines for agriculture to crafting 100% offline local-first Android suites and creative WebGL depth shaders.
             </p>
 
             {/* Now Block */}
@@ -142,8 +141,8 @@ export default function AboutPage() {
                 <span>ACTIVE FOCUS // {honestStatus.lastUpdated.toUpperCase()}</span>
                 <span className="text-sun">STATE: LIVE</span>
               </div>
-              <SpecRow label="BUILDING" value="Vector Indexer & WebGL Engine" />
-              <SpecRow label="LEARNING" value="Raft Consensus & CUDA Kernels" />
+              <SpecRow label="BUILDING" value="Java Distributed Broker & PlantIQ" />
+              <SpecRow label="LEARNING" value="Raft Consensus & Network I/O" />
               <SpecRow label="READING" value={honestStatus.nowReading} />
               <SpecRow label="LISTENING" value={honestStatus.nowListening} />
             </div>

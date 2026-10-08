@@ -1,0 +1,117 @@
+---
+title: "Moody Foody — AI Ordering Chatbot"
+slug: "moody-foody"
+order: 4
+year: "2025"
+role: "Backend & AI Engineer"
+duration: "3 weeks"
+status: "live"
+summary: "An LLM-driven food ordering conversational assistant with natural language intent extraction, asynchronous FastAPI REST APIs, and normalized MySQL 8 database persistence."
+tagline: "Conversational food ordering assistant with structured LLM intent extraction."
+stack:
+  - Python
+  - FastAPI
+  - Google Dialogflow
+  - LLM
+  - MySQL 8
+  - Asynchronous Programming
+tags:
+  - Conversational AI
+  - FastAPI
+  - MySQL
+  - E-Commerce
+  - NLP
+github: "https://github.com/jeelnadaa/moody-foody"
+live: null
+demo_video: null
+cover: null
+gallery: []
+metrics:
+  - label: "API RUNTIME"
+    value: "Async"
+    suffix: ""
+  - label: "TRANSACTIONS"
+    value: "ACID"
+    suffix: ""
+  - label: "FALLBACK"
+    value: "Deterministic"
+    suffix: ""
+featured: true
+glyph: "Δ"
+stackReasons:
+  - tool: "FastAPI"
+    reason: "Asynchronous ASGI request pipeline with automatic OpenAPI documentation and strict Pydantic validation."
+  - tool: "MySQL 8"
+    reason: "Relational integrity, foreign key cascading, and composite indexing tuned for user order histories."
+architecture:
+  nodes:
+    - id: "user"
+      label: "Customer Client"
+      type: "client"
+    - id: "intent"
+      label: "Dialogflow / LLM Extractor"
+      type: "service"
+    - id: "fastapi"
+      label: "FastAPI Order Controller"
+      type: "worker"
+    - id: "validation"
+      label: "Menu & Inventory Guard"
+      type: "worker"
+    - id: "mysql"
+      label: "MySQL 8 Relational Store"
+      type: "storage"
+  edges:
+    - from: "user"
+      to: "intent"
+      label: "Natural Language Prompt"
+    - from: "intent"
+      to: "fastapi"
+      label: "Structured Action Payload"
+    - from: "fastapi"
+      to: "validation"
+      label: "Item Availability Check"
+    - from: "validation"
+      to: "mysql"
+      label: "Atomic ACID Commit"
+---
+
+## 01 // PROBLEM
+Standard food ordering websites rely on nested menus, multi-step checkout modals, and rigid search filters. Customers desiring customizations (e.g. "two paneer rolls without onions, and add extra mint sauce to the biryani") find traditional dropdown configurations frustrating and slow.
+
+On the other hand, naive generative chatbots often output unvalidated text, inventing imaginary dishes, quoting wrong prices, or failing to bind customer orders reliably to back-office relational databases.
+
+## 02 // APPROACH
+I engineered Moody Foody as a deterministic intent-action bridge:
+
+1. **Intent Extraction Loop:** Utilized Google Dialogflow and pluggable LLM integrations (Gemini, OpenAI, local Ollama) to parse unstructured colloquial English into strictly typed intent models (Add Item, Remove Item, Confirm Order, Track Status).
+2. **Offline Heuristic Fallback Engine:** To guarantee 100% uptime during network anomalies or API outages, built a deterministic regex-and-token scoring parser that extracts quantities, items, and modifications locally with zero third-party API dependencies.
+3. **Atomic Relational Persistence:** Enforced atomic multi-table transactions in MySQL 8, ensuring order headers and line item allocations commit or rollback together.
+
+## 03 // BUILD
+The platform is organized into clean, production-grade micro-layers:
+
+- **Versioned REST API Endpoints:** Built endpoints under `/api/v1/` for catalog discovery, real-time cart manipulation, order lifecycle transitions (Pending, Preparing, Out for Delivery, Completed), and order history retrieval.
+- **Relational Performance Optimization:** Configured composite indices (`user_id, created_at DESC`) and normalized database schemas, eliminating redundant table scans when fetching past order statuses.
+- **Neo-Brutalist Documentation & Frontend:** Designed an accessible high-contrast user interface including an in-app API documentation reader for live testing.
+
+```python
+# Atomic transactional order persistence
+@router.post("/orders/confirm", response_model=OrderResponse)
+async def confirm_order(order_in: OrderCreateSchema, db: AsyncSession = Depends(get_db)):
+    async with db.begin():
+        # Validate all menu items and prices against catalog
+        order_record = Order(user_id=order_in.user_id, status="CONFIRMED")
+        db.add(order_record)
+        await db.flush()
+        
+        for item in order_in.items:
+            line_item = OrderItem(order_id=order_record.id, item_id=item.id, qty=item.qty)
+            db.add(line_item)
+            
+    return OrderResponse.from_orm(order_record)
+```
+
+## 04 // LEARNED
+Balancing conversational flexibility with relational database constraints highlighted important practices:
+- Language models should never write directly to database tables; strictly treating LLMs as intent classification engines while delegating state mutations to transactional backend APIs guarantees zero data corruption.
+- Real-time order management requires immediate, explicit validation feedback so users know their specific customizations are recorded accurately.

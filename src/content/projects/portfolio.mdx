@@ -1,0 +1,116 @@
+---
+title: "Solarquack — Classical Marble Dossier"
+slug: "portfolio"
+order: 5
+year: "2026"
+role: "Creative Technologist & Systems Developer"
+duration: "Ongoing"
+status: "live"
+summary: "A high-fidelity creative developer portfolio designed in the Chiaroscuro Marble Dossier aesthetic combining classical Greek antiquity with raw systems telemetry, custom WebGL depth-parallax shaders, and Next.js 14 ISR."
+tagline: "Classical Greek antiquity meets raw system telemetry and custom WebGL shaders."
+stack:
+  - Next.js 14
+  - TypeScript
+  - React Three Fiber
+  - GLSL Shaders
+  - GSAP
+  - Tailwind CSS
+  - GraphQL
+tags:
+  - Creative Development
+  - WebGL
+  - Shaders
+  - Next.js
+  - Design Systems
+github: "https://github.com/jeelnadaa/portfolio"
+live: null
+demo_video: null
+cover: null
+gallery: []
+metrics:
+  - label: "ISR CACHE"
+    value: "24"
+    suffix: "h"
+  - label: "SHADERS"
+    value: "Custom"
+    suffix: ""
+  - label: "FRAME RATE"
+    value: "60"
+    suffix: " FPS"
+featured: true
+glyph: "Ε"
+stackReasons:
+  - tool: "Next.js 14 (App Router & ISR)"
+    reason: "Hybrid rendering engine providing instant server-rendered pages with 24-hour background revalidation and client hydration."
+  - tool: "Three.js & Custom GLSL"
+    reason: "Orthographic depth-parallax shader with dynamic cursor torch lighting, zero-tolerance alpha thresholding, and Bayer 8x8 matrix dithering."
+architecture:
+  nodes:
+    - id: "client"
+      label: "Browser Client"
+      type: "client"
+    - id: "nextjs"
+      label: "Next.js 14 App Router"
+      type: "service"
+    - id: "glsl"
+      label: "WebGL Depth Parallax Canvas"
+      type: "worker"
+    - id: "githubapi"
+      label: "GitHub GraphQL API"
+      type: "service"
+    - id: "webaudio"
+      label: "Synthesized Web Audio Pipeline"
+      type: "worker"
+  edges:
+    - from: "client"
+      to: "nextjs"
+      label: "ISR Page Delivery"
+    - from: "client"
+      to: "glsl"
+      label: "Cursor Coordinates & Torch Vector"
+    - from: "nextjs"
+      to: "githubapi"
+      label: "24h Cached & On-Demand Telemetry"
+    - from: "client"
+      to: "webaudio"
+      label: "Tactile Navigation SFX"
+---
+
+## 01 // PROBLEM
+Most personal engineering websites follow generic templates: identical flat layouts, hardcoded skill percentage meters with no basis in reality, and disconnected UI elements that lack depth.
+
+I set out to engineer a portfolio that demonstrates both technical systems mastery and uncompromising visual craft:
+1. Reconcile classical Greco-Roman marble sculpture art with the tactical precision of UNIX command dossiers.
+2. Build an immersive 3D depth-parallax hero scene that runs at 60 FPS without heavy 3D mesh overhead.
+3. Establish live telemetry synchronization that pulls real contribution statistics from GitHub without exposing private tokens or blowing rate limits.
+4. Integrate responsive tactile sound and keyboard command palettes for power users.
+
+## 02 // APPROACH
+I architected the portfolio around a Chiaroscuro visual philosophy:
+
+1. **Orthographic Depth-Parallax Shader:** Created a custom Three.js GLSL fragment shader utilizing camera-space depth textures to simulate full 3D statue volume. Applied cursor-reactive torch lighting, zero-tolerance alpha cutout thresholding to discard dark halos, and Bayer 8x8 ordered dithering matrices for authentic bone-toned grain.
+2. **24-Hour Incremental Static Regeneration (ISR):** Configured Next.js 14 server components to cache GitHub GraphQL telemetry for 86,400 seconds, combined with dynamic API endpoints and custom client-side event emitters for instantaneous on-demand refresh.
+3. **Harmonic Typography System:** Layered the Fraunces variable display font, GFS Didot Greek stone inscriptions, Geist body text, and JetBrains Mono dossier tables. Implemented real-time in-place character scrambling between English and ancient Greek glyphs.
+
+## 03 // BUILD
+The portfolio codebase incorporates specialized architectural modules:
+
+- **Web Audio Sound Synthesizer:** Built procedural metallic slicing sounds, navigation bubbles, and toast chimes directly using the browser Web Audio API, circumventing external audio file asset latencies.
+- **Dynamic Case Study Engine:** Gray-matter parsed MDX project dossier system rendering rich architecture topologies, technology rationale lists, and real metric callouts.
+- **Interactive Command HUD (`Cmd+K`):** A centralized command palette allowing keyboard-driven site exploration, project jumping, and instant transmission copying.
+
+```glsl
+// Zero-tolerance alpha mask & Bayer dither sample
+vec4 baseColor = texture2D(uTexture, vUv);
+if (baseColor.a < 0.05) discard;
+
+float lum = dot(baseColor.rgb, vec3(0.299, 0.587, 0.114));
+float dither = bayer8x8(gl_FragCoord.xy);
+vec3 finalColor = lum > dither ? uBoneColor : uBgColor;
+gl_FragColor = vec4(finalColor, baseColor.a);
+```
+
+## 04 // LEARNED
+Crafting high-fidelity interactive web systems provided deep insights:
+- Orthographic projection prevents perspective distortion at viewport edges, ensuring statues remain harmoniously positioned regardless of window aspect ratios.
+- Separating high-frequency cursor animations into dedicated RAF loops while keeping heavy layout changes tied to GSAP scroll scrubbers prevents main-thread frame drops.

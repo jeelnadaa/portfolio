@@ -45,10 +45,11 @@ export function CommandPalette() {
     { id: "nav-log", label: "Navigate: Changelog (/log)", category: "Navigation", action: () => { router.push("/log"); setOpen(false); } },
 
     // Projects
-    { id: "proj-alpha", label: "Project: Alpha (Broker Architecture)", category: "Projects", action: () => { router.push("/work/project-alpha"); setOpen(false); } },
-    { id: "proj-beta", label: "Project: Beta (Quantized Neural Engine)", category: "Projects", action: () => { router.push("/work/project-beta"); setOpen(false); } },
-    { id: "proj-gamma", label: "Project: Gamma (Bayer WebGL Canvas)", category: "Projects", action: () => { router.push("/work/project-gamma"); setOpen(false); } },
-    { id: "proj-delta", label: "Project: Delta (Database Sentinel)", category: "Projects", action: () => { router.push("/work/project-delta"); setOpen(false); } },
+    { id: "proj-kafka", label: "Project: Distributed Message Broker (Kafka Clone)", category: "Projects", action: () => { router.push("/work/kafka-clone"); setOpen(false); } },
+    { id: "proj-plantiq", label: "Project: PlantIQ (Coffee Agronomy Platform)", category: "Projects", action: () => { router.push("/work/plantiq-capstone"); setOpen(false); } },
+    { id: "proj-quacky", label: "Project: Quacky (Offline Android Suite)", category: "Projects", action: () => { router.push("/work/quacky"); setOpen(false); } },
+    { id: "proj-moody", label: "Project: Moody Foody (AI Ordering Chatbot)", category: "Projects", action: () => { router.push("/work/moody-foody"); setOpen(false); } },
+    { id: "proj-portfolio", label: "Project: Solarquack (Marble Dossier Portfolio)", category: "Projects", action: () => { router.push("/work/portfolio"); setOpen(false); } },
 
     // Transmission
     {

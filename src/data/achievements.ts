@@ -7,21 +7,21 @@ export interface Achievement {
 
 export const achievements: Achievement[] = [
   {
-    title: "Dean's Honor List Recognition",
+    title: "State-Wide Academic Excellence (Top 1,700)",
+    year: "2023",
+    organization: "Gujarat HSC Examinations",
+    description: "Ranked among the top 1,700 students state-wide in the Gujarat Higher Secondary Certificate examinations.",
+  },
+  {
+    title: "2nd Place — DSA Treasure Hunt Competition",
     year: "2024",
     organization: "PES University",
-    description: "Academic excellence award for maintaining top percentile CGPA in CSE cohort.",
+    description: "Secured second place in a team-based treasure hunt, solving algorithmic DSA challenges under time pressure to unlock checkpoint clues.",
   },
   {
-    title: "Hackathon Top 5 Finalist",
-    year: "2024",
-    organization: "Collegiate DevSprint",
-    description: "Built real-time collaborative tool with peer-to-peer state synchronization.",
-  },
-  {
-    title: "Open Source Contributor",
+    title: "Technical Mentorship & Hackathon Organization",
     year: "2025",
-    organization: "GitHub Community",
-    description: "Authored bug fixes and documentation improvements in developer tooling repositories.",
+    organization: "Nexus AWS Club",
+    description: "Organized collegiate hackathons, evaluated participant submissions for architectural soundness, and conducted technical debugging workshops for junior peers.",
   },
 ];
