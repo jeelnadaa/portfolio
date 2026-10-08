@@ -26,7 +26,7 @@ export const pathMilestones: PathMilestone[] = [
     role: "Core Member – Web Development",
     organization: "Nexus AWS Club",
     location: "Bengaluru, India",
-    period: "2025 – Present",
+    period: "2025 — Present",
     description:
       "Maintained the club website and built event registration workflows. Assisted in organizing hackathons, reviewing participant project submissions for technical soundness, and mentoring junior members in web development and cloud tools.",
     badge: "LEADERSHIP",
@@ -61,8 +61,19 @@ export const pathMilestones: PathMilestone[] = [
     location: "Bengaluru, India",
     period: "Aug. 2023 – Present",
     description:
-      "Bachelor of Technology in Computer Science (CGPA: 8.43 / 10.0). Coursework in Data Structures & Algorithms, Object-Oriented Programming, Web Technologies, Database Management Systems, and Distributed Systems. Ranked among top 1,700 students state-wide in Gujarat HSC.",
+      "Bachelor of Technology in Computer Science (CGPA: 8.43 / 10.0). Coursework in Data Structures & Algorithms, Object-Oriented Programming, Web Technologies, Database Management Systems, and Distributed Systems.",
     badge: "EDUCATION",
     skills: ["Data Structures", "OOP", "DBMS", "Distributed Systems", "C"],
+  },
+  {
+    year: "2023",
+    role: "Statewide Academic Excellence (Top 1,700)",
+    organization: "Gujarat HSC Board",
+    location: "Gujarat, India",
+    period: "2023",
+    description:
+      "Ranked among the top 1,700 students state-wide in the Gujarat Higher Secondary Certificate examinations, securing admission to PES University Computer Science Engineering.",
+    badge: "ORIGIN",
+    skills: ["Mathematics", "Physics", "Chemistry", "Academic Honor"],
   },
 ];

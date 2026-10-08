@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 export function Path() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const lineRef = useRef<SVGLineElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prefersReduced = usePrefersReducedMotion();
@@ -20,18 +20,18 @@ export function Path() {
   useGsap(() => {
     if (prefersReduced || !containerRef.current) return;
 
-    // Scroll-drawn line
+    // Continuous scroll-drawn line across full height
     if (lineRef.current) {
       gsap.fromTo(
         lineRef.current,
-        { strokeDashoffset: 1400, strokeDasharray: 1400 },
+        { scaleY: 0 },
         {
-          strokeDashoffset: 0,
+          scaleY: 1,
           ease: "none",
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top 70%",
-            end: "bottom 70%",
+            end: "bottom 85%",
             scrub: 1,
           },
         }
@@ -120,21 +120,14 @@ export function Path() {
         </div>
 
         {/* Timeline Container */}
-        <div className="relative max-w-4xl mx-auto pt-8 pb-12">
+        <div className="relative max-w-4xl mx-auto pt-8 pb-16">
           {/* Vertical scrubbed line down center on desktop, left on mobile */}
-          <div className="absolute top-0 bottom-0 left-4 md:left-1/2 -translate-x-1/2 w-4 flex justify-center pointer-events-none">
-            <svg className="w-full h-full" preserveAspectRatio="none">
-              <line
-                ref={lineRef}
-                x1="50%"
-                y1="0"
-                x2="50%"
-                y2="100%"
-                stroke="var(--bone)"
-                strokeOpacity="0.4"
-                strokeWidth="1.5"
-              />
-            </svg>
+          <div className="absolute top-2 bottom-6 left-4 md:left-1/2 -translate-x-1/2 w-[1.5px] bg-rule/50 pointer-events-none">
+            <div
+              ref={lineRef}
+              className="w-full h-full bg-gradient-to-b from-sun via-bone to-sun origin-top shadow-[0_0_8px_rgba(217,119,6,0.35)]"
+              style={{ transform: "scaleY(0)" }}
+            />
           </div>
 
           {/* Timeline Nodes */}
@@ -218,6 +211,19 @@ export function Path() {
                 </div>
               );
             })}
+
+            {/* Terminal Root Node past 2023 */}
+            <div className="relative pt-10 flex flex-col md:items-center pl-12 md:pl-0">
+              <div
+                aria-hidden="true"
+                className="absolute left-4 md:left-1/2 -translate-x-1/2 top-10 w-3.5 h-3.5 bg-bg border-2 border-sun z-10 rounded-sharp flex items-center justify-center"
+              >
+                <div className="w-1.5 h-1.5 bg-sun animate-pulse" />
+              </div>
+              <div className="border border-rule/60 bg-surface/40 px-3.5 py-1.5 font-mono text-xs uppercase tracking-dossier text-muted mt-2">
+                00 // TRAJECTORY ROOT · FIRST PRINCIPLES
+              </div>
+            </div>
           </div>
         </div>
       </div>

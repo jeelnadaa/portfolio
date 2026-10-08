@@ -7,32 +7,44 @@ export interface FaqItem {
 export const faqItems: FaqItem[] = [
   {
     id: "looking-for",
-    question: "What are you looking for?",
+    question: "What opportunities are you looking for?",
     answer:
-      "Software engineering and creative systems internships where I can write real code that ships to production. I like working on backend infra, performance optimization, and frontends with high-fidelity interaction.",
+      "I am seeking Summer 2027 software engineering internships focused on distributed systems, backend infrastructure, concurrency, and high-performance API engineering. I want to contribute to production environments where low latency, reliable data persistence, and architectural rigor matter.",
   },
   {
     id: "tech-stack",
-    question: "What do you work with?",
+    question: "What technical stack and languages do you specialize in?",
     answer:
-      "TypeScript, Next.js, and Node.js for web systems; Python and PyTorch for ML pipelines; C/C++ for low-level systems coursework and data structures. I pick tools based on the constraint, not hype.",
+      "My core languages are Java (Core, Concurrency, TCP Sockets), Python (FastAPI, PyTorch), C, and SQL. In backend systems, I specialize in multi-threading, append-only commit logs, binary wire protocols, and event-driven architecture. For databases, I work with MySQL 8 (query optimization, ACID transactions) and SQLite. For AI/ML, I build with PyTorch (fine-tuned ResNet-50), 3-stage Hybrid RAG (BM25 + dense + Cross-Encoder reranking), and Conversational AI (Dialogflow/LLMs). For frontend & mobile, I use Next.js, WebGL shaders, Kotlin, and Capacitor 7.",
   },
   {
-    id: "remote-work",
-    question: "Can you work remotely?",
+    id: "featured-systems",
+    question: "What real production systems have you engineered?",
     answer:
-      "Yes. I am based in Bengaluru (UTC+5:30) and have worked with distributed teams across European and US time zones. Asynchronous communication with clear written updates is my default.",
+      "I have built five standalone systems: (1) A pure Java Distributed Message Broker (Kafka clone) with raw TCP wire framing, append-only commit logs, and O(log N) binary offset indexing; (2) PlantIQ, a multimodal coffee agronomy platform with a fine-tuned ResNet-50 CNN (96.4% Top-1 accuracy at ~65ms CPU inference), 3-stage Hybrid RAG, and Kannada/Kanglish vernacular pre-routing; (3) Quacky, a 100% offline Android utility suite with 15+ tools and zero network permissions; (4) Moody Foody, an AI food ordering chatbot using FastAPI, Dialogflow, and normalized MySQL 8 with composite indexing; and (5) Solarquack, this Chiaroscuro marble portfolio with custom Three.js depth shaders and 24-hour Next.js ISR.",
   },
   {
-    id: "response-time",
-    question: "How fast do you reply?",
+    id: "education-coursework",
+    question: "What is your academic background and coursework?",
     answer:
-      "Usually within 24 to 48 hours via email (jeelnadaa@gmail.com). If it is urgent, reach out on LinkedIn.",
+      "I am a third-year B.Tech Computer Science student at PES University in Bengaluru (CGPA: 8.43 / 10.0, class of 2027). Relevant coursework includes Data Structures and Algorithms, Object-Oriented Programming, Web Technologies, Database Management Systems, and Distributed Systems. Prior to university, I ranked among the top 1,700 students state-wide in the Gujarat Higher Secondary Certificate (HSC) examinations.",
   },
   {
-    id: "current-build",
-    question: "What are you building now?",
+    id: "extracurriculars-leadership",
+    question: "What leadership and community roles do you hold?",
     answer:
-      "Studying operating systems and computer architecture at PES University while writing custom shaders and small systems utilities in my free time.",
+      "I am a Core Member – Web Development at Nexus AWS Club in Bengaluru. I maintain the club's web platform, build event registration workflows, coordinate hackathons, review participant submissions for technical soundness, and mentor junior members during technical workshops. I also secured 2nd place in a university-wide team DSA treasure hunt competition.",
+  },
+  {
+    id: "remote-collaboration",
+    question: "Are you open to remote collaboration across time zones?",
+    answer:
+      "Yes. I am based in Bengaluru, India (UTC+5:30). I operate comfortably across distributed time zones through disciplined asynchronous communication, clean Git commit histories, detailed pull requests, and concise technical documentation.",
+  },
+  {
+    id: "contact-response",
+    question: "How can someone reach you and how fast do you reply?",
+    answer:
+      "I typically reply within 24 hours. Reach out directly via email at jeelnadaa@gmail.com, connect on LinkedIn (linkedin.com/in/jeelnada), or call +91 80000 50317.",
   },
 ];

@@ -84,6 +84,16 @@ export default function PathPage() {
                 </div>
               </div>
             ))}
+
+            {/* Terminal Root Marker */}
+            <div className="relative pt-4">
+              <div className="absolute -left-[31px] sm:-left-[47px] top-6 w-3.5 h-3.5 rounded-full bg-bg border-2 border-sun flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-sun animate-pulse" />
+              </div>
+              <div className="font-mono text-xs text-muted uppercase tracking-dossier pt-5">
+                00 // TRAJECTORY ROOT · FIRST PRINCIPLES
+              </div>
+            </div>
           </div>
         </section>
 
