@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { type GithubData } from "@/lib/github";
 import { glyphs } from "@/data/glyphs";
 import { GhostGlyph } from "@/components/ui/GhostGlyph";
-import { useGsap } from "@/hooks/useGsap";
 import { countUp } from "@/lib/motion";
+import { useToast } from "@/components/ui/Toast";
 import { cn } from "@/lib/utils";
 
 interface GithubBlockProps {
@@ -21,6 +21,10 @@ const TINT_COLORS = [
 ];
 
 export function GithubBlock({ data }: GithubBlockProps) {
+  const [currentData, setCurrentData] = useState<GithubData>(data);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const { showToast } = useToast();
+
   const [tooltip, setTooltip] = useState<{
     text: string;
     x: number;
@@ -32,12 +36,47 @@ export function GithubBlock({ data }: GithubBlockProps) {
   const followersCountRef = useRef<HTMLSpanElement>(null);
   const commitsCountRef = useRef<HTMLSpanElement>(null);
 
-  useGsap(() => {
-    if (reposCountRef.current) countUp(reposCountRef.current, data.user.public_repos, 1.6);
-    if (starsCountRef.current) countUp(starsCountRef.current, data.user.totalStars, 1.6, "★");
-    if (followersCountRef.current) countUp(followersCountRef.current, data.user.followers, 1.6);
-    if (commitsCountRef.current) countUp(commitsCountRef.current, data.user.totalCommits, 1.6);
+  // Sync prop changes
+  useEffect(() => {
+    setCurrentData(data);
   }, [data]);
+
+  // Listen for global telemetry sync event (e.g. triggered from Hero HUD)
+  useEffect(() => {
+    const onSync = (e: Event) => {
+      const fresh = (e as CustomEvent<GithubData>).detail;
+      if (fresh?.user) {
+        setCurrentData(fresh);
+      }
+    };
+    window.addEventListener("solarquack:telemetry-sync", onSync);
+    return () => window.removeEventListener("solarquack:telemetry-sync", onSync);
+  }, []);
+
+  // Animate stat counters whenever data updates
+  useEffect(() => {
+    if (reposCountRef.current) countUp(reposCountRef.current, currentData.user.public_repos, 1.4);
+    if (starsCountRef.current) countUp(starsCountRef.current, currentData.user.totalStars, 1.4, "★");
+    if (followersCountRef.current) countUp(followersCountRef.current, currentData.user.followers, 1.4);
+    if (commitsCountRef.current) countUp(commitsCountRef.current, currentData.user.totalCommits, 1.4);
+  }, [currentData]);
+
+  const handleFetchTelemetry = async () => {
+    if (isSyncing) return;
+    setIsSyncing(true);
+    try {
+      const res = await fetch("/api/github", { cache: "no-store" });
+      if (!res.ok) throw new Error("Sync failed");
+      const freshData: GithubData = await res.json();
+      setCurrentData(freshData);
+      window.dispatchEvent(new CustomEvent("solarquack:telemetry-sync", { detail: freshData }));
+      showToast("GITHUB TELEMETRY SYNCHRONIZED ✓");
+    } catch {
+      showToast("TELEMETRY FETCH FAILED ✕");
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   return (
     <section
@@ -63,20 +102,41 @@ export function GithubBlock({ data }: GithubBlockProps) {
               Code in the open.
             </h2>
             <p className="font-mono text-xs sm:text-sm text-muted tracking-dossier uppercase">
-              LIVE REPOSITORIES, COMMIT DENSITY, AND CONTRIBUTIONS (ISR CACHED)
+              LIVE REPOSITORIES, COMMIT DENSITY, AND CONTRIBUTIONS (ON-DEMAND REFRESHABLE)
             </p>
           </div>
 
-          <a
-            href={`https://github.com/${data.user.login}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-cursor="OPEN"
-            className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone hover:text-sun border border-rule hover:border-sun px-4 py-2.5 flex items-center gap-2 transition-colors self-start md:self-auto font-medium"
-          >
-            <span>VIEW @{data.user.login}</span>
-            <span>↗</span>
-          </a>
+          <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
+            <button
+              type="button"
+              onClick={handleFetchTelemetry}
+              disabled={isSyncing}
+              data-cursor="CLICK"
+              title="Fetch fresh GitHub telemetry directly from GitHub API"
+              className={cn(
+                "font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone hover:text-sun",
+                "border border-rule hover:border-sun px-4 py-2.5 flex items-center gap-2",
+                "transition-colors bg-surface/50 hover:bg-surface/80 cursor-pointer disabled:opacity-50 font-medium",
+                isSyncing && "border-sun text-sun"
+              )}
+            >
+              <span className={cn("inline-block text-sun text-sm transition-transform", isSyncing && "animate-spin")}>
+                ↻
+              </span>
+              <span>{isSyncing ? "FETCHING TELEMETRY..." : "FETCH TELEMETRY"}</span>
+            </button>
+
+            <a
+              href={`https://github.com/${currentData.user.login}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="OPEN"
+              className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone hover:text-sun border border-rule hover:border-sun px-4 py-2.5 flex items-center gap-2 transition-colors font-medium"
+            >
+              <span>VIEW @{currentData.user.login}</span>
+              <span>↗</span>
+            </a>
+          </div>
         </div>
 
         {/* Big Mono Counters */}
@@ -126,7 +186,7 @@ export function GithubBlock({ data }: GithubBlockProps) {
 
           <div className="overflow-x-auto py-2">
             <div className="w-full min-w-[760px] flex justify-between gap-1 sm:gap-1.5">
-              {data.contributionWeeks.map((week, wIdx) => (
+              {currentData.contributionWeeks.map((week, wIdx) => (
                 <div key={wIdx} className="flex-1 flex flex-col justify-between gap-1 sm:gap-1.5">
                   {week.days.map((day) => (
                     <div
@@ -162,7 +222,7 @@ export function GithubBlock({ data }: GithubBlockProps) {
 
             {/* Continuous Bar */}
             <div className="h-3 w-full flex overflow-hidden border border-rule">
-              {data.languages.map((lang) => (
+              {currentData.languages.map((lang) => (
                 <div
                   key={lang.name}
                   style={{
@@ -176,7 +236,7 @@ export function GithubBlock({ data }: GithubBlockProps) {
 
             {/* Language Legend */}
             <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
-              {data.languages.map((lang) => (
+              {currentData.languages.map((lang) => (
                 <div key={lang.name} className="flex items-center gap-2">
                   <span
                     className="w-2 h-2 rounded-sharp shrink-0"
@@ -197,7 +257,7 @@ export function GithubBlock({ data }: GithubBlockProps) {
             </div>
 
             <div className="divide-y divide-rule/30">
-              {data.repos.map((repo) => (
+              {currentData.repos.map((repo) => (
                 <a
                   key={repo.name}
                   href={repo.url}

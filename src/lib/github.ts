@@ -41,7 +41,7 @@ export interface GithubData {
   contributionWeeks: GithubWeek[];
 }
 
-export async function getGithubData(): Promise<GithubData> {
+export async function getGithubData(options?: { forceFresh?: boolean }): Promise<GithubData> {
   let token = process.env.GITHUB_TOKEN;
 
   // Fallback: If dev server was started before .env was modified, read directly from .env file
@@ -107,7 +107,7 @@ export async function getGithubData(): Promise<GithubData> {
 
     const revalidateSeconds = process.env.NODE_ENV === "development" ? 15 : 86400; // 24 hours (86,400s)
 
-    const res = await fetch("https://api.github.com/graphql", {
+    const fetchOptions: RequestInit = {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -115,8 +115,12 @@ export async function getGithubData(): Promise<GithubData> {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ query }),
-      next: { revalidate: revalidateSeconds },
-    });
+      ...(options?.forceFresh
+        ? { cache: "no-store" }
+        : { next: { revalidate: revalidateSeconds } }),
+    };
+
+    const res = await fetch("https://api.github.com/graphql", fetchOptions);
 
     if (!res.ok) {
       return snapshot as GithubData;

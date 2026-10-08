@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { siteConfig } from "@/data/site";
 import { heroConfig } from "@/data/hero";
@@ -17,6 +17,8 @@ import { gsap } from "@/lib/gsap";
 import { countUp } from "@/lib/motion";
 import { useIsFinePointer, usePrefersReducedMotion } from "@/hooks/useMedia";
 import { isPreloadedSession } from "@/components/layout/Preloader";
+import { useToast } from "@/components/ui/Toast";
+import { type GithubData } from "@/lib/github";
 import { cn } from "@/lib/utils";
 
 const GREEK_FLIP_CHARS = ["Ω", "Φ", "Α", "Κ", "Ε", "Λ", "Ο", "Σ", "Ι", "Σ", "Χ", "Υ", "Σ", "Τ", "Ε", "Χ", "Ν", "Η"];
@@ -25,7 +27,11 @@ interface HeroProps {
   stats?: { repos: number; stars: number; projects: number; commits: number };
 }
 
-export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348 } }: HeroProps) {
+export function Hero({ stats: initialStats = { repos: 18, stars: 42, projects: 6, commits: 348 } }: HeroProps) {
+  const [stats, setStats] = useState(initialStats);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const { showToast } = useToast();
+
   const containerRef = useRef<HTMLDivElement>(null);
   const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const ruinsRef = useRef<HTMLDivElement>(null);
@@ -37,16 +43,62 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
 
   const brandChars = siteConfig.brand.split("");
 
-  useGsap(() => {
-    if (!containerRef.current) return;
+  // Sync initialStats when prop updates
+  useEffect(() => {
+    setStats(initialStats);
+  }, [initialStats]);
 
-    // Stat count up
+  // Listen for global telemetry sync event
+  useEffect(() => {
+    const onSync = (e: Event) => {
+      const fresh = (e as CustomEvent<GithubData>).detail;
+      if (fresh?.user) {
+        setStats((prev) => ({
+          ...prev,
+          repos: fresh.user.public_repos,
+          stars: fresh.user.totalStars,
+          commits: fresh.user.totalCommits,
+        }));
+      }
+    };
+    window.addEventListener("solarquack:telemetry-sync", onSync);
+    return () => window.removeEventListener("solarquack:telemetry-sync", onSync);
+  }, []);
+
+  // Animate stat counters on mount and whenever stats change
+  useEffect(() => {
     statValRefs.current.forEach((el, idx) => {
       if (!el) return;
       const values = [stats.repos, stats.stars, stats.projects, stats.commits];
       const suffixes = ["", "★", "", "/yr"];
-      countUp(el, values[idx] || 10, 1.8, suffixes[idx]);
+      countUp(el, values[idx] || 0, 1.4, suffixes[idx]);
     });
+  }, [stats]);
+
+  const handleFetchTelemetry = async () => {
+    if (isSyncing) return;
+    setIsSyncing(true);
+    try {
+      const res = await fetch("/api/github", { cache: "no-store" });
+      if (!res.ok) throw new Error("Sync failed");
+      const freshData: GithubData = await res.json();
+      setStats((prev) => ({
+        ...prev,
+        repos: freshData.user.public_repos,
+        stars: freshData.user.totalStars,
+        commits: freshData.user.totalCommits,
+      }));
+      window.dispatchEvent(new CustomEvent("solarquack:telemetry-sync", { detail: freshData }));
+      showToast("GITHUB TELEMETRY SYNCHRONIZED ✓");
+    } catch {
+      showToast("TELEMETRY FETCH FAILED ✕");
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  useGsap(() => {
+    if (!containerRef.current) return;
 
     if (prefersReduced) return;
 
@@ -320,7 +372,20 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
           <div className="hidden md:flex flex-col w-64 sm:w-72 p-5 border border-rule/70 bg-surface/50 backdrop-blur-sm pointer-events-auto space-y-3.5 shadow-sm">
             <div className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-sun font-bold border-b border-rule pb-2 flex items-center justify-between">
               <span>LIVE TELEMETRY</span>
-              <span>GITHUB</span>
+              <button
+                type="button"
+                onClick={handleFetchTelemetry}
+                disabled={isSyncing}
+                title="Fetch live telemetry directly from GitHub"
+                data-cursor="CLICK"
+                className={cn(
+                  "flex items-center gap-1 text-[11px] font-mono tracking-dossier text-bone/70 hover:text-sun transition-colors duration-150 cursor-pointer disabled:opacity-50",
+                  isSyncing && "text-sun"
+                )}
+              >
+                <span className={cn("inline-block", isSyncing && "animate-spin")}>↻</span>
+                <span>{isSyncing ? "SYNCING..." : "FETCH"}</span>
+              </button>
             </div>
             {[
               { label: "REPOS", value: stats.repos, suffix: "" },
@@ -340,15 +405,31 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
                 </span>
               </div>
             ))}
-            <a
-              href={siteConfig.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs sm:text-sm font-mono tracking-dossier text-muted hover:text-sun text-right block pt-1.5 border-t border-rule/40 font-medium"
-              data-cursor="OPEN"
-            >
-              Tracked live ↗
-            </a>
+            <div className="flex items-center justify-between pt-1.5 border-t border-rule/40 font-mono text-xs tracking-dossier">
+              <button
+                type="button"
+                onClick={handleFetchTelemetry}
+                disabled={isSyncing}
+                title="Fetch latest GitHub telemetry directly"
+                data-cursor="CLICK"
+                className={cn(
+                  "text-muted hover:text-sun transition-colors flex items-center gap-1.5 uppercase font-medium cursor-pointer disabled:opacity-50",
+                  isSyncing && "text-sun"
+                )}
+              >
+                <span className={cn("inline-block", isSyncing && "animate-spin")}>↻</span>
+                <span>{isSyncing ? "FETCHING..." : "FETCH TELEMETRY"}</span>
+              </button>
+              <a
+                href={siteConfig.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted hover:text-bone text-right font-medium"
+                data-cursor="OPEN"
+              >
+                Live ↗
+              </a>
+            </div>
           </div>
         </div>
 
