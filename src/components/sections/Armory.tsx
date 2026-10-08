@@ -137,12 +137,12 @@ export function Armory() {
               value={filterQuery}
               onChange={(e) => setFilterQuery(e.target.value)}
               placeholder="Filter armory (press /)..."
-              className="w-full bg-transparent font-mono text-xs uppercase tracking-dossier text-bone placeholder:text-muted/60 focus:outline-none"
+              className="w-full bg-transparent font-mono text-sm uppercase tracking-dossier text-bone placeholder:text-muted/60 focus:outline-none"
             />
             {filterQuery && (
               <button
                 onClick={() => setFilterQuery("")}
-                className="font-mono text-[10px] text-muted hover:text-sun"
+                className="font-mono text-xs text-muted hover:text-sun"
               >
                 ESC ✕
               </button>
@@ -153,27 +153,27 @@ export function Armory() {
         {/* Big Counter Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 border border-rule bg-surface/30 p-6 sm:p-8 font-mono select-none">
           <div className="space-y-1">
-            <div className="text-[10px] tracking-dossier uppercase text-muted">PRIMARY LANGUAGES</div>
+            <div className="text-xs tracking-dossier uppercase text-muted">PRIMARY LANGUAGES</div>
             <div className="font-display text-4xl sm:text-5xl text-bone">
               <span ref={langCountRef}>0</span>
             </div>
-            <div className="text-[10px] text-bone/60 tracking-dossier">C++, TYPESCRIPT, PYTHON & MORE</div>
+            <div className="text-xs text-bone/70 tracking-dossier">C++, TYPESCRIPT, PYTHON & MORE</div>
           </div>
 
           <div className="space-y-1 sm:border-l sm:border-rule sm:pl-8">
-            <div className="text-[10px] tracking-dossier uppercase text-muted">FRAMEWORKS & ENGINES</div>
+            <div className="text-xs tracking-dossier uppercase text-muted">FRAMEWORKS & ENGINES</div>
             <div className="font-display text-4xl sm:text-5xl text-bone">
               <span ref={frameCountRef}>0</span>
             </div>
-            <div className="text-[10px] text-bone/60 tracking-dossier">NEXT.JS, THREE.JS, PYTORCH</div>
+            <div className="text-xs text-bone/70 tracking-dossier">NEXT.JS, THREE.JS, PYTORCH</div>
           </div>
 
           <div className="space-y-1 sm:border-l sm:border-rule sm:pl-8">
-            <div className="text-[10px] tracking-dossier uppercase text-muted">SYSTEMS SHIPPED</div>
+            <div className="text-xs tracking-dossier uppercase text-muted">SYSTEMS SHIPPED</div>
             <div className="font-display text-4xl sm:text-5xl text-sun">
               <span ref={projCountRef}>0</span>
             </div>
-            <div className="text-[10px] text-bone/60 tracking-dossier">VERIFIED OPEN SOURCE BUILDS</div>
+            <div className="text-xs text-bone/70 tracking-dossier">VERIFIED OPEN SOURCE BUILDS</div>
           </div>
         </div>
 
@@ -185,16 +185,16 @@ export function Armory() {
               className="border border-rule bg-surface/40 p-6 flex flex-col justify-between space-y-6"
             >
               {/* Block Header */}
-              <div className="flex items-center justify-between border-b border-rule pb-3 font-mono text-xs uppercase tracking-dossier">
+              <div className="flex items-center justify-between border-b border-rule pb-3 font-mono text-sm uppercase tracking-dossier">
                 <div className="flex items-center gap-2 text-bone font-semibold">
                   <span className="text-sun font-bold">{grp.badge}</span>
                   <span>// {grp.title}</span>
                 </div>
-                <span className="text-muted text-[10px]">{grp.skills.length} PACKAGES</span>
+                <span className="text-muted text-xs">{grp.skills.length} PACKAGES</span>
               </div>
 
               {/* Skills Manifest List */}
-              <div className="space-y-3 font-mono text-xs">
+              <div className="space-y-3 font-mono text-[13px]">
                 {grp.skills.map((skill) => (
                   <div
                     key={skill.name}
@@ -217,7 +217,7 @@ export function Armory() {
 
                     <div>
                       <span className="text-bone font-semibold mr-2">{skill.name}</span>
-                      <span className="text-muted text-[11px] font-normal leading-normal">
+                      <span className="text-muted text-xs font-normal leading-normal">
                         {skill.description}
                       </span>
                     </div>
@@ -225,7 +225,7 @@ export function Armory() {
                     {skill.usedInSlug && (
                       <Link
                         href={`/work/${skill.usedInSlug}`}
-                        className="text-[10px] text-muted hover:text-sun shrink-0 uppercase tracking-dossier border border-rule px-1.5 py-0.5"
+                        className="text-xs text-muted hover:text-sun shrink-0 uppercase tracking-dossier border border-rule px-2 py-0.5"
                         data-cursor="OPEN"
                       >
                         used in: {skill.usedInName} ↗
@@ -236,7 +236,7 @@ export function Armory() {
               </div>
 
               {/* Block Path Footer */}
-              <div className="font-mono text-[10px] tracking-dossier text-muted/60 border-t border-rule/40 pt-2 flex items-center justify-between">
+              <div className="font-mono text-xs tracking-dossier text-muted/60 border-t border-rule/40 pt-2 flex items-center justify-between">
                 <span>{grp.pathKey}</span>
                 <span>STATUS: VERIFIED</span>
               </div>

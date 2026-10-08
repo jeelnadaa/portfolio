@@ -18,7 +18,7 @@ export function SpecRow({
   return (
     <div
       className={cn(
-        "flex items-baseline font-mono text-xs tracking-dossier uppercase py-1",
+        "flex items-baseline font-mono text-[13px] tracking-dossier uppercase py-1",
         className
       )}
     >

@@ -82,25 +82,25 @@ export function GithubBlock({ data }: GithubBlockProps) {
         {/* Big Mono Counters */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 border border-rule bg-surface/30 p-6 sm:p-8 font-mono select-none">
           <div className="space-y-1">
-            <div className="text-[10px] tracking-dossier text-muted uppercase">REPOSITORIES</div>
+            <div className="text-xs tracking-dossier text-muted uppercase">REPOSITORIES</div>
             <div className="font-display text-3xl sm:text-4xl text-bone">
               <span ref={reposCountRef}>0</span>
             </div>
           </div>
           <div className="space-y-1 border-l border-rule pl-6">
-            <div className="text-[10px] tracking-dossier text-muted uppercase">STARS EARNED</div>
+            <div className="text-xs tracking-dossier text-muted uppercase">STARS EARNED</div>
             <div className="font-display text-3xl sm:text-4xl text-bone">
               <span ref={starsCountRef}>0</span>
             </div>
           </div>
           <div className="space-y-1 border-l border-rule pl-6">
-            <div className="text-[10px] tracking-dossier text-muted uppercase">FOLLOWERS</div>
+            <div className="text-xs tracking-dossier text-muted uppercase">FOLLOWERS</div>
             <div className="font-display text-3xl sm:text-4xl text-bone">
               <span ref={followersCountRef}>0</span>
             </div>
           </div>
           <div className="space-y-1 border-l border-rule pl-6">
-            <div className="text-[10px] tracking-dossier text-muted uppercase">COMMITS (YR)</div>
+            <div className="text-xs tracking-dossier text-muted uppercase">COMMITS (YR)</div>
             <div className="font-display text-3xl sm:text-4xl text-sun">
               <span ref={commitsCountRef}>0</span>
             </div>
@@ -111,7 +111,7 @@ export function GithubBlock({ data }: GithubBlockProps) {
         <div className="border border-rule bg-surface/40 p-6 space-y-4">
           <div className="flex items-center justify-between font-mono text-xs uppercase tracking-dossier text-muted border-b border-rule pb-2">
             <span>ANNUAL ACTIVITY MATRIX (52 WEEKS)</span>
-            <div className="flex items-center gap-1.5 text-[10px]">
+            <div className="flex items-center gap-1.5 text-xs">
               <span>LESS</span>
               {TINT_COLORS.map((col, idx) => (
                 <span
@@ -207,13 +207,13 @@ export function GithubBlock({ data }: GithubBlockProps) {
                   className="group py-3 flex items-start justify-between gap-4 hover:bg-surface/60 transition-colors block"
                 >
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-xs text-bone group-hover:text-sun transition-colors font-bold">
+                    <div className="flex items-center gap-2 text-[13px] text-bone group-hover:text-sun transition-colors font-bold">
                       <span>{repo.name}</span>
-                      <span className="text-muted text-[10px] font-normal border border-rule px-1">
+                      <span className="text-muted text-xs font-normal border border-rule px-1.5 py-0.5">
                         {repo.language}
                       </span>
                     </div>
-                    <p className="text-[11px] text-muted line-clamp-1 max-w-md font-sans">
+                    <p className="text-xs text-muted/80 line-clamp-1 max-w-md font-sans">
                       {repo.description}
                     </p>
                   </div>
@@ -237,7 +237,7 @@ export function GithubBlock({ data }: GithubBlockProps) {
         <div
           role="tooltip"
           aria-hidden="true"
-          className="fixed pointer-events-none z-[99999] -translate-x-1/2 px-2.5 py-1 bg-surface text-bone border border-bone/60 font-mono text-[10px] tracking-dossier shadow-lg whitespace-nowrap"
+          className="fixed pointer-events-none z-[99999] -translate-x-1/2 px-2.5 py-1 bg-surface text-bone border border-bone/60 font-mono text-xs tracking-dossier shadow-lg whitespace-nowrap"
           style={{ left: tooltip.x, top: tooltip.y }}
         >
           {tooltip.text}

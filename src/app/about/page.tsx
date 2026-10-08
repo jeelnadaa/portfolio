@@ -138,7 +138,7 @@ export default function AboutPage() {
 
             {/* Now Block */}
             <div className="mt-8 border border-rule bg-surface/50 p-6 space-y-4 font-mono">
-              <div className="flex items-center justify-between border-b border-rule pb-2 text-[10px] uppercase tracking-dossier text-muted">
+              <div className="flex items-center justify-between border-b border-rule pb-2 text-xs uppercase tracking-dossier text-muted">
                 <span>ACTIVE FOCUS // {honestStatus.lastUpdated.toUpperCase()}</span>
                 <span className="text-sun">STATE: LIVE</span>
               </div>
@@ -186,7 +186,7 @@ export default function AboutPage() {
                 <div className="font-mono text-xs text-bone font-semibold uppercase">
                   {t.label}
                 </div>
-                <p className="font-sans text-xs text-muted leading-relaxed">
+                <p className="font-sans text-sm text-bone/80 leading-relaxed">
                   {t.desc}
                 </p>
               </div>
@@ -215,14 +215,14 @@ export default function AboutPage() {
                   key={plate.id}
                   className="w-72 sm:w-80 border border-rule bg-surface/50 p-6 space-y-3 shrink-0 select-none hover:border-bone/70 transition-colors"
                 >
-                  <div className="flex items-center justify-between font-mono text-[10px] text-muted border-b border-rule pb-2">
+                  <div className="flex items-center justify-between font-mono text-xs text-muted border-b border-rule pb-2">
                     <span>PLATE {plate.id}</span>
                     <span className="text-sun">INTEREST</span>
                   </div>
                   <div className="font-mono text-xs text-bone font-bold uppercase tracking-dossier">
                     {plate.label}
                   </div>
-                  <p className="font-sans text-xs text-muted leading-relaxed">
+                  <p className="font-sans text-sm text-bone/80 leading-relaxed">
                     {plate.caption}
                   </p>
                 </div>

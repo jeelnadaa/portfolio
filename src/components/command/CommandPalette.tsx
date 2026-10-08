@@ -101,19 +101,6 @@ export function CommandPalette() {
 
     // Controls
     {
-      id: "toggle-theme",
-      label: "Toggle Theme: Dark ⇄ Bone",
-      category: "Controls",
-      action: () => {
-        const cur = document.documentElement.getAttribute("data-theme") || "dark";
-        const next = cur === "dark" ? "bone" : "dark";
-        document.documentElement.setAttribute("data-theme", next);
-        localStorage.setItem("theme", next);
-        showToast(`THEME: ${next.toUpperCase()}`);
-        setOpen(false);
-      },
-    },
-    {
       id: "add-project-docs",
       label: "Add Project CLI Guide (pnpm add-project)",
       category: "Controls",

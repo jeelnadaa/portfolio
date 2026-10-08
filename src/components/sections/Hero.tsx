@@ -331,11 +331,11 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         <div className="flex items-start justify-between w-full max-w-7xl mx-auto">
           {/* Top Left Dossier Tag */}
           <div className="space-y-1 pointer-events-auto">
-            <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-dossier text-bone font-medium">
+            <div className="flex items-center gap-2 font-mono text-[13px] uppercase tracking-dossier text-bone font-medium">
               <span className="w-2 h-2 rounded-full bg-sun animate-pulse" />
               <span>{siteConfig.systemLabel}</span>
             </div>
-            <div className="font-mono text-[11px] uppercase tracking-dossier text-muted">
+            <div className="font-mono text-xs uppercase tracking-dossier text-muted">
               {siteConfig.authorDossier}
             </div>
           </div>
@@ -349,8 +349,8 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         {/* HUD Middle Lateral Columns */}
         <div className="flex items-center justify-between w-full max-w-7xl mx-auto my-auto">
           {/* Left Column Spec Rows */}
-          <div className="hidden md:flex flex-col w-64 p-4 border border-rule/60 bg-surface/40 backdrop-blur-xs pointer-events-auto space-y-0.5">
-            <div className="font-mono text-[10px] uppercase tracking-dossier text-sun font-bold border-b border-rule pb-1.5 mb-1.5 flex items-center justify-between">
+          <div className="hidden md:flex flex-col w-72 p-4 border border-rule/60 bg-surface/40 backdrop-blur-xs pointer-events-auto space-y-1">
+            <div className="font-mono text-xs uppercase tracking-dossier text-sun font-bold border-b border-rule pb-1.5 mb-1.5 flex items-center justify-between">
               <span>SYSTEM SPECS</span>
               <span>00 // BASE</span>
             </div>
@@ -360,19 +360,19 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
           </div>
 
           {/* Right Column Stat Counters */}
-          <div className="hidden md:flex flex-col w-56 p-4 border border-rule/60 bg-surface/40 backdrop-blur-xs pointer-events-auto space-y-3">
-            <div className="font-mono text-[10px] uppercase tracking-dossier text-sun font-bold border-b border-rule pb-1.5 flex items-center justify-between">
+          <div className="hidden md:flex flex-col w-64 p-4 border border-rule/60 bg-surface/40 backdrop-blur-xs pointer-events-auto space-y-3">
+            <div className="font-mono text-xs uppercase tracking-dossier text-sun font-bold border-b border-rule pb-1.5 flex items-center justify-between">
               <span>LIVE TELEMETRY</span>
               <span>GITHUB</span>
             </div>
             {heroConfig.stats.map((st, idx) => (
-              <div key={st.label} className="flex items-baseline justify-between font-mono text-xs tracking-dossier uppercase">
+              <div key={st.label} className="flex items-baseline justify-between font-mono text-[13px] tracking-dossier uppercase">
                 <span className="text-muted">{st.label}</span>
                 <span
                   ref={(el) => {
                     statValRefs.current[idx] = el;
                   }}
-                  className="text-bone font-bold text-sm"
+                  className="text-bone font-bold text-base"
                 >
                   {st.value}
                 </span>
@@ -382,7 +382,7 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
               href={siteConfig.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[10px] font-mono tracking-dossier text-muted/70 hover:text-sun text-right block pt-1 border-t border-rule/30"
+              className="text-xs font-mono tracking-dossier text-muted/70 hover:text-sun text-right block pt-1 border-t border-rule/30"
               data-cursor="OPEN"
             >
               Tracked live ↗
@@ -394,7 +394,7 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         <div className="flex flex-col sm:flex-row items-end sm:items-center justify-between w-full max-w-7xl mx-auto gap-6 pointer-events-auto pb-4">
           {/* Bottom Left Positioning & CTAs */}
           <div className="space-y-4 max-w-lg">
-            <p className="font-mono text-xs sm:text-sm text-bone/90 leading-relaxed uppercase tracking-dossier">
+            <p className="font-mono text-sm sm:text-base text-bone/90 leading-relaxed uppercase tracking-dossier">
               {siteConfig.heroPositioning}
             </p>
             <div className="flex items-center gap-4">
@@ -408,14 +408,14 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
                   Source code
                 </Button>
               </Magnetic>
-              <span className="hidden sm:inline font-mono text-[11px] text-muted tracking-dossier">
+              <span className="hidden sm:inline font-mono text-xs text-muted tracking-dossier">
                 ★ {stats.stars} stars
               </span>
             </div>
           </div>
 
           {/* Bottom Right Scroll Cue */}
-          <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-dossier text-muted select-none">
+          <div className="flex items-center gap-3 font-mono text-[13px] uppercase tracking-dossier text-muted select-none">
             <span>SCROLL ΚΑΤΩ</span>
             <div className="relative w-[1px] h-10 bg-rule overflow-hidden">
               <div

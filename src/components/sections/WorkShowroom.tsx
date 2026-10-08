@@ -160,15 +160,15 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
                   <h3 className="font-display text-2xl text-bone font-light group-hover:text-sun transition-colors">
                     {p.title}
                   </h3>
-                  <p className="font-mono text-xs text-muted leading-relaxed line-clamp-2">
+                  <p className="font-mono text-[13px] text-muted leading-relaxed line-clamp-2">
                     {p.tagline}
                   </p>
                 </div>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-1.5 pt-4 mt-2 border-t border-rule/40 font-mono text-[10px] text-muted">
+                <div className="flex flex-wrap gap-1.5 pt-4 mt-2 border-t border-rule/40 font-mono text-xs text-muted">
                   {p.stack.slice(0, 3).map((tool) => (
-                    <span key={tool} className="border border-rule/60 px-1.5 py-0.2">
+                    <span key={tool} className="border border-rule/60 px-2 py-0.5">
                       {tool}
                     </span>
                   ))}

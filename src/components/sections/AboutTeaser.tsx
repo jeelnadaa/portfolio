@@ -138,7 +138,7 @@ export function AboutTeaser() {
                 className="absolute inset-0 w-full h-full pointer-events-none z-10"
               />
 
-              <div className="absolute bottom-3 left-3 bg-bg/80 border border-rule px-2 py-0.5 font-mono text-[10px] uppercase tracking-dossier text-bone/70">
+              <div className="absolute bottom-3 left-3 bg-bg/80 border border-rule px-2.5 py-1 font-mono text-xs uppercase tracking-dossier text-bone/80">
                 ΤΕΧΝΗ // FORGE
               </div>
             </div>

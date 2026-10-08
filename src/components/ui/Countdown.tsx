@@ -64,18 +64,18 @@ export function Countdown({ className }: CountdownProps) {
         className
       )}
     >
-      <span className="text-muted text-[11px]">AVAILABLE IN</span>
+      <span className="text-muted text-xs">AVAILABLE IN</span>
       <div className="flex items-center gap-1">
-        <span className="px-1.5 py-0.5 border border-rule text-bone">
+        <span className="px-2 py-0.5 border border-rule text-bone">
           {timeLeft.days}D
         </span>
-        <span className="px-1.5 py-0.5 border border-rule text-bone">
+        <span className="px-2 py-0.5 border border-rule text-bone">
           {timeLeft.hours}H
         </span>
-        <span className="px-1.5 py-0.5 border border-rule text-bone">
+        <span className="px-2 py-0.5 border border-rule text-bone">
           {timeLeft.minutes}M
         </span>
-        <span className="px-1.5 py-0.5 border border-sun text-sun font-bold">
+        <span className="px-2 py-0.5 border border-sun text-sun font-bold">
           {timeLeft.seconds}S
         </span>
       </div>

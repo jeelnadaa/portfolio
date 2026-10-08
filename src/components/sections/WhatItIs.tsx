@@ -96,7 +96,7 @@ export function WhatItIs() {
               <p className="font-display italic text-lg sm:text-xl text-bone/80">
                 &ldquo;the repo is the portfolio.&rdquo;
               </p>
-              <span className="font-mono text-[10px] text-muted tracking-dossier uppercase block mt-1">
+              <span className="font-mono text-xs text-muted tracking-dossier uppercase block mt-1">
                 FIRST PRINCIPLE // SOURCE-DRIVEN VERIFICATION
               </span>
             </div>
@@ -115,7 +115,7 @@ export function WhatItIs() {
               />
 
               {/* Caption */}
-              <div className="absolute bottom-3 left-3 bg-bg/80 border border-rule px-2 py-0.5 font-mono text-[10px] uppercase tracking-dossier text-bone/80">
+              <div className="absolute bottom-3 left-3 bg-bg/80 border border-rule px-2.5 py-1 font-mono text-xs uppercase tracking-dossier text-bone/90">
                 ΒΑΣΗ // BASE
               </div>
 

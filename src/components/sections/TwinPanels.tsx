@@ -136,7 +136,7 @@ export function TwinPanels() {
             </div>
 
             <div className="space-y-6">
-              <div className="font-mono text-xs tracking-dossier uppercase text-sun flex items-center justify-between border-b border-rule pb-2">
+              <div className="font-mono text-sm tracking-dossier uppercase text-sun flex items-center justify-between border-b border-rule pb-2">
                 <span>01 // STRENGTH</span>
                 <span className="font-greek">{glyphs.strength.greekWord}</span>
               </div>
@@ -159,7 +159,7 @@ export function TwinPanels() {
                 <h3 className="font-display text-4xl sm:text-5xl text-bone font-light mb-2">
                   Strength.
                 </h3>
-                <p className="font-sans text-muted text-sm sm:text-base leading-relaxed max-w-md">
+                <p className="font-sans text-bone/80 text-base leading-relaxed max-w-md">
                   Rigorous data structures, algorithm efficiency, deterministic systems programming, and high-throughput concurrency.
                 </p>
               </div>
@@ -194,7 +194,7 @@ export function TwinPanels() {
             </div>
 
             <div className="space-y-6">
-              <div className="font-mono text-xs tracking-dossier uppercase text-sun flex items-center justify-between border-b border-rule pb-2">
+              <div className="font-mono text-sm tracking-dossier uppercase text-sun flex items-center justify-between border-b border-rule pb-2">
                 <span>02 // CRAFT</span>
                 <span className="font-greek">{glyphs.craft.greekWord}</span>
               </div>
@@ -217,7 +217,7 @@ export function TwinPanels() {
                 <h3 className="font-display text-4xl sm:text-5xl text-bone font-light mb-2">
                   Craft.
                 </h3>
-                <p className="font-sans text-muted text-sm sm:text-base leading-relaxed max-w-md">
+                <p className="font-sans text-bone/80 text-base leading-relaxed max-w-md">
                   Obsessive typography, mathematical motion choreography, tactile reticle cursors, and pixel-precise shaders.
                 </p>
               </div>

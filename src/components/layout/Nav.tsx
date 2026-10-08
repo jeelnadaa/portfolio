@@ -32,7 +32,6 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
   const [navVisible, setNavVisible] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isBoneTheme, setIsBoneTheme] = useState(false);
 
   const lastScrollY = useRef(0);
   const blrTime = useBengaluruTime();
@@ -72,52 +71,6 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Theme detection from DOM
-  useEffect(() => {
-    const currentTheme = document.documentElement.getAttribute("data-theme");
-    setIsBoneTheme(currentTheme === "bone");
-  }, []);
-
-  // Theme toggle with circular clip-path wipe
-  const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const nextTheme = isBoneTheme ? "dark" : "bone";
-    const x = e.clientX;
-    const y = e.clientY;
-
-    if (!document.startViewTransition) {
-      document.documentElement.setAttribute("data-theme", nextTheme);
-      localStorage.setItem("theme", nextTheme);
-      setIsBoneTheme(!isBoneTheme);
-      return;
-    }
-
-    const transition = document.startViewTransition(() => {
-      document.documentElement.setAttribute("data-theme", nextTheme);
-      localStorage.setItem("theme", nextTheme);
-      setIsBoneTheme(!isBoneTheme);
-    });
-
-    transition.ready.then(() => {
-      const maxRadius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y)
-      );
-      document.documentElement.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${maxRadius}px at ${x}px ${y}px)`,
-          ],
-        },
-        {
-          duration: 450,
-          easing: "ease-in-out",
-          pseudoElement: "::view-transition-new(root)",
-        }
-      );
-    });
-  };
 
   return (
     <>
@@ -164,7 +117,7 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
           </Link>
 
           {/* Center: Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-6 font-mono text-xs uppercase tracking-dossier text-bone/90">
+          <nav className="hidden md:flex items-center gap-7 font-mono text-[13px] uppercase tracking-dossier text-bone/90">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
@@ -197,10 +150,10 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
           </nav>
 
           {/* Right: Info chips & actions */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-3">
             {/* Live Bengaluru Time */}
             <span
-              className="hidden lg:inline-block font-mono text-[11px] tracking-dossier text-muted border border-rule px-2 py-1"
+              className="hidden lg:inline-block font-mono text-xs tracking-dossier text-muted border border-rule px-2.5 py-1"
               title="Current time in Bengaluru (IST)"
             >
               {blrTime}
@@ -211,7 +164,7 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
               href={siteConfig.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1.5 font-mono text-[11px] tracking-dossier text-muted hover:text-bone border border-rule px-2.5 py-1 transition-colors"
+              className="hidden sm:flex items-center gap-1.5 font-mono text-xs tracking-dossier text-muted hover:text-bone border border-rule px-2.5 py-1 transition-colors"
               title="GitHub Profile"
               data-cursor="OPEN"
             >
@@ -225,22 +178,11 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
             <a
               href={siteConfig.resumePdf}
               download={siteConfig.resumeDownloadName}
-              className="hidden sm:inline-flex items-center font-mono text-[11px] tracking-dossier uppercase text-bone hover:text-bg hover:bg-bone border border-bone px-3 py-1 transition-colors select-none"
+              className="hidden sm:inline-flex items-center font-mono text-xs tracking-dossier uppercase text-bone hover:text-bg hover:bg-bone border border-bone px-3 py-1 transition-colors select-none"
               data-cursor="OPEN"
             >
               Resume ↓
             </a>
-
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle dark/bone theme"
-              data-cursor="CLICK"
-              className="w-7 h-7 flex items-center justify-center border border-rule text-bone/80 hover:text-sun hover:border-sun transition-colors font-mono text-xs"
-              title={isBoneTheme ? "Switch to Dark Mode" : "Switch to Bone Mode"}
-            >
-              {isBoneTheme ? "☾" : "☼"}
-            </button>
 
             {/* Mobile Menu Toggle */}
             <button

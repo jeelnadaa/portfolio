@@ -205,7 +205,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[42vmin] h-[42vmin] rounded-full pointer-events-none will-change-transform bg-[#E9E3D2]"
         />
 
-        <div className="absolute bottom-8 left-8 font-mono text-[11px] uppercase tracking-dossier text-bone/60 flex items-center gap-2">
+        <div className="absolute bottom-8 left-8 font-mono text-xs uppercase tracking-dossier text-bone/70 flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-sun animate-ping" />
           <span>CLICK ANYWHERE TO ENTER</span>
         </div>

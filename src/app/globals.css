@@ -14,17 +14,6 @@
   --color-scheme: dark;
 }
 
-[data-theme="bone"] {
-  --bg: #e9e3d2;
-  --surface: #ddd6c3;
-  --bone: #070706;
-  --muted: #6a6557;
-  --rule: rgba(7, 7, 6, 0.18);
-  --sun: #c8260b;
-  --gold: #9c7a2e;
-  --color-scheme: light;
-}
-
 * {
   box-sizing: border-box;
 }

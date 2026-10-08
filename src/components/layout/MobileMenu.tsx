@@ -124,7 +124,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             RESUME PDF ↓
           </a>
         </div>
-        <div className="text-[11px] text-muted/70 text-center">
+        <div className="text-xs text-muted/80 text-center">
           {siteConfig.email}
         </div>
       </div>

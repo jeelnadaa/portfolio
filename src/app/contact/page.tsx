@@ -265,7 +265,7 @@ export default function ContactPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <label className="text-muted">03 // MESSAGE SPECIFICATION</label>
-                      <span className="text-[10px] text-muted">
+                      <span className="text-xs text-muted">
                         {formState.message.length} / 2000 CHARS
                       </span>
                     </div>
@@ -285,7 +285,7 @@ export default function ContactPage() {
                   type="submit"
                   disabled={status === "submitting"}
                   data-cursor="CLICK"
-                  className="w-full py-3.5 bg-sun text-bg font-mono text-xs uppercase tracking-dossier font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-sun text-bg font-mono text-sm uppercase tracking-dossier font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   <span>{status === "submitting" ? "TRANSMITTING..." : "DISPATCH TRANSMISSION ↗"}</span>
                 </button>
@@ -295,32 +295,32 @@ export default function ContactPage() {
 
           {/* Right Telemetry Sidebar */}
           <div className="lg:col-span-4 border border-rule bg-surface/50 p-6 space-y-6 font-mono text-xs select-none">
-            <div className="text-[10px] uppercase tracking-dossier text-sun font-bold border-b border-rule pb-2">
+            <div className="text-xs uppercase tracking-dossier text-sun font-bold border-b border-rule pb-2">
               TELEMETRY & LOGISTICS
             </div>
 
             <div className="space-y-4">
               <div className="space-y-1">
-                <div className="text-[10px] text-muted uppercase">LOCAL BENGALURU TIME</div>
+                <div className="text-xs text-muted uppercase">LOCAL BENGALURU TIME</div>
                 <div className="text-bone font-bold text-base">{blrTime} (IST)</div>
               </div>
 
               <div className="space-y-1 border-t border-rule/40 pt-3">
-                <div className="text-[10px] text-muted uppercase">RESPONSE COMMITMENT</div>
-                <div className="text-bone">Within 48 hours</div>
+                <div className="text-xs text-muted uppercase">RESPONSE COMMITMENT</div>
+                <div className="text-bone text-[13px]">Within 48 hours</div>
               </div>
 
               <div className="space-y-1 border-t border-rule/40 pt-3">
-                <div className="text-[10px] text-muted uppercase">CURRENT AVAILABILITY</div>
-                <div className="flex items-center gap-2 text-bone">
+                <div className="text-xs text-muted uppercase">CURRENT AVAILABILITY</div>
+                <div className="flex items-center gap-2 text-bone text-[13px]">
                   <span className="w-2 h-2 rounded-full bg-sun animate-pulse" />
                   <span>{siteConfig.openStatus}</span>
                 </div>
               </div>
 
               <div className="space-y-1 border-t border-rule/40 pt-3">
-                <div className="text-[10px] text-muted uppercase">BASE OF OPERATIONS</div>
-                <div className="text-bone">{siteConfig.location}</div>
+                <div className="text-xs text-muted uppercase">BASE OF OPERATIONS</div>
+                <div className="text-bone text-[13px]">{siteConfig.location}</div>
               </div>
             </div>
           </div>

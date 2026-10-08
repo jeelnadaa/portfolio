@@ -34,11 +34,7 @@ export function EasterEggs() {
         keyIndex.current++;
         if (keyIndex.current === KONAMI_SEQUENCE.length) {
           keyIndex.current = 0;
-          const current = document.documentElement.getAttribute("data-theme") || "dark";
-          const next = current === "dark" ? "bone" : "dark";
-          document.documentElement.setAttribute("data-theme", next);
-          localStorage.setItem("theme", next);
-          console.log("%c[KONAMI ACTIVATED] Inverted theme matrix.", "color: #C9A24B; font-weight: bold;");
+          console.log("%c[KONAMI ACTIVATED] All systems nominal. Welcome, Architect.", "color: #C9A24B; font-weight: bold; font-size: 14px;");
         }
       } else {
         keyIndex.current = 0;

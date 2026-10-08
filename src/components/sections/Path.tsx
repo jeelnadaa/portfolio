@@ -182,7 +182,7 @@ export function Path() {
                         <span className="font-display italic text-2xl text-sun font-medium">
                           {milestone.year}
                         </span>
-                        <span className="font-mono text-[10px] tracking-dossier uppercase text-muted border border-rule px-1.5 py-0.2">
+                        <span className="font-mono text-xs tracking-dossier uppercase text-muted border border-rule px-2 py-0.5">
                           {milestone.badge || "MILESTONE"}
                         </span>
                       </div>
@@ -191,24 +191,24 @@ export function Path() {
                         <h3 className="font-display text-xl text-bone font-light">
                           {milestone.role}
                         </h3>
-                        <div className="font-mono text-xs text-muted">
+                        <div className="font-mono text-sm text-muted">
                           {milestone.organization} · {milestone.location}
                         </div>
                       </div>
 
-                      <p className="font-sans text-xs sm:text-sm text-bone/80 leading-relaxed">
+                      <p className="font-sans text-sm text-bone/90 leading-relaxed">
                         {milestone.description}
                       </p>
 
                       {/* Skills Tags */}
                       <div
                         className={cn(
-                          "flex flex-wrap gap-1.5 pt-2 border-t border-rule/30 font-mono text-[10px] text-muted",
+                          "flex flex-wrap gap-1.5 pt-2 border-t border-rule/30 font-mono text-xs text-muted",
                           isEven && "md:justify-end"
                         )}
                       >
                         {milestone.skills.map((s) => (
-                          <span key={s} className="border border-rule/50 px-1 py-0.2">
+                          <span key={s} className="border border-rule/50 px-2 py-0.5">
                             {s}
                           </span>
                         ))}

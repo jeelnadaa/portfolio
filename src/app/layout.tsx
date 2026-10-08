@@ -105,15 +105,13 @@ export default function RootLayout({
       className={`${fraunces.variable} ${didot.variable} ${jetbrains.variable} ${GeistSans.variable}`}
     >
       <head>
-        {/* Zero-flash theme initialization script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  var saved = localStorage.getItem('theme');
-                  var theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'bone' : 'dark');
-                  document.documentElement.setAttribute('data-theme', theme);
+                  localStorage.removeItem('theme');
+                  document.documentElement.setAttribute('data-theme', 'dark');
                 } catch(e) {}
               })();
             `,

@@ -99,10 +99,10 @@ export function Footer() {
         </div>
 
         {/* Columns */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 font-mono text-xs tracking-dossier">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 font-mono text-[13px] tracking-dossier">
           {/* Col 1: Explore */}
           <div className="space-y-4">
-            <div className="text-muted text-[11px] uppercase border-b border-rule/40 pb-2">
+            <div className="text-muted text-xs uppercase border-b border-rule/40 pb-2">
               01 // EXPLORE
             </div>
             <ul className="space-y-2">
@@ -122,7 +122,7 @@ export function Footer() {
 
           {/* Col 2: Elsewhere */}
           <div className="space-y-4">
-            <div className="text-muted text-[11px] uppercase border-b border-rule/40 pb-2">
+            <div className="text-muted text-xs uppercase border-b border-rule/40 pb-2">
               02 // ELSEWHERE
             </div>
             <ul className="space-y-2">
@@ -145,7 +145,7 @@ export function Footer() {
 
           {/* Col 3 & 4: Contact & Identity */}
           <div className="sm:col-span-2 space-y-4">
-            <div className="text-muted text-[11px] uppercase border-b border-rule/40 pb-2">
+            <div className="text-muted text-xs uppercase border-b border-rule/40 pb-2">
               03 // TRANSMISSION
             </div>
             <div className="space-y-3">
@@ -156,7 +156,7 @@ export function Footer() {
                 data-cursor="COPY"
               >
                 <div>
-                  <span className="text-[10px] text-muted block">EMAIL // PRIMARY</span>
+                  <span className="text-xs text-muted block">EMAIL // PRIMARY</span>
                   <span className="font-mono text-sm sm:text-base text-bone group-hover:text-sun transition-colors">
                     {siteConfig.email}
                   </span>
@@ -173,7 +173,7 @@ export function Footer() {
                 data-cursor="COPY"
               >
                 <div>
-                  <span className="text-[10px] text-muted block">PHONE // CELL</span>
+                  <span className="text-xs text-muted block">PHONE // CELL</span>
                   <span className="font-mono text-sm text-bone group-hover:text-sun transition-colors">
                     {siteConfig.phone}
                   </span>
@@ -213,7 +213,7 @@ export function Footer() {
         </div>
 
         {/* Bottom row: credits and back to top */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] tracking-dossier text-muted pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs tracking-dossier text-muted pt-2">
           <div>
             © 2026 {siteConfig.brand} · {siteConfig.legalName}. Artwork dithered from classical marble.
           </div>

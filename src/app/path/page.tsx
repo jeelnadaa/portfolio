@@ -59,7 +59,7 @@ export default function PathPage() {
                     {item.period}
                   </span>
                   {item.badge && (
-                    <span className="ml-auto font-mono text-[10px] tracking-dossier uppercase px-2 py-0.5 border border-rule text-bone bg-surface/60">
+                    <span className="ml-auto font-mono text-xs tracking-dossier uppercase px-2.5 py-0.5 border border-rule text-bone bg-surface/60">
                       {item.badge}
                     </span>
                   )}
@@ -69,11 +69,11 @@ export default function PathPage() {
                   {item.role}
                 </h3>
 
-                <div className="font-mono text-xs text-muted uppercase tracking-dossier mb-3">
+                <div className="font-mono text-[13px] text-muted uppercase tracking-dossier mb-3">
                   {item.organization} &bull; {item.location}
                 </div>
 
-                <p className="font-sans text-sm text-bone/80 leading-relaxed mb-4 max-w-3xl">
+                <p className="font-sans text-base text-bone/90 leading-relaxed mb-4 max-w-3xl">
                   {item.description}
                 </p>
 
@@ -99,7 +99,7 @@ export default function PathPage() {
               <div key={idx} className="border border-rule p-6 bg-surface/30 space-y-4">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="font-mono text-[11px] text-sun uppercase tracking-dossier">
+                    <div className="font-mono text-xs text-sun uppercase tracking-dossier">
                       {edu.duration}
                     </div>
                     <h3 className="font-display text-xl font-light text-bone mt-1">
@@ -113,20 +113,20 @@ export default function PathPage() {
                   )}
                 </div>
 
-                <div className="font-mono text-xs text-muted uppercase tracking-dossier">
+                <div className="font-mono text-[13px] text-muted uppercase tracking-dossier">
                   {edu.degree} &bull; {edu.location}
                 </div>
 
                 {edu.coursework && (
                   <div className="pt-2 border-t border-rule/40">
-                    <div className="font-mono text-[10px] uppercase text-muted tracking-dossier mb-2">
+                    <div className="font-mono text-xs uppercase text-muted tracking-dossier mb-2">
                       Coursework Focus:
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {edu.coursework.map((course) => (
                         <span
                           key={course}
-                          className="font-mono text-[11px] px-2 py-0.5 border border-rule/60 text-bone/80"
+                          className="font-mono text-xs px-2.5 py-0.5 border border-rule/60 text-bone/80"
                         >
                           {course}
                         </span>

@@ -105,7 +105,7 @@ export function Status() {
               </div>
 
               {/* Status plate label */}
-              <div className="absolute bottom-3 left-3 bg-bg/85 border border-rule px-2 py-0.5 font-mono text-[10px] uppercase tracking-dossier text-gold flex items-center gap-1.5">
+              <div className="absolute bottom-3 left-3 bg-bg/85 border border-rule px-2.5 py-1 font-mono text-xs uppercase tracking-dossier text-gold flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
                 <span>KINTSUGI // GOLD SEAMS</span>
               </div>
@@ -120,11 +120,11 @@ export function Status() {
                   key={item.category}
                   className="py-5 font-mono space-y-1.5"
                 >
-                  <div className="flex items-center justify-between text-xs tracking-dossier uppercase">
+                  <div className="flex items-center justify-between text-[13px] tracking-dossier uppercase">
                     <span className="text-sun font-semibold">
                       <Scramble text={`[ ${item.category} ]`} duration={0.8} />
                     </span>
-                    <span className="text-[10px] text-muted border border-rule px-1.5 py-0.2">
+                    <span className="text-xs text-muted border border-rule px-2 py-0.5">
                       {item.status.toUpperCase()}
                     </span>
                   </div>
@@ -138,18 +138,18 @@ export function Status() {
             {/* Now Reading & Listening */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs border border-rule/60 bg-surface/30 p-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-muted uppercase tracking-dossier block">
+                <span className="text-xs text-muted uppercase tracking-dossier block">
                   NOW READING
                 </span>
-                <span className="text-bone text-[11px] block font-sans">
+                <span className="text-bone text-[13px] block font-sans">
                   {honestStatus.nowReading}
                 </span>
               </div>
               <div className="space-y-1 sm:border-l sm:border-rule/60 sm:pl-4">
-                <span className="text-[10px] text-muted uppercase tracking-dossier block">
+                <span className="text-xs text-muted uppercase tracking-dossier block">
                   NOW LISTENING
                 </span>
-                <span className="text-bone text-[11px] block font-sans">
+                <span className="text-bone text-[13px] block font-sans">
                   {honestStatus.nowListening}
                 </span>
               </div>
