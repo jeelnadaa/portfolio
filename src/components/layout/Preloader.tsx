@@ -49,10 +49,10 @@ export function Preloader({ onComplete }: PreloaderProps) {
       },
     });
 
-    // 1. Counter 000 -> 100 & Sun disc rises
+    // 1. Counter 000 -> 100 & Sun disc rises smoothly
     tl.to(counterObj, {
       count: 100,
-      duration: 1.6,
+      duration: 1.0,
       ease: "power2.inOut",
       onUpdate: () => {
         counter.textContent = String(Math.round(counterObj.count)).padStart(3, "0");
@@ -61,44 +61,65 @@ export function Preloader({ onComplete }: PreloaderProps) {
 
     tl.fromTo(
       sun,
-      { yPercent: 120, scale: 0.2, opacity: 0.3 },
-      { yPercent: -50, scale: 1, opacity: 1, duration: 1.6, ease: "power2.inOut" },
+      { yPercent: 100, scale: 0.3, opacity: 0 },
+      { yPercent: -50, scale: 1, opacity: 1, duration: 1.0, ease: "power2.inOut" },
       0
     );
 
     // 2. Diagonal slash cuts screen
     tl.to(slash, {
       strokeDashoffset: 0,
-      duration: 0.25,
-      ease: "none",
+      duration: 0.2,
+      ease: "power1.inOut",
       onStart: () => {
         playSlash();
       },
     });
 
-    // 3. Two halves slide apart
+    // 3. Two halves slide apart AND sun disc dissolves
     tl.to(
-      topHalf,
+      sun,
       {
-        xPercent: -30,
-        yPercent: -30,
+        scale: 0.3,
         opacity: 0,
-        duration: 0.5,
-        ease: "power3.in",
+        duration: 0.4,
+        ease: "power2.in",
       },
       "-=0.05"
     );
 
     tl.to(
-      bottomHalf,
+      topHalf,
       {
-        xPercent: 30,
-        yPercent: 30,
+        xPercent: -25,
+        yPercent: -25,
         opacity: 0,
-        duration: 0.5,
-        ease: "power3.in",
+        duration: 0.45,
+        ease: "power3.inOut",
       },
       "<"
+    );
+
+    tl.to(
+      bottomHalf,
+      {
+        xPercent: 25,
+        yPercent: 25,
+        opacity: 0,
+        duration: 0.45,
+        ease: "power3.inOut",
+      },
+      "<"
+    );
+
+    tl.to(
+      containerRef.current,
+      {
+        opacity: 0,
+        duration: 0.2,
+        ease: "power2.out",
+      },
+      "-=0.1"
     );
 
     const handleSkip = () => {

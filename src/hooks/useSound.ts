@@ -31,6 +31,16 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   const marbleAudioRef = useRef<HTMLAudioElement | null>(null);
   const lastMarbleTime = useRef(0);
 
+  // Restore sound preference from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("solarquack_sfx");
+      if (saved === "true") {
+        setSoundEnabled(true);
+      }
+    } catch {}
+  }, []);
+
   // Check if audio files exist
   useEffect(() => {
     async function checkAudio() {
@@ -76,7 +86,13 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   }, [soundEnabled, hasAudioFiles]);
 
   const toggleSound = useCallback(() => {
-    setSoundEnabled((prev) => !prev);
+    setSoundEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("solarquack_sfx", String(next));
+      } catch {}
+      return next;
+    });
   }, []);
 
   const playSlash = useCallback(() => {

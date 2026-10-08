@@ -36,12 +36,13 @@ export function LenisProvider({ children }: LenisProviderProps) {
     }
 
     const instance = new Lenis({
-      duration: 1.2,
+      duration: 1.0,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      touchMultiplier: 2,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.5,
     });
 
     lenisRef.current = instance;
@@ -55,7 +56,7 @@ export function LenisProvider({ children }: LenisProviderProps) {
     };
 
     gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 33);
 
     return () => {
       gsap.ticker.remove(updateTicker);

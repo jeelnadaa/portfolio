@@ -82,47 +82,95 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
       );
     });
 
-    // Scroll scrubbed split-out: odd letters yPercent -20, even +20
-    const oddLetters = letterRefs.current.filter((_, i) => i % 2 !== 0);
-    const evenLetters = letterRefs.current.filter((_, i) => i % 2 === 0);
+    // Vanish animation on click or scroll:
+    // As soon as user scrolls down even slightly (or clicks hero),
+    // solarquack name and sun halo vanish with a clean disintegration animation
+    let isVanished = false;
 
-    gsap.to(oddLetters, {
-      yPercent: -20,
-      opacity: 0,
-      ease: "none",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: 1,
-      },
-    });
+    const triggerVanish = () => {
+      if (isVanished) return;
+      isVanished = true;
 
-    gsap.to(evenLetters, {
-      yPercent: 20,
-      opacity: 0,
-      ease: "none",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: 1,
-      },
-    });
+      const oddLetters = letterRefs.current.filter((_, i) => i % 2 !== 0);
+      const evenLetters = letterRefs.current.filter((_, i) => i % 2 === 0);
 
-    // Sun disc rising/setting with scroll
-    if (sunDiscRef.current) {
-      gsap.to(sunDiscRef.current, {
-        yPercent: 25,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
+      gsap.to(oddLetters, {
+        yPercent: -45,
+        opacity: 0,
+        scale: 1.1,
+        duration: 0.6,
+        stagger: 0.02,
+        ease: "expo.out",
       });
-    }
+
+      gsap.to(evenLetters, {
+        yPercent: 45,
+        opacity: 0,
+        scale: 0.9,
+        duration: 0.6,
+        stagger: 0.02,
+        ease: "expo.out",
+      });
+
+      if (sunDiscRef.current) {
+        gsap.to(sunDiscRef.current, {
+          opacity: 0,
+          scale: 0.7,
+          duration: 0.5,
+          ease: "power2.out",
+        });
+      }
+    };
+
+    const triggerReform = () => {
+      if (!isVanished) return;
+      isVanished = false;
+
+      letterRefs.current.forEach((el) => {
+        if (!el) return;
+        gsap.to(el, {
+          yPercent: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.7,
+          ease: "expo.out",
+        });
+      });
+
+      if (sunDiscRef.current) {
+        gsap.to(sunDiscRef.current, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.7,
+          ease: "expo.out",
+        });
+      }
+    };
+
+    // Scroll trigger: vanish immediately once scrolled > 15px
+    const handleScrollVanish = () => {
+      if (window.scrollY > 15) {
+        triggerVanish();
+      } else if (window.scrollY <= 5) {
+        triggerReform();
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollVanish, { passive: true });
+
+    // Click anywhere on hero section triggers vanish
+    const heroEl = containerRef.current;
+    const handleHeroClick = (e: MouseEvent) => {
+      // Don't intercept button or link clicks
+      const target = e.target as HTMLElement;
+      if (target.closest("a, button, input")) return;
+      if (!isVanished) {
+        triggerVanish();
+      } else {
+        triggerReform();
+      }
+    };
+    heroEl?.addEventListener("click", handleHeroClick);
 
     // Ruins parallax zoom
     if (ruinsRef.current) {
@@ -137,6 +185,11 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         },
       });
     }
+
+    return () => {
+      window.removeEventListener("scroll", handleScrollVanish);
+      heroEl?.removeEventListener("click", handleHeroClick);
+    };
   }, [stats, prefersReduced]);
 
   // Cursor proximity effect on variable font axes
@@ -199,11 +252,16 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         />
       </div>
 
-      {/* Layer 2: Sun Disc (62vmin, breathes 1 -> 1.03) */}
+      {/* Layer 2: Soft Atmospheric Sun Aura behind Hercules (radial halo, not solid flat disc) */}
       <div
         ref={sunDiscRef}
         aria-hidden="true"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[62vmin] h-[62vmin] rounded-full bg-sun pointer-events-none z-10 animate-pulse duration-[6000ms] shadow-[0_0_120px_rgba(229,56,27,0.3)]"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[62vmin] h-[62vmin] rounded-full pointer-events-none z-10 will-change-[transform,opacity]"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(217, 119, 6, 0.38) 0%, rgba(217, 119, 6, 0.14) 42%, rgba(217, 119, 6, 0.03) 60%, transparent 72%)",
+          filter: "blur(12px)",
+        }}
       />
 
       {/* Layer 3: Giant Name "solarquack" sitting behind statue */}

@@ -16,26 +16,37 @@ export function Embers({ className }: { className?: string }) {
     if (!ctx) return;
 
     let animId: number;
-    let width = (canvas.width = canvas.offsetWidth);
-    let height = (canvas.height = canvas.offsetHeight);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const updateDimensions = () => {
+      const w = canvas.parentElement?.clientWidth || window.innerWidth;
+      const h = canvas.parentElement?.clientHeight || window.innerHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.scale(dpr, dpr);
+      return { width: w, height: h };
+    };
+
+    let { width, height } = updateDimensions();
 
     const handleResize = () => {
       if (!canvas) return;
-      width = canvas.width = canvas.offsetWidth;
-      height = canvas.height = canvas.offsetHeight;
+      const dims = updateDimensions();
+      width = dims.width;
+      height = dims.height;
     };
     window.addEventListener("resize", handleResize);
 
-    // 60 ember particles
-    const count = 60;
+    // 40 subtle ember particles distributed across entire hero
+    const count = 40;
     const particles = Array.from({ length: count }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 2 + 0.8,
-      speedY: Math.random() * 0.8 + 0.3,
-      speedX: (Math.random() - 0.5) * 0.4,
-      opacity: Math.random() * 0.7 + 0.2,
-      isSun: Math.random() < 0.25, // 25% sun accent, 75% bone
+      size: Math.random() * 1.8 + 0.8,
+      speedY: Math.random() * 0.6 + 0.25,
+      speedX: (Math.random() - 0.5) * 0.3,
+      opacity: Math.random() * 0.5 + 0.15,
+      isSun: Math.random() < 0.2, // subtle sun accent
     }));
 
     const render = () => {
@@ -46,7 +57,7 @@ export function Embers({ className }: { className?: string }) {
         p.y -= p.speedY;
         p.x += p.speedX;
 
-        // Wrap around
+        // Wrap around smoothly across entire viewport
         if (p.y < 0) {
           p.y = height + 10;
           p.x = Math.random() * width;
@@ -57,8 +68,8 @@ export function Embers({ className }: { className?: string }) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.isSun
-          ? `rgba(229, 56, 27, ${p.opacity})` // --sun
-          : `rgba(233, 227, 210, ${p.opacity})`; // --bone
+          ? `rgba(217, 119, 6, ${p.opacity})` // --sun (#D97706)
+          : `rgba(233, 227, 210, ${p.opacity})`; // --bone (#E9E3D2)
         ctx.fill();
       }
 

@@ -69,6 +69,14 @@ const nextConfig = {
   },
   webpack: (config) => {
     config.resolve.symlinks = false;
+    config.ignoreWarnings = [
+      ...(config.ignoreWarnings || []),
+      /Unable to snapshot resolve dependencies/,
+      /PackFileCacheStrategy/,
+    ];
+    config.infrastructureLogging = {
+      level: "error",
+    };
     config.module.rules.push({
       test: /\.(glsl|vs|fs|vert|frag)$/,
       exclude: /node_modules/,

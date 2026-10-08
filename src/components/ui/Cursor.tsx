@@ -45,9 +45,9 @@ export function Cursor() {
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    // Lagging quickTo for ring
-    const xToRing = gsap.quickTo(ring, "x", { duration: 0.45, ease: "power3.out" });
-    const yToRing = gsap.quickTo(ring, "y", { duration: 0.45, ease: "power3.out" });
+    // Snappy, ultra-responsive quickTo for reticle ring (0.04s duration for instantaneous tracking)
+    const xToRing = gsap.quickTo(ring, "x", { duration: 0.04, ease: "power2.out" });
+    const yToRing = gsap.quickTo(ring, "y", { duration: 0.04, ease: "power2.out" });
 
     // Slow 20s continuous rotation for ring ticks
     const ringRotation = gsap.to(ring, {
@@ -60,9 +60,9 @@ export function Cursor() {
     const onMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
 
-      // Immediate dot placement
+      // Instant dot placement
       gsap.set(dot, { x: e.clientX, y: e.clientY });
-      // Smooth lagging ring placement
+      // Immediate responsive ring tracking
       xToRing(e.clientX);
       yToRing(e.clientY);
 
@@ -185,7 +185,7 @@ export function Cursor() {
       <div
         ref={ringRef}
         aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-[99998] -translate-x-1/2 -translate-y-1/2 mix-blend-difference flex items-center justify-center transition-all duration-300"
+        className="pointer-events-none fixed top-0 left-0 z-[99998] -translate-x-1/2 -translate-y-1/2 mix-blend-difference flex items-center justify-center transition-[width,height,background-color,border-color] duration-150 ease-out"
         style={{
           width: cursorState.isHover ? 72 : cursorState.isText ? 2 : 44,
           height: cursorState.isHover ? 72 : cursorState.isText ? 22 : 44,

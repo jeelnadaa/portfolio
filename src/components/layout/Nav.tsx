@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { siteConfig } from "@/data/site";
 import { TextRoll } from "@/components/ui/TextRoll";
 import { SoundToggle } from "@/components/layout/SoundToggle";
@@ -16,12 +17,13 @@ interface NavProps {
 const NAV_ITEMS = [
   { href: "/work", label: "Work", numeral: "Α" },
   { href: "/#armory", label: "Armory", numeral: "Β" },
-  { href: "/#path", label: "Path", numeral: "Γ" },
+  { href: "/path", label: "Path", numeral: "Γ" },
   { href: "/about", label: "About", numeral: "Δ" },
   { href: "/log", label: "Log", numeral: "Ε" },
 ];
 
 export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
+  const pathname = usePathname();
   const [scrolledPast, setScrolledPast] = useState(false);
   const [navVisible, setNavVisible] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -31,13 +33,22 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
   const lastScrollY = useRef(0);
   const blrTime = useBengaluruTime();
 
-  // Scroll detection: hides on scroll down, returns on scroll up + progress line
+  // Instant scroll detection: 0ms lag tracking for top orange indicator
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
       const currentY = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = docHeight > 0 ? (currentY / docHeight) * 100 : 0;
-      setScrollProgress(progress);
+
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrollProgress(progress);
+          ticking = false;
+        });
+        ticking = true;
+      }
 
       if (currentY > 60) {
         setScrolledPast(true);
@@ -106,11 +117,11 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
 
   return (
     <>
-      {/* 2px Sun-red scroll progress bar along top */}
+      {/* 2px Sun-red scroll progress bar along top: instant zero-lag GPU scaleX */}
       <div
         aria-hidden="true"
-        className="fixed top-0 left-0 h-[2px] bg-sun z-[99950] transition-all duration-75 ease-out"
-        style={{ width: `${scrollProgress}%` }}
+        className="fixed top-0 left-0 right-0 h-[2px] bg-sun z-[99950] origin-left pointer-events-none will-change-transform"
+        style={{ transform: `scaleX(${scrollProgress / 100})` }}
       />
 
       <header
@@ -144,6 +155,13 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={(e) => {
+                  if (item.href === "/#armory" && pathname === "/") {
+                    e.preventDefault();
+                    const el = document.getElementById("armory");
+                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
                 className="py-1"
                 data-cursor="VIEW"
               >

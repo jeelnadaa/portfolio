@@ -130,8 +130,25 @@ export function HeroScene({ className }: { className?: string }) {
       };
     };
 
+    const onTouch = (e: TouchEvent) => {
+      if (e.touches && e.touches.length > 0) {
+        const touch = e.touches[0];
+        mousePos.current = {
+          x: touch.clientX / window.innerWidth,
+          y: 1.0 - touch.clientY / window.innerHeight,
+          lastMoved: Date.now(),
+        };
+      }
+    };
+
     window.addEventListener("mousemove", onMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMouseMove);
+    window.addEventListener("touchmove", onTouch, { passive: true });
+    window.addEventListener("touchstart", onTouch, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("touchmove", onTouch);
+      window.removeEventListener("touchstart", onTouch);
+    };
   }, []);
 
   // Static Fallback for reduced motion or no WebGL

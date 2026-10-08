@@ -1,4 +1,51 @@
 const fs = require("node:fs");
+const path = require("node:path");
+const os = require("node:os");
+
+const origOpenSync = fs.openSync;
+fs.openSync = function (p, flags, mode) {
+  try {
+    return origOpenSync.call(fs, p, flags, mode);
+  } catch (err) {
+    if (err && err.code === "EPERM" && typeof p === "string" && p.includes("trace")) {
+      const fallback = path.join(os.tmpdir(), `next-trace-${Date.now()}`);
+      return origOpenSync.call(fs, fallback, flags, mode);
+    }
+    throw err;
+  }
+};
+
+const origOpen = fs.open;
+fs.open = function (p, flags, mode, cb) {
+  let callback = cb;
+  let m = mode;
+  if (typeof mode === "function") {
+    callback = mode;
+    m = undefined;
+  }
+  return origOpen.call(fs, p, flags, m, (err, fd) => {
+    if (err && err.code === "EPERM" && typeof p === "string" && p.includes("trace")) {
+      const fallback = path.join(os.tmpdir(), `next-trace-${Date.now()}`);
+      return origOpen.call(fs, fallback, flags, m, callback);
+    }
+    if (callback) callback(err, fd);
+  });
+};
+
+if (fs.promises && fs.promises.open) {
+  const origPromisesOpen = fs.promises.open;
+  fs.promises.open = async function (p, flags, mode) {
+    try {
+      return await origPromisesOpen.call(fs.promises, p, flags, mode);
+    } catch (err) {
+      if (err && err.code === "EPERM" && typeof p === "string" && p.includes("trace")) {
+        const fallback = path.join(os.tmpdir(), `next-trace-${Date.now()}`);
+        return await origPromisesOpen.call(fs.promises, fallback, flags, mode);
+      }
+      throw err;
+    }
+  };
+}
 
 
 const origSync = fs.readlinkSync;

@@ -62,6 +62,13 @@ export const glyphs: Record<string, GlyphEntry> = {
     englishLabel: "Path",
     numeral: "06",
   },
+  path: {
+    place: "Path",
+    giantLetter: "Π",
+    greekWord: "ΠΟΡΕΙΑ",
+    englishLabel: "Path",
+    numeral: "06",
+  },
   status: {
     place: "Status",
     giantLetter: "Κ",
