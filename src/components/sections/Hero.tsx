@@ -204,14 +204,14 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         }}
       />
 
-      {/* Layer 3: Giant Name "solarquack" flanking Hercules on left (solar) and right (quack) */}
+      {/* Layer 3: Giant Name "solarquack" at Hercules' shoulder height level */}
       <div
         aria-label={siteConfig.brand}
-        className="absolute top-1/2 left-0 right-0 -translate-y-1/2 z-20 flex justify-center items-center pointer-events-none px-4 sm:px-8 select-none"
+        className="absolute top-[32%] sm:top-[34%] left-0 right-0 -translate-y-1/2 z-20 flex justify-center items-center pointer-events-none px-4 sm:px-8 select-none"
       >
         <h1 className="font-display font-light text-bone/35 tracking-tightest leading-none text-[clamp(3.8rem,14vw,17.5rem)] flex items-center justify-between w-full max-w-7xl">
-          {/* Left Wing: "solar" (s, o, l, a, r) */}
-          <div className="flex-1 flex justify-between pr-2 sm:pr-4 md:pr-6">
+          {/* Left Wing: "solar" (s, o, l, a, r) - shifted slightly right so 'r' tucks behind Hercules' arm */}
+          <div className="flex-1 flex justify-between pr-1 sm:pr-2 md:pr-3 translate-x-3 sm:translate-x-6 md:translate-x-10">
             {brandChars.slice(0, 5).map((char, idx) => (
               <span
                 key={idx}
@@ -230,8 +230,8 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
             ))}
           </div>
 
-          {/* Central Architectural Gap for Hercules statue so 'r' and 'q' are never cut */}
-          <div className="w-16 sm:w-28 md:w-44 lg:w-60 shrink-0 pointer-events-none" aria-hidden="true" />
+          {/* Central Architectural Gap for Hercules statue */}
+          <div className="w-10 sm:w-20 md:w-32 lg:w-44 shrink-0 pointer-events-none" aria-hidden="true" />
 
           {/* Right Wing: "quack" (q, u, a, c, k) */}
           <div className="flex-1 flex justify-between pl-2 sm:pl-4 md:pl-6">

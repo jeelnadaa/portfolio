@@ -53,13 +53,18 @@ void main() {
 
   // 3. Alpha cutout from mask
   float alpha = texture2D(uMaskMap, displacedUv).r;
-  if (alpha < 0.04) {
+  if (alpha < 0.05) {
     discard;
   }
 
   // 4. Sample continuous-tone original
   vec4 colorSample = texture2D(uColorMap, displacedUv);
   float lum = dot(colorSample.rgb, vec3(0.299, 0.587, 0.114));
+
+  // Secondary safeguard: discard any background black pixels outside the marble
+  if (lum < 0.02) {
+    discard;
+  }
 
   // 5. Sword glint sweep (every 6 seconds across blade band)
   float glintCycle = mod(uTime, 6.0);

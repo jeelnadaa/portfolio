@@ -25,6 +25,8 @@ export function Preloader({ onComplete }: PreloaderProps) {
   const sunTopRef = useRef<HTMLDivElement>(null);
   const sunBottomRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
+  const promptRef = useRef<HTMLDivElement>(null);
+  const hasTriggeredRef = useRef(false);
 
   const prefersReduced = usePrefersReducedMotion();
   const { playMetalSlice } = useSound();
@@ -37,6 +39,19 @@ export function Preloader({ onComplete }: PreloaderProps) {
       return;
     }
 
+    const slash = slashLineRef.current;
+    if (slash) {
+      gsap.set(slash, { strokeDashoffset: 2500, opacity: 0 });
+    }
+  }, [prefersReduced, onComplete]);
+
+  const handleInitiate = () => {
+    if (hasTriggeredRef.current) return;
+    hasTriggeredRef.current = true;
+
+    // Immediately trigger metal slice sound on direct user click gesture
+    playMetalSlice();
+
     const container = containerRef.current;
     const topHalf = topHalfRef.current;
     const bottomHalf = bottomHalfRef.current;
@@ -44,8 +59,17 @@ export function Preloader({ onComplete }: PreloaderProps) {
     const sunTop = sunTopRef.current;
     const sunBottom = sunBottomRef.current;
     const counter = counterRef.current;
+    const prompt = promptRef.current;
 
-    if (!container || !topHalf || !bottomHalf || !slash || !sunTop || !sunBottom) return;
+    if (!container || !topHalf || !bottomHalf || !slash || !sunTop || !sunBottom) {
+      hasPreloadedThisSession = true;
+      setVisible(false);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));
+      }
+      if (onComplete) onComplete();
+      return;
+    }
 
     const counterObj = { count: 0 };
     const tl = gsap.timeline({
@@ -59,33 +83,26 @@ export function Preloader({ onComplete }: PreloaderProps) {
       },
     });
 
-    // 1. Initial State: Orange Sun glows in center
-    gsap.set([sunTop, sunBottom], { scale: 0.85, opacity: 0 });
-    gsap.set(slash, { strokeDashoffset: 2500, opacity: 0 });
+    // 1. Fade out prompt button immediately
+    if (prompt) {
+      tl.to(prompt, { opacity: 0, scale: 0.95, duration: 0.15, ease: "power2.in" }, 0);
+    }
 
-    // Smooth sun expansion and counter tick
-    tl.to([sunTop, sunBottom], {
-      scale: 1,
-      opacity: 1,
-      duration: 0.8,
-      ease: "power2.out",
-    })
-    .to(
+    // 2. Animate counter rapidly up to 100%
+    tl.to(
       counterObj,
       {
         count: 100,
-        duration: 0.8,
-        ease: "power2.inOut",
+        duration: 0.35,
+        ease: "power2.out",
         onUpdate: () => {
           if (counter) counter.textContent = String(Math.round(counterObj.count)).padStart(3, "0");
         },
       },
-      "<"
+      0
     );
 
-    let hasSliced = false;
-
-    // 2. Metal slice cut precisely across the orange circle
+    // 3. Metal slice cut precisely across the disc
     tl.to(
       slash,
       {
@@ -93,15 +110,11 @@ export function Preloader({ onComplete }: PreloaderProps) {
         strokeDashoffset: 0,
         duration: 0.22,
         ease: "power3.inOut",
-        onStart: () => {
-          hasSliced = true;
-          playMetalSlice();
-        },
       },
-      "+=0.08"
+      0.02
     );
 
-    // 3. Orange circle and screen halves slide apart along the slice angle
+    // 4. Disc and screen halves slide apart along the slice angle
     tl.to(
       topHalf,
       {
@@ -111,7 +124,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
         duration: 0.65,
         ease: "power2.inOut",
       },
-      "+=0.04"
+      0.22
     )
     .to(
       bottomHalf,
@@ -122,7 +135,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
         duration: 0.65,
         ease: "power2.inOut",
       },
-      "<"
+      0.22
     )
     .to(
       [sunTop, sunBottom],
@@ -132,13 +145,13 @@ export function Preloader({ onComplete }: PreloaderProps) {
         duration: 0.5,
         ease: "power2.in",
       },
-      "<"
+      0.22
     )
     .to(
       container,
       {
         opacity: 0,
-        duration: 0.35,
+        duration: 0.3,
         ease: "power2.out",
         onStart: () => {
           if (typeof window !== "undefined") {
@@ -146,39 +159,26 @@ export function Preloader({ onComplete }: PreloaderProps) {
           }
         },
       },
-      "-=0.2"
+      0.55
     );
-
-    const handleSkip = () => {
-      hasPreloadedThisSession = true;
-      // Only play metal slice sound if clicked before the slice cut occurred
-      if (!hasSliced) {
-        hasSliced = true;
-        playMetalSlice();
-      }
-      setVisible(false);
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));
-      }
-      if (onComplete) onComplete();
-      tl.kill();
-    };
-
-    container.addEventListener("click", handleSkip);
-
-    return () => {
-      container.removeEventListener("click", handleSkip);
-      tl.kill();
-    };
-  }, [prefersReduced, onComplete, playMetalSlice]);
+  };
 
   if (!visible) return null;
 
   return (
     <div
       ref={containerRef}
+      onClick={handleInitiate}
       className="fixed inset-0 z-[100000] cursor-pointer overflow-hidden bg-bg select-none will-change-opacity"
-      title="Click to enter"
+      title="Click anywhere to enter"
+      tabIndex={0}
+      role="button"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleInitiate();
+        }
+      }}
     >
       {/* Top Sliced Half */}
       <div
@@ -197,6 +197,25 @@ export function Preloader({ onComplete }: PreloaderProps) {
           aria-hidden="true"
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[42vmin] h-[42vmin] rounded-full pointer-events-none will-change-transform bg-[#E9E3D2]"
         />
+      </div>
+
+      {/* Center Interactive Prompt */}
+      <div
+        ref={promptRef}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-4 pointer-events-none will-change-transform"
+      >
+        <div className="group flex items-center gap-3 px-6 py-3 rounded-full border border-bone/40 bg-[#070706]/85 backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.85)] transition-all duration-200">
+          <span className="w-2 h-2 rounded-full bg-sun animate-ping" />
+          <span className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone group-hover:text-sun font-semibold">
+            CLICK TO ENTER
+          </span>
+          <span className="font-mono text-xs text-bone/60 group-hover:text-sun">
+            ✦
+          </span>
+        </div>
+        <div className="font-mono text-[10px] sm:text-xs uppercase tracking-dossier text-bone/60">
+          [ INITIATE SYSTEM WITH AUDIO ]
+        </div>
       </div>
 
       {/* Bottom Sliced Half */}
