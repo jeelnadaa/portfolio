@@ -42,69 +42,185 @@ export interface GithubData {
 }
 
 export async function getGithubData(): Promise<GithubData> {
-  const token = process.env.GITHUB_TOKEN;
+  let token = process.env.GITHUB_TOKEN;
+
+  // Fallback: If dev server was started before .env was modified, read directly from .env file
+  if (!token && typeof window === "undefined") {
+    try {
+      const fs = await import("fs");
+      const path = await import("path");
+      const envPath = path.resolve(process.cwd(), ".env");
+      if (fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, "utf8");
+        const match = content.match(/GITHUB_TOKEN=([^\r\n]+)/);
+        if (match) token = match[1].trim();
+      }
+    } catch {
+      // Ignore fs errors in edge environments
+    }
+  }
+
   if (!token) {
     return snapshot as GithubData;
   }
 
   try {
-    const userRes = await fetch("https://api.github.com/users/jeelnadaa", {
+    const query = `query {
+      viewer {
+        login
+        name
+        followers { totalCount }
+        following { totalCount }
+        repositories(first: 100, ownerAffiliations: OWNER, orderBy: {field: UPDATED_AT, direction: DESC}) {
+          totalCount
+          nodes {
+            name
+            stargazerCount
+            forkCount
+            isFork
+            updatedAt
+            url
+            description
+            primaryLanguage { name color }
+            languages(first: 5, orderBy: {field: SIZE, direction: DESC}) {
+              edges {
+                size
+                node { name color }
+              }
+            }
+          }
+        }
+        contributionsCollection {
+          contributionCalendar {
+            totalContributions
+            weeks {
+              contributionDays {
+                date
+                contributionCount
+                contributionLevel
+              }
+            }
+          }
+        }
+      }
+    }`;
+
+    const revalidateSeconds = process.env.NODE_ENV === "development" ? 15 : 3600;
+
+    const res = await fetch("https://api.github.com/graphql", {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "User-Agent": "solarquack-portfolio",
+        "Content-Type": "application/json",
       },
-      next: { revalidate: 3600 },
+      body: JSON.stringify({ query }),
+      next: { revalidate: revalidateSeconds },
     });
 
-    if (!userRes.ok) {
+    if (!res.ok) {
       return snapshot as GithubData;
     }
 
-    const userData = await userRes.json();
-
-    const reposRes = await fetch(
-      "https://api.github.com/users/jeelnadaa/repos?sort=updated&per_page=6&type=owner",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "User-Agent": "solarquack-portfolio",
-        },
-        next: { revalidate: 3600 },
-      }
-    );
-
-    let repos = snapshot.repos;
-    if (reposRes.ok) {
-      const reposJson = await reposRes.json();
-      if (Array.isArray(reposJson)) {
-        repos = reposJson
-          .filter((r: { fork?: boolean }) => !r.fork)
-          .slice(0, 4)
-          .map((r: { name: string; description: string; language: string; stargazers_count: number; forks_count: number; updated_at: string; html_url: string }) => ({
-            name: r.name,
-            description: r.description || "Open source project repository.",
-            language: r.language || "TypeScript",
-            stars: r.stargazers_count,
-            forks: r.forks_count || 0,
-            updatedAt: r.updated_at.split("T")[0],
-            url: r.html_url,
-          }));
-      }
+    const json = await res.json();
+    const v = json.data?.viewer;
+    if (!v) {
+      return snapshot as GithubData;
     }
+
+    let totalStars = 0;
+    const langBytes: Record<string, number> = {};
+    let totalLangBytes = 0;
+
+    type RepoNode = {
+      name: string;
+      stargazerCount: number;
+      forkCount: number;
+      isFork: boolean;
+      updatedAt: string;
+      url: string;
+      description: string | null;
+      primaryLanguage: { name: string; color: string } | null;
+      languages?: { edges: { size: number; node: { name: string; color: string } }[] };
+    };
+
+    const nodes: RepoNode[] = v.repositories?.nodes || [];
+
+    nodes.forEach((repo: RepoNode) => {
+      totalStars += repo.stargazerCount || 0;
+      (repo.languages?.edges || []).forEach((e) => {
+        const name = e.node.name;
+        const size = e.size;
+        langBytes[name] = (langBytes[name] || 0) + size;
+        totalLangBytes += size;
+      });
+    });
+
+    const langPalette: Record<string, string> = {
+      TypeScript: "#E9E3D2",
+      JavaScript: "#DDD6C3",
+      Python: "#C9A24B",
+      "Jupyter Notebook": "#8C8778",
+      Kotlin: "#6A6557",
+      "C++": "#5A564A",
+      Java: "#4A463B",
+    };
+
+    const topLanguages = Object.entries(langBytes)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([name, size]) => ({
+        name,
+        percentage: Number(((size / (totalLangBytes || 1)) * 100).toFixed(1)),
+        color: langPalette[name] || "#8C8778",
+      }));
+
+    const repos: GithubRepo[] = nodes
+      .filter((r) => !r.isFork)
+      .slice(0, 4)
+      .map((r) => ({
+        name: r.name,
+        description: r.description || "Open source software repository.",
+        language: r.primaryLanguage?.name || "TypeScript",
+        stars: r.stargazerCount || 0,
+        forks: r.forkCount || 0,
+        updatedAt: r.updatedAt ? r.updatedAt.split("T")[0] : "2026-10-08",
+        url: r.url,
+      }));
+
+    const levelMap: Record<string, number> = {
+      NONE: 0,
+      FIRST_QUARTILE: 1,
+      SECOND_QUARTILE: 2,
+      THIRD_QUARTILE: 3,
+      FOURTH_QUARTILE: 4,
+    };
+
+    type RawDay = { date: string; contributionCount: number; contributionLevel: string };
+    type RawWeek = { contributionDays: RawDay[] };
+
+    const rawWeeks: RawWeek[] = v.contributionsCollection?.contributionCalendar?.weeks || [];
+    const contributionWeeks: GithubWeek[] = rawWeeks.slice(-52).map((w) => ({
+      days: w.contributionDays.map((d) => ({
+        date: d.date,
+        count: d.contributionCount,
+        level: levelMap[d.contributionLevel] ?? (d.contributionCount > 0 ? 1 : 0),
+      })),
+    }));
 
     return {
       user: {
-        login: userData.login || "jeelnadaa",
-        name: userData.name || "Jeel Nada",
-        public_repos: userData.public_repos || snapshot.user.public_repos,
-        followers: userData.followers || snapshot.user.followers,
-        following: userData.following || snapshot.user.following,
-        totalStars: snapshot.user.totalStars,
-        totalCommits: snapshot.user.totalCommits,
+        login: v.login || "jeelnadaa",
+        name: v.name || "Jeel Nada",
+        public_repos: v.repositories?.totalCount ?? snapshot.user.public_repos,
+        followers: v.followers?.totalCount ?? snapshot.user.followers,
+        following: v.following?.totalCount ?? snapshot.user.following,
+        totalStars,
+        totalCommits: v.contributionsCollection?.contributionCalendar?.totalContributions ?? snapshot.user.totalCommits,
       },
-      languages: snapshot.languages,
-      repos,
-      contributionWeeks: snapshot.contributionWeeks,
+      languages: topLanguages.length > 0 ? topLanguages : snapshot.languages,
+      repos: repos.length > 0 ? repos : snapshot.repos,
+      contributionWeeks: contributionWeeks.length > 0 ? contributionWeeks : snapshot.contributionWeeks,
     };
   } catch {
     return snapshot as GithubData;

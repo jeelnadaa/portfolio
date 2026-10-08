@@ -308,7 +308,11 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
               <span>00 // BASE</span>
             </div>
             {heroConfig.dossierRows.map((row) => (
-              <SpecRow key={row.key} label={row.key} value={row.value} />
+              <SpecRow
+                key={row.key}
+                label={row.key}
+                value={row.key === "OPEN SOURCE" ? `${stats.repos}+ repositories` : row.value}
+              />
             ))}
           </div>
 
@@ -318,7 +322,12 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
               <span>LIVE TELEMETRY</span>
               <span>GITHUB</span>
             </div>
-            {heroConfig.stats.map((st, idx) => (
+            {[
+              { label: "REPOS", value: stats.repos, suffix: "" },
+              { label: "STARS", value: stats.stars, suffix: "★" },
+              { label: "PROJECTS", value: stats.projects, suffix: "" },
+              { label: "COMMITS", value: stats.commits, suffix: "/yr" },
+            ].map((st, idx) => (
               <div key={st.label} className="flex items-baseline justify-between font-mono text-xs sm:text-sm tracking-dossier uppercase">
                 <span className="text-muted font-medium">{st.label}</span>
                 <span
@@ -327,7 +336,7 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
                   }}
                   className="text-bone font-bold text-base sm:text-lg"
                 >
-                  {st.value}
+                  {st.value}{st.suffix}
                 </span>
               </div>
             ))}
