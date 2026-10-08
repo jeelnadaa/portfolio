@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { siteConfig } from "@/data/site";
 import { glyphs } from "@/data/glyphs";
+import { useSound } from "@/hooks/useSound";
 import { cn } from "@/lib/utils";
 
 interface MobileMenuProps {
@@ -22,6 +23,7 @@ const NAV_LINKS = [
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
+  const { playBubble } = useSound();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -66,6 +68,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             key={link.href}
             href={link.href}
             onClick={() => {
+              playBubble();
               onClose();
               if (link.href === "/#armory") {
                 try {

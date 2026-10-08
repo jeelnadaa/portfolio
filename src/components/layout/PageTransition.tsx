@@ -5,12 +5,14 @@ import { usePathname } from "next/navigation";
 import { gsap } from "@/lib/gsap";
 import { useLenis } from "@/lib/lenis";
 import { usePrefersReducedMotion } from "@/hooks/useMedia";
+import { useSound } from "@/hooks/useSound";
 import { glyphs } from "@/data/glyphs";
 
 export function PageTransition() {
   const pathname = usePathname();
   const lenis = useLenis();
   const prefersReduced = usePrefersReducedMotion();
+  const { playBubble } = useSound();
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const glyphTextRef = useRef<HTMLDivElement>(null);
@@ -67,6 +69,9 @@ export function PageTransition() {
 
       // Same route check
       if (href === pathname) return;
+
+      // Trigger navigation bubble sound
+      playBubble();
 
       // Find appropriate Greek glyph
       let nextGreek = "ΦΑΚΕΛΟΣ";
@@ -142,7 +147,7 @@ export function PageTransition() {
     return () => {
       window.removeEventListener("click", handleAnchorClick, true);
     };
-  }, [pathname, prefersReduced]);
+  }, [pathname, prefersReduced, playBubble]);
 
   if (prefersReduced) return null;
 

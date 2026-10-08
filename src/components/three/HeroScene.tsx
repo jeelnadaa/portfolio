@@ -37,7 +37,7 @@ function ShaderMesh({
       uTorchRadius: { value: 0.28 },
       uTorchStrength: { value: 1.0 },
       uScroll: { value: 0 },
-      uSun: { value: new THREE.Vector3(0.898, 0.22, 0.106) }, // #E5381B
+      uSun: { value: new THREE.Vector3(0.914, 0.890, 0.824) }, // Bone #E9E3D2
       uBone: { value: new THREE.Vector3(0.914, 0.890, 0.824) }, // #E9E3D2
       uDitherScale: { value: 2.0 },
       uRes: { value: new THREE.Vector2(size.width, size.height) },

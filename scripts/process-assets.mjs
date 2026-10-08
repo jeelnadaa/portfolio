@@ -193,14 +193,6 @@ function applyBayerDither(rgbaBuffer, mask, width, height, scale, isBust = false
       const idx = y * width + x;
       const pIdx = idx * 4;
 
-      if (mask[idx] === 0) {
-        dithered[pIdx] = 0;
-        dithered[pIdx + 1] = 0;
-        dithered[pIdx + 2] = 0;
-        dithered[pIdx + 3] = 0;
-        continue;
-      }
-
       const r = rgbaBuffer[pIdx];
       const g = rgbaBuffer[pIdx + 1];
       const b = rgbaBuffer[pIdx + 2];
@@ -224,10 +216,10 @@ function applyBayerDither(rgbaBuffer, mask, width, height, scale, isBust = false
         dithered[pIdx + 2] = BONE_RGB[2];
         dithered[pIdx + 3] = 255;
       } else {
-        dithered[pIdx] = 0;
-        dithered[pIdx + 1] = 0;
-        dithered[pIdx + 2] = 0;
-        dithered[pIdx + 3] = 0;
+        dithered[pIdx] = 14;
+        dithered[pIdx + 1] = 13;
+        dithered[pIdx + 2] = 11;
+        dithered[pIdx + 3] = 255;
       }
     }
   }
@@ -282,27 +274,28 @@ async function processSingleImage(fileName, baseName) {
     .png()
     .toFile(path.join(OUT_DIR, `${baseName}.mask.png`));
 
-  // Output .color.webp and .color.avif
-  await sharp(cutoutRgba, { raw: { width, height, channels: 4 } })
+  // For continuous tone color images, export raw uncorrupted pixels with solid alpha
+  // to prevent dark shadows on statues from getting cut out
+  await sharp(rawRgba, { raw: { width, height, channels: 4 } })
     .webp({ quality: 90 })
     .toFile(path.join(OUT_DIR, `${baseName}.color.webp`));
 
-  await sharp(cutoutRgba, { raw: { width, height, channels: 4 } })
+  await sharp(rawRgba, { raw: { width, height, channels: 4 } })
     .avif({ quality: 85 })
     .toFile(path.join(OUT_DIR, `${baseName}.color.avif`));
 
-  // Output .bone.png (Bayer 8x8 dithered)
+  // Output .bone.png (Bayer 8x8 dithered on raw pixels)
   const isBust = baseName === "bust-fractured";
-  const ditheredBuffer = applyBayerDither(cutoutRgba, erodedMask, width, height, ditherScale, isBust);
+  const ditheredBuffer = applyBayerDither(rawRgba, rawMask, width, height, ditherScale, isBust);
 
   await sharp(ditheredBuffer, { raw: { width, height, channels: 4 } })
     .png({ compressionLevel: 9 })
     .toFile(path.join(OUT_DIR, `${baseName}.bone.png`));
 
-  // Responsive widths
+  // Responsive widths from clean raw pixels
   const responsiveSizes = [640, 1280, 2048].filter((w) => w < width);
   for (const w of responsiveSizes) {
-    await sharp(cutoutRgba, { raw: { width, height, channels: 4 } })
+    await sharp(rawRgba, { raw: { width, height, channels: 4 } })
       .resize({ width: w })
       .webp({ quality: 85 })
       .toFile(path.join(OUT_DIR, `${baseName}-${w}.webp`));

@@ -3,10 +3,12 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { siteConfig } from "@/data/site";
 import { TextRoll } from "@/components/ui/TextRoll";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 import { useBengaluruTime } from "@/hooks/useTime";
+import { useSound } from "@/hooks/useSound";
 import { useLenis } from "@/lib/lenis";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +27,7 @@ const NAV_ITEMS = [
 export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
   const pathname = usePathname();
   const lenis = useLenis();
+  const { playBubble } = useSound();
   const [scrolledPast, setScrolledPast] = useState(false);
   const [navVisible, setNavVisible] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -135,15 +138,25 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
         )}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Left: Logo sq monogram + solarquack */}
+          {/* Left: Logo GitHub PFP avatar + solarquack */}
           <Link
             href="/"
-            className="flex items-center gap-2 group select-none"
+            onClick={() => {
+              if (pathname !== "/") playBubble();
+            }}
+            className="flex items-center gap-2.5 group select-none"
             data-cursor="OPEN"
           >
-            <div className="w-7 h-7 rounded-full border border-bone flex items-center justify-center font-display font-bold text-xs text-bone group-hover:border-sun group-hover:text-sun transition-colors relative">
-              <span>sq</span>
-              <span className="w-1 h-1 rounded-full bg-sun absolute -top-0.5 -right-0.5" />
+            <div className="w-7 h-7 rounded-full border border-bone/60 overflow-hidden flex items-center justify-center relative group-hover:border-sun transition-colors">
+              <Image
+                src="/avatar.jpg"
+                alt={siteConfig.brand}
+                width={28}
+                height={28}
+                className="w-full h-full object-cover"
+                priority
+              />
+              <span className="w-1.5 h-1.5 rounded-full bg-sun absolute -top-0.5 -right-0.5 ring-1 ring-bg" />
             </div>
             <span className="font-mono text-xs font-semibold tracking-dossier uppercase text-bone group-hover:text-sun transition-colors">
               {siteConfig.brand}
@@ -157,6 +170,7 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
                 key={item.href}
                 href={item.href}
                 onClick={(e) => {
+                  playBubble();
                   if (item.href === "/#armory") {
                     try {
                       sessionStorage.setItem("scroll_to_armory", "true");

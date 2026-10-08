@@ -86,12 +86,12 @@ void main() {
   // Outside torch: two-tone bone on black, slightly dimmed (0.55 opacity)
   vec3 ditherColor = mix(vec3(0.0), uBone, dithered) * 0.65;
 
-  // Inside torch: cross-fade to full marble continuous tone with warm sun rim
-  vec3 litContinuous = colorSample.rgb * 1.15 + uSun * glintBoost * 0.6;
+  // Inside torch: cross-fade to full marble continuous tone with subtle bone rim
+  vec3 litContinuous = colorSample.rgb * 1.15 + uBone * glintBoost * 0.5;
   // Rim lighting on lit edges
   vec2 torchDir = normalize(displacedUv - uTorch + vec2(0.0001));
-  float rim = max(0.0, dot(vec2(0.0, 1.0), torchDir)) * 0.25 * torch;
-  litContinuous += uSun * rim;
+  float rim = max(0.0, dot(vec2(0.0, 1.0), torchDir)) * 0.18 * torch;
+  litContinuous += uBone * rim;
 
   // Final blend between dithered marble and torch continuous tone
   vec3 finalColor = mix(ditherColor, litContinuous, torch);

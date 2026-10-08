@@ -184,15 +184,11 @@ export function Preloader({ onComplete }: PreloaderProps) {
           <span>{siteConfig.brand.toUpperCase()} // SYSTEM</span>
         </div>
 
-        {/* Top Half of Sliced Sun Disc */}
+        {/* Top Half of Sliced 2D Bone Disc */}
         <div
           ref={sunTopRef}
           aria-hidden="true"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44vmin] h-[44vmin] rounded-full pointer-events-none will-change-transform"
-          style={{
-            background: "radial-gradient(circle, #D97706 0%, rgba(217, 119, 6, 0.7) 45%, rgba(217, 119, 6, 0.1) 70%)",
-            boxShadow: "0 0 80px rgba(217, 119, 6, 0.4)",
-          }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[42vmin] h-[42vmin] rounded-full pointer-events-none will-change-transform bg-[#E9E3D2]"
         />
       </div>
 
@@ -202,15 +198,11 @@ export function Preloader({ onComplete }: PreloaderProps) {
         className="absolute inset-0 bg-[#070706] z-10 will-change-transform"
         style={{ clipPath: "polygon(0 70%, 100% 40%, 100% 100%, 0 100%)" }}
       >
-        {/* Bottom Half of Sliced Sun Disc */}
+        {/* Bottom Half of Sliced 2D Bone Disc */}
         <div
           ref={sunBottomRef}
           aria-hidden="true"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44vmin] h-[44vmin] rounded-full pointer-events-none will-change-transform"
-          style={{
-            background: "radial-gradient(circle, #D97706 0%, rgba(217, 119, 6, 0.7) 45%, rgba(217, 119, 6, 0.1) 70%)",
-            boxShadow: "0 0 80px rgba(217, 119, 6, 0.4)",
-          }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[42vmin] h-[42vmin] rounded-full pointer-events-none will-change-transform bg-[#E9E3D2]"
         />
 
         <div className="absolute bottom-8 left-8 font-mono text-[11px] uppercase tracking-dossier text-bone/60 flex items-center gap-2">

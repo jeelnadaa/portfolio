@@ -67,9 +67,7 @@ export function Embers({ className }: { className?: string }) {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.isSun
-          ? `rgba(217, 119, 6, ${p.opacity})` // --sun (#D97706)
-          : `rgba(233, 227, 210, ${p.opacity})`; // --bone (#E9E3D2)
+        ctx.fillStyle = `rgba(233, 227, 210, ${p.opacity * 0.7})`;
         ctx.fill();
       }
 

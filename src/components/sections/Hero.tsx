@@ -139,37 +139,44 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
       isVanished = true;
       clearFlipTimers();
 
+      // Filter only mounted non-null letter elements to prevent null _gsap crashes
+      const validLetters = letterRefs.current.filter((el): el is HTMLSpanElement => Boolean(el));
+
       // Keep letters as English brand letters on fade out (no Greek letters)
-      letterRefs.current.forEach((el, idx) => {
-        if (!el) return;
-        el.textContent = brandChars[idx];
+      validLetters.forEach((el, idx) => {
+        el.textContent = brandChars[idx] || "";
         el.style.fontFamily = "var(--font-fraunces)";
         el.style.fontSize = "";
       });
 
-      gsap.to(letterRefs.current, {
-        opacity: 0,
-        yPercent: -12,
-        duration: 1.1,
-        ease: "power2.inOut",
-        stagger: 0.02,
-      });
+      if (validLetters.length > 0) {
+        gsap.killTweensOf(validLetters);
+        gsap.to(validLetters, {
+          opacity: 0,
+          yPercent: -8,
+          duration: 0.28,
+          ease: "power2.out",
+          stagger: 0.01,
+        });
+      }
 
       if (sunDiscRef.current) {
+        gsap.killTweensOf(sunDiscRef.current);
         gsap.to(sunDiscRef.current, {
           opacity: 0,
-          scale: 0.78,
-          duration: 1.1,
-          ease: "power2.inOut",
+          scale: 0.8,
+          duration: 0.28,
+          ease: "power2.out",
         });
       }
     };
 
-    // Scroll trigger: vanish on scroll down > 30px, fade in with Greek on scroll back to top <= 10px
+    // Scroll trigger: start fading immediately as soon as user scrolls down even 2px
     const handleScroll = () => {
-      if (window.scrollY > 30) {
+      const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      if (scrollY > 2) {
         triggerVanish();
-      } else if (window.scrollY <= 10) {
+      } else if (scrollY <= 2) {
         if (isVanished) {
           playFadeInWithGreek();
         }
@@ -193,6 +200,10 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
     }
 
     return () => {
+      clearFlipTimers();
+      const validLetters = letterRefs.current.filter((el): el is HTMLSpanElement => Boolean(el));
+      gsap.killTweensOf(validLetters);
+      if (sunDiscRef.current) gsap.killTweensOf(sunDiscRef.current);
       window.removeEventListener("scroll", handleScroll);
     };
   }, [stats, prefersReduced]);
@@ -257,14 +268,14 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         />
       </div>
 
-      {/* Layer 2: Soft Atmospheric Sun Aura behind Hercules (radial halo, not solid flat disc) */}
+      {/* Layer 2: Soft Atmospheric Aura behind Hercules */}
       <div
         ref={sunDiscRef}
         aria-hidden="true"
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[62vmin] h-[62vmin] rounded-full pointer-events-none z-10 will-change-[transform,opacity]"
         style={{
           background:
-            "radial-gradient(circle, rgba(217, 119, 6, 0.38) 0%, rgba(217, 119, 6, 0.14) 42%, rgba(217, 119, 6, 0.03) 60%, transparent 72%)",
+            "radial-gradient(circle, rgba(233, 227, 210, 0.08) 0%, rgba(233, 227, 210, 0.02) 42%, transparent 68%)",
           filter: "blur(12px)",
         }}
       />

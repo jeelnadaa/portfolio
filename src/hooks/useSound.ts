@@ -4,6 +4,7 @@ import React, { createContext, useContext, useCallback, useRef } from "react";
 
 interface SoundContextType {
   playMetalSlice: () => void;
+  playBubble: () => void;
   soundEnabled: boolean;
   toggleSound: () => void;
   playSlash: () => void;
@@ -13,6 +14,7 @@ interface SoundContextType {
 
 const SoundContext = createContext<SoundContextType>({
   playMetalSlice: () => {},
+  playBubble: () => {},
   soundEnabled: false,
   toggleSound: () => {},
   playSlash: () => {},
@@ -26,22 +28,32 @@ export function useSound() {
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
   const metalAudioRef = useRef<HTMLAudioElement | null>(null);
+  const bubbleAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const audioBufferRef = useRef<AudioBuffer | null>(null);
+  const bubbleBufferRef = useRef<AudioBuffer | null>(null);
   const hasUnlockedRef = useRef(false);
 
   // Preload audio and initialize Web Audio API on mount
   React.useEffect(() => {
     try {
-      // 1. Preload HTML5 Audio
+      // 1. Preload HTML5 Audio elements
       const audio = new Audio("/audio/sfx-slash.mp3");
       audio.preload = "auto";
       audio.volume = 0.85;
       audio.load();
       metalAudioRef.current = audio;
 
+      const bubbleAudio = new Audio("/audio/sfx-bubble.wav");
+      bubbleAudio.preload = "auto";
+      bubbleAudio.volume = 0.6;
+      bubbleAudio.load();
+      bubbleAudioRef.current = bubbleAudio;
+
       // 2. Initialize AudioContext
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioCtx) {
         const ctx = new AudioCtx();
         audioCtxRef.current = ctx;
@@ -52,6 +64,15 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
           .then((buf) => ctx.decodeAudioData(buf))
           .then((decoded) => {
             audioBufferRef.current = decoded;
+          })
+          .catch(() => {});
+
+        // Fetch and decode bubble sound into memory buffer
+        fetch("/audio/sfx-bubble.wav")
+          .then((res) => res.arrayBuffer())
+          .then((buf) => ctx.decodeAudioData(buf))
+          .then((decoded) => {
+            bubbleBufferRef.current = decoded;
           })
           .catch(() => {});
       }
@@ -65,6 +86,9 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
       }
       if (metalAudioRef.current) {
         metalAudioRef.current.load();
+      }
+      if (bubbleAudioRef.current) {
+        bubbleAudioRef.current.load();
       }
     };
 
@@ -136,7 +160,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, []);
 
-  // Exclusively for the opening metal slice animation
+  // Exclusively for the opening metal slice animation - immediate with ZERO deferred click delay
   const playMetalSlice = useCallback(() => {
     try {
       const ctx = audioCtxRef.current;
@@ -145,7 +169,6 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
           ctx.resume().catch(() => {});
         }
 
-        // Play decoded buffer if ready
         if (audioBufferRef.current) {
           const src = ctx.createBufferSource();
           src.buffer = audioBufferRef.current;
@@ -155,30 +178,67 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
           gain.connect(ctx.destination);
           src.start(0);
         } else {
-          // Play synthesized slash
           synthesizeMetalSlice(ctx);
         }
       }
 
-      // Also trigger HTML5 Audio element
+      // Also trigger HTML5 Audio element immediately; do not defer to next click if blocked
       if (metalAudioRef.current) {
         metalAudioRef.current.currentTime = 0;
-        metalAudioRef.current.play().catch(() => {
-          // If browser blocked autoplay, attempt to play on next user click
-          const playOnNextClick = () => {
-            if (audioCtxRef.current && audioCtxRef.current.state === "suspended") {
-              audioCtxRef.current.resume().catch(() => {});
-            }
-            if (metalAudioRef.current) {
-              metalAudioRef.current.play().catch(() => {});
-            }
-            window.removeEventListener("click", playOnNextClick);
-          };
-          window.addEventListener("click", playOnNextClick, { once: true });
-        });
+        metalAudioRef.current.play().catch(() => {});
       }
     } catch {}
   }, [synthesizeMetalSlice]);
+
+  // Crisp organic bubble sound on page navigation
+  const playBubble = useCallback(() => {
+    try {
+      const ctx = audioCtxRef.current;
+      if (ctx) {
+        if (ctx.state === "suspended") {
+          ctx.resume().catch(() => {});
+        }
+
+        if (bubbleBufferRef.current) {
+          const src = ctx.createBufferSource();
+          src.buffer = bubbleBufferRef.current;
+          const gain = ctx.createGain();
+          gain.gain.value = 0.7;
+          src.connect(gain);
+          gain.connect(ctx.destination);
+          src.start(0);
+          return;
+        }
+
+        // Realtime Web Audio bubble sound synthesis (sine upward frequency ramp + resonant pop)
+        const t = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(390, t);
+        osc.frequency.exponentialRampToValueAtTime(940, t + 0.05);
+        osc.frequency.exponentialRampToValueAtTime(820, t + 0.1);
+
+        gain.gain.setValueAtTime(0.001, t);
+        gain.gain.linearRampToValueAtTime(0.3, t + 0.006);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(t);
+        osc.stop(t + 0.12);
+        return;
+      }
+
+      // HTML5 Audio element fallback
+      if (bubbleAudioRef.current) {
+        bubbleAudioRef.current.currentTime = 0;
+        bubbleAudioRef.current.play().catch(() => {});
+      }
+    } catch {}
+  }, []);
 
   // All other SFX removed as requested
   const playSlash = useCallback(() => {}, []);
@@ -190,6 +250,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     {
       value: {
         playMetalSlice,
+        playBubble,
         soundEnabled: false,
         toggleSound,
         playSlash,
