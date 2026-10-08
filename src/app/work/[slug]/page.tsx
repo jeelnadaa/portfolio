@@ -5,9 +5,8 @@ import { siteConfig } from "@/data/site";
 import { ProjectPlaceholder } from "@/components/ui/ProjectPlaceholder";
 import { BoneImage } from "@/components/ui/BoneImage";
 import { Button } from "@/components/ui/Button";
-import { Diagram } from "@/components/project/Diagram";
+import { ProjectNarrative } from "@/components/project/ProjectNarrative";
 import { Gallery } from "@/components/project/Gallery";
-import { CodeBlock } from "@/components/project/CodeBlock";
 import { NextProject } from "@/components/project/NextProject";
 import { MetaTable } from "@/components/project/MetaTable";
 import { GhostGlyph } from "@/components/ui/GhostGlyph";
@@ -136,62 +135,7 @@ export default async function CaseStudyPage({ params }: CaseStudyProps) {
           </div>
 
           {/* 4. Core Narrative Sections */}
-          <div className="space-y-12">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 border-b border-rule pb-10">
-              <div className="md:col-span-4 font-mono text-xs uppercase tracking-dossier text-muted">
-                01 // PROBLEM
-              </div>
-              <div className="md:col-span-8 font-sans text-sm sm:text-base text-bone/80 leading-relaxed space-y-4">
-                <p>
-                  High transaction concurrency in distributed systems frequently creates thread contention, cache thrashing, and memory fragmentation.
-                </p>
-                <CodeBlock
-                  code={`// Memory alignment barrier check\nvoid* aligned_alloc(size_t alignment, size_t size) {\n  void* ptr = nullptr;\n  posix_memalign(&ptr, alignment, size);\n  return ptr;\n}`}
-                  language="cpp"
-                  filename="allocator.cpp"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 border-b border-rule pb-10">
-              <div className="md:col-span-4 font-mono text-xs uppercase tracking-dossier text-muted">
-                02 // APPROACH
-              </div>
-              <div className="md:col-span-8 font-sans text-sm sm:text-base text-bone/80 leading-relaxed space-y-4">
-                <p>
-                  Decoupled the ingestion path from the write-ahead log flush queue by maintaining fixed-size circular ring buffers.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 border-b border-rule pb-10">
-              <div className="md:col-span-4 font-mono text-xs uppercase tracking-dossier text-muted">
-                03 // BUILD & TOPOLOGY
-              </div>
-              <div className="md:col-span-8 space-y-6">
-                <p className="font-sans text-sm sm:text-base text-bone/80 leading-relaxed">
-                  Implemented the core coordinator engine with strict bounds checks and event-loop lag monitors.
-                </p>
-                {project.architecture && (
-                  <Diagram
-                    nodes={project.architecture.nodes}
-                    edges={project.architecture.edges}
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 border-b border-rule pb-10">
-              <div className="md:col-span-4 font-mono text-xs uppercase tracking-dossier text-muted">
-                04 // LEARNED & RETROSPECTIVE
-              </div>
-              <div className="md:col-span-8 font-sans text-sm sm:text-base text-bone/80 leading-relaxed space-y-4">
-                <p>
-                  Profiling long-running processes revealed that pre-allocating contiguous buffers completely eliminated GC stalls and stabilized p99 tail latency.
-                </p>
-              </div>
-            </div>
-          </div>
+          <ProjectNarrative project={project} />
 
           {/* 7. Metrics */}
           {project.metrics && project.metrics.length > 0 && (
