@@ -49,91 +49,172 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
 
     if (prefersReduced) return;
 
+    let isVanished = false;
+    let flipTimers: NodeJS.Timeout[] = [];
+
+    const clearFlipTimers = () => {
+      flipTimers.forEach((t) => clearInterval(t));
+      flipTimers = [];
+    };
+
     // Entrance animation for giant name solarquack:
     // Flips through random Greek capitals, then settles into Fraunces glyph
-    letterRefs.current.forEach((el, idx) => {
-      if (!el) return;
-      const finalChar = brandChars[idx];
-      let flipCount = 0;
-      const totalFlips = 5;
+    const playEntrance = () => {
+      isVanished = false;
+      clearFlipTimers();
 
-      const flipInterval = setInterval(() => {
-        flipCount++;
-        if (flipCount >= totalFlips) {
-          clearInterval(flipInterval);
-          el.textContent = finalChar;
-          el.style.fontFamily = "var(--font-fraunces)";
-        } else {
-          el.textContent = GREEK_FLIP_CHARS[(idx + flipCount) % GREEK_FLIP_CHARS.length];
-          el.style.fontFamily = "var(--font-didot)";
-        }
-      }, 60 + idx * 10);
+      letterRefs.current.forEach((el, idx) => {
+        if (!el) return;
+        const finalChar = brandChars[idx];
+        let flipCount = 0;
+        const totalFlips = 5;
 
-      gsap.fromTo(
-        el,
-        { yPercent: 100, opacity: 0 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 1.0,
-          delay: 0.1 + idx * 0.05,
-          ease: "expo.out",
-        }
-      );
-    });
+        const flipInterval = setInterval(() => {
+          flipCount++;
+          if (flipCount >= totalFlips) {
+            clearInterval(flipInterval);
+            el.textContent = finalChar;
+            el.style.fontFamily = "var(--font-fraunces)";
+          } else {
+            el.textContent = GREEK_FLIP_CHARS[(idx + flipCount) % GREEK_FLIP_CHARS.length];
+            el.style.fontFamily = "var(--font-didot)";
+          }
+        }, 50 + idx * 8);
+        flipTimers.push(flipInterval);
+
+        gsap.fromTo(
+          el,
+          { yPercent: 25, opacity: 0 },
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 0.85,
+            delay: 0.1 + idx * 0.03,
+            ease: "power2.out",
+          }
+        );
+      });
+
+      if (sunDiscRef.current) {
+        gsap.fromTo(
+          sunDiscRef.current,
+          { opacity: 0, scale: 0.8 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.95,
+            ease: "power2.out",
+          }
+        );
+      }
+    };
+
+    // Check if preloader is active or already completed
+    const isPreloaded =
+      typeof window !== "undefined" &&
+      sessionStorage.getItem("solarquack_preloaded");
+
+    if (isPreloaded) {
+      playEntrance();
+    } else {
+      // Keep hidden until sliced orange circle preloader finishes and fades
+      letterRefs.current.forEach((el) => {
+        if (el) gsap.set(el, { opacity: 0, yPercent: 25 });
+      });
+      if (sunDiscRef.current) {
+        gsap.set(sunDiscRef.current, { opacity: 0, scale: 0.8 });
+      }
+
+      let entranceTriggered = false;
+      const onPreloaderDone = () => {
+        if (entranceTriggered) return;
+        entranceTriggered = true;
+        playEntrance();
+      };
+
+      window.addEventListener("solarquack:preloader-done", onPreloaderDone, { once: true });
+      setTimeout(onPreloaderDone, 2200); // Safety fallback
+    }
 
     // Vanish animation on click or scroll:
-    // As soon as user scrolls down even slightly (or clicks hero),
-    // solarquack name and sun halo vanish with a clean disintegration animation
-    let isVanished = false;
-
+    // User clicks or scrolls down -> animate to Greek letters and fade out
     const triggerVanish = () => {
       if (isVanished) return;
       isVanished = true;
+      clearFlipTimers();
+
+      letterRefs.current.forEach((el, idx) => {
+        if (!el) return;
+        let count = 0;
+        const timer = setInterval(() => {
+          count++;
+          el.textContent = GREEK_FLIP_CHARS[(idx + count) % GREEK_FLIP_CHARS.length];
+          el.style.fontFamily = "var(--font-didot)";
+          if (count >= 5) clearInterval(timer);
+        }, 40);
+        flipTimers.push(timer);
+      });
 
       const oddLetters = letterRefs.current.filter((_, i) => i % 2 !== 0);
       const evenLetters = letterRefs.current.filter((_, i) => i % 2 === 0);
 
       gsap.to(oddLetters, {
-        yPercent: -45,
+        yPercent: -18,
         opacity: 0,
-        scale: 1.1,
-        duration: 0.6,
+        duration: 0.7,
         stagger: 0.02,
-        ease: "expo.out",
+        ease: "power2.inOut",
       });
 
       gsap.to(evenLetters, {
-        yPercent: 45,
+        yPercent: 18,
         opacity: 0,
-        scale: 0.9,
-        duration: 0.6,
+        duration: 0.7,
         stagger: 0.02,
-        ease: "expo.out",
+        ease: "power2.inOut",
       });
 
       if (sunDiscRef.current) {
         gsap.to(sunDiscRef.current, {
           opacity: 0,
-          scale: 0.7,
-          duration: 0.5,
-          ease: "power2.out",
+          scale: 0.75,
+          duration: 0.7,
+          ease: "power2.inOut",
         });
       }
     };
 
+    // Bringing back (scroll to top or click) -> reverses Greek letters back to English and fades in smoothly
     const triggerReform = () => {
       if (!isVanished) return;
       isVanished = false;
+      clearFlipTimers();
 
-      letterRefs.current.forEach((el) => {
+      letterRefs.current.forEach((el, idx) => {
         if (!el) return;
+        const finalChar = brandChars[idx];
+        let count = 0;
+        const total = 5;
+
+        const timer = setInterval(() => {
+          count++;
+          if (count >= total) {
+            clearInterval(timer);
+            el.textContent = finalChar;
+            el.style.fontFamily = "var(--font-fraunces)";
+          } else {
+            el.textContent = GREEK_FLIP_CHARS[(idx + count) % GREEK_FLIP_CHARS.length];
+            el.style.fontFamily = "var(--font-didot)";
+          }
+        }, 48);
+        flipTimers.push(timer);
+
         gsap.to(el, {
           yPercent: 0,
           opacity: 1,
-          scale: 1,
-          duration: 0.7,
-          ease: "expo.out",
+          duration: 0.8,
+          ease: "power2.out",
+          delay: idx * 0.02,
         });
       });
 
@@ -141,15 +222,15 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         gsap.to(sunDiscRef.current, {
           opacity: 1,
           scale: 1,
-          duration: 0.7,
-          ease: "expo.out",
+          duration: 0.8,
+          ease: "power2.out",
         });
       }
     };
 
-    // Scroll trigger: vanish immediately once scrolled > 15px
+    // Scroll trigger: vanish immediately once scrolled down > 25px, reverse at top
     const handleScrollVanish = () => {
-      if (window.scrollY > 15) {
+      if (window.scrollY > 25) {
         triggerVanish();
       } else if (window.scrollY <= 5) {
         triggerReform();
@@ -158,7 +239,7 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
 
     window.addEventListener("scroll", handleScrollVanish, { passive: true });
 
-    // Click anywhere on hero section triggers vanish
+    // Click anywhere on hero section toggles vanish/reform
     const heroEl = containerRef.current;
     const handleHeroClick = (e: MouseEvent) => {
       // Don't intercept button or link clicks
@@ -402,7 +483,12 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
           <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-dossier text-muted select-none">
             <span>SCROLL ΚΑΤΩ</span>
             <div className="relative w-[1px] h-10 bg-rule overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-3 bg-sun animate-bounce" />
+              <div
+                className="absolute top-0 left-0 w-full h-3 bg-sun motion-safe:animate-pulse"
+                style={{
+                  boxShadow: "0 0 6px rgba(217, 119, 6, 0.6)",
+                }}
+              />
             </div>
           </div>
         </div>

@@ -13,14 +13,15 @@ interface PreloaderProps {
 export function Preloader({ onComplete }: PreloaderProps) {
   const [visible, setVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const counterRef = useRef<HTMLSpanElement>(null);
-  const sunRef = useRef<HTMLDivElement>(null);
-  const slashLineRef = useRef<SVGLineElement>(null);
   const topHalfRef = useRef<HTMLDivElement>(null);
   const bottomHalfRef = useRef<HTMLDivElement>(null);
+  const slashLineRef = useRef<SVGLineElement>(null);
+  const sunTopRef = useRef<HTMLDivElement>(null);
+  const sunBottomRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
 
   const prefersReduced = usePrefersReducedMotion();
-  const { playSlash } = useSound();
+  const { playMetalSlice } = useSound();
 
   useEffect(() => {
     // Check session storage
@@ -33,147 +34,192 @@ export function Preloader({ onComplete }: PreloaderProps) {
       }
     }
 
-    const counter = counterRef.current;
-    const sun = sunRef.current;
-    const slash = slashLineRef.current;
+    const container = containerRef.current;
     const topHalf = topHalfRef.current;
     const bottomHalf = bottomHalfRef.current;
-    if (!counter || !sun || !slash || !topHalf || !bottomHalf) return;
+    const slash = slashLineRef.current;
+    const sunTop = sunTopRef.current;
+    const sunBottom = sunBottomRef.current;
+    const counter = counterRef.current;
+
+    if (!container || !topHalf || !bottomHalf || !slash || !sunTop || !sunBottom) return;
 
     const counterObj = { count: 0 };
     const tl = gsap.timeline({
       onComplete: () => {
-        sessionStorage.setItem("solarquack_preloaded", "true");
+        try {
+          sessionStorage.setItem("solarquack_preloaded", "true");
+        } catch {}
         setVisible(false);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));
+        }
         if (onComplete) onComplete();
       },
     });
 
-    // 1. Counter 000 -> 100 & Sun disc rises smoothly
-    tl.to(counterObj, {
-      count: 100,
-      duration: 1.0,
-      ease: "power2.inOut",
-      onUpdate: () => {
-        counter.textContent = String(Math.round(counterObj.count)).padStart(3, "0");
-      },
-    }, 0);
+    // 1. Initial State: Orange Sun glows in center
+    gsap.set([sunTop, sunBottom], { scale: 0.85, opacity: 0 });
+    gsap.set(slash, { strokeDashoffset: 2500, opacity: 0 });
 
-    tl.fromTo(
-      sun,
-      { yPercent: 100, scale: 0.3, opacity: 0 },
-      { yPercent: -50, scale: 1, opacity: 1, duration: 1.0, ease: "power2.inOut" },
-      0
-    );
-
-    // 2. Diagonal slash cuts screen
-    tl.to(slash, {
-      strokeDashoffset: 0,
-      duration: 0.2,
-      ease: "power1.inOut",
-      onStart: () => {
-        playSlash();
-      },
-    });
-
-    // 3. Two halves slide apart AND sun disc dissolves
-    tl.to(
-      sun,
+    // Smooth sun expansion and counter tick
+    tl.to([sunTop, sunBottom], {
+      scale: 1,
+      opacity: 1,
+      duration: 0.8,
+      ease: "power2.out",
+    })
+    .to(
+      counterObj,
       {
-        scale: 0.3,
-        opacity: 0,
-        duration: 0.4,
-        ease: "power2.in",
+        count: 100,
+        duration: 0.8,
+        ease: "power2.inOut",
+        onUpdate: () => {
+          if (counter) counter.textContent = String(Math.round(counterObj.count)).padStart(3, "0");
+        },
       },
-      "-=0.05"
+      "<"
     );
 
+    // 2. Metal slice cut precisely across the orange circle
+    tl.to(
+      slash,
+      {
+        opacity: 1,
+        strokeDashoffset: 0,
+        duration: 0.22,
+        ease: "power3.inOut",
+        onStart: () => {
+          playMetalSlice();
+        },
+      },
+      "+=0.08"
+    );
+
+    // 3. Orange circle and screen halves slide apart along the slice angle
     tl.to(
       topHalf,
       {
-        xPercent: -25,
-        yPercent: -25,
+        xPercent: -18,
+        yPercent: -18,
         opacity: 0,
-        duration: 0.45,
-        ease: "power3.inOut",
+        duration: 0.65,
+        ease: "power2.inOut",
       },
-      "<"
-    );
-
-    tl.to(
+      "+=0.04"
+    )
+    .to(
       bottomHalf,
       {
-        xPercent: 25,
-        yPercent: 25,
+        xPercent: 18,
+        yPercent: 18,
         opacity: 0,
-        duration: 0.45,
-        ease: "power3.inOut",
+        duration: 0.65,
+        ease: "power2.inOut",
       },
       "<"
-    );
-
-    tl.to(
-      containerRef.current,
+    )
+    .to(
+      [sunTop, sunBottom],
       {
         opacity: 0,
-        duration: 0.2,
-        ease: "power2.out",
+        scale: 0.7,
+        duration: 0.5,
+        ease: "power2.in",
       },
-      "-=0.1"
+      "<"
+    )
+    .to(
+      container,
+      {
+        opacity: 0,
+        duration: 0.35,
+        ease: "power2.out",
+        onStart: () => {
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));
+          }
+        },
+      },
+      "-=0.2"
     );
 
     const handleSkip = () => {
-      tl.progress(1);
-    };
-
-    const container = containerRef.current;
-    container?.addEventListener("click", handleSkip);
-
-    return () => {
-      container?.removeEventListener("click", handleSkip);
+      try {
+        sessionStorage.setItem("solarquack_preloaded", "true");
+      } catch {}
+      setVisible(false);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));
+      }
+      if (onComplete) onComplete();
       tl.kill();
     };
-  }, [prefersReduced, onComplete, playSlash]);
+
+    container.addEventListener("click", handleSkip);
+
+    return () => {
+      container.removeEventListener("click", handleSkip);
+      tl.kill();
+    };
+  }, [prefersReduced, onComplete, playMetalSlice]);
 
   if (!visible) return null;
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[100000] cursor-pointer overflow-hidden bg-bg select-none"
-      title="Click to skip preloader"
+      className="fixed inset-0 z-[100000] cursor-pointer overflow-hidden bg-bg select-none will-change-opacity"
+      title="Click to skip"
     >
-      {/* Top half polygon */}
+      {/* Top Sliced Half */}
       <div
         ref={topHalfRef}
-        className="absolute inset-0 bg-[#070706] z-10"
+        className="absolute inset-0 bg-[#070706] z-10 will-change-transform"
         style={{ clipPath: "polygon(0 0, 100% 0, 100% 40%, 0 70%)" }}
       >
         <div className="p-8 font-mono text-xs uppercase tracking-dossier text-bone/70 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-sun animate-pulse" />
-          <span>{siteConfig.brand.toUpperCase()} // {siteConfig.systemLabel}</span>
+          <span>{siteConfig.brand.toUpperCase()} // SYSTEM</span>
         </div>
+
+        {/* Top Half of Sliced Sun Disc */}
+        <div
+          ref={sunTopRef}
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44vmin] h-[44vmin] rounded-full pointer-events-none will-change-transform"
+          style={{
+            background: "radial-gradient(circle, #D97706 0%, rgba(217, 119, 6, 0.7) 45%, rgba(217, 119, 6, 0.1) 70%)",
+            boxShadow: "0 0 80px rgba(217, 119, 6, 0.4)",
+          }}
+        />
       </div>
 
-      {/* Bottom half polygon */}
+      {/* Bottom Sliced Half */}
       <div
         ref={bottomHalfRef}
-        className="absolute inset-0 bg-[#070706] z-10"
+        className="absolute inset-0 bg-[#070706] z-10 will-change-transform"
         style={{ clipPath: "polygon(0 70%, 100% 40%, 100% 100%, 0 100%)" }}
       >
+        {/* Bottom Half of Sliced Sun Disc */}
+        <div
+          ref={sunBottomRef}
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44vmin] h-[44vmin] rounded-full pointer-events-none will-change-transform"
+          style={{
+            background: "radial-gradient(circle, #D97706 0%, rgba(217, 119, 6, 0.7) 45%, rgba(217, 119, 6, 0.1) 70%)",
+            boxShadow: "0 0 80px rgba(217, 119, 6, 0.4)",
+          }}
+        />
+
         <div className="absolute bottom-8 right-8 font-mono text-3xl font-light text-bone/90 tracking-dossier">
           <span ref={counterRef}>000</span>
           <span className="text-muted text-sm ml-2">%</span>
         </div>
       </div>
 
-      {/* Center Rising Sun Disc */}
-      <div
-        ref={sunRef}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 w-[42vmin] h-[42vmin] rounded-full bg-sun z-20 pointer-events-none shadow-[0_0_80px_rgba(229,56,27,0.35)]"
-      />
-
-      {/* Diagonal Slash SVG */}
+      {/* Diagonal Metal Slice Cut Line */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none z-30"
         xmlns="http://www.w3.org/2000/svg"
@@ -185,9 +231,11 @@ export function Preloader({ onComplete }: PreloaderProps) {
           x2="100%"
           y2="40%"
           stroke="var(--bone)"
-          strokeWidth="1.5"
-          strokeDasharray="2000"
-          strokeDashoffset="2000"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeDasharray="2500"
+          strokeDashoffset="2500"
+          filter="drop-shadow(0 0 8px rgba(233, 227, 210, 0.8))"
         />
       </svg>
     </div>

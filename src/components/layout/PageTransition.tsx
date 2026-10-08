@@ -14,13 +14,20 @@ export function PageTransition() {
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const glyphTextRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [activeGlyph, setActiveGlyph] = useState("ΦΑΚΕΛΟΣ");
   const isTransitioningRef = useRef(false);
 
+  // Preserve hash scrolling (e.g. #armory) across route changes
   useEffect(() => {
-    // Reset scroll on genuine route change
+    if (typeof window !== "undefined") {
+      if (
+        window.location.hash === "#armory" ||
+        sessionStorage.getItem("scroll_to_armory") === "true"
+      ) {
+        return;
+      }
+    }
     if (lenis) {
       lenis.scrollTo(0, { immediate: true });
     } else {
@@ -53,7 +60,7 @@ export function PageTransition() {
         return;
       }
 
-      // CRITICAL: Ignore any hash navigation (e.g. #armory, /#armory, /#path, etc.)
+      // Ignore in-page hash navigation (e.g. #armory, /#armory, /#path)
       if (href.startsWith("#") || href.startsWith("/#") || href.includes("#")) {
         return;
       }
@@ -73,67 +80,68 @@ export function PageTransition() {
       setActiveGlyph(nextGreek);
       isTransitioningRef.current = true;
 
-      // Butter-smooth GPU accelerated entrance
+      const clickX = e.clientX || window.innerWidth / 2;
+      const clickY = e.clientY || window.innerHeight / 2;
+
+      // Self-orchestrating circular expand & contract timeline:
+      // Plays with identical luxury on every click whether route is cold or cached.
       gsap.killTweensOf([overlay, glyphText]);
-      gsap.set(overlay, { display: "flex", opacity: 0, scale: 0.96 });
-      gsap.set(glyphText, { opacity: 0, y: 20 });
-
-      gsap.to(overlay, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.35,
-        ease: "power2.out",
+      const tl = gsap.timeline({
+        onComplete: () => {
+          isTransitioningRef.current = false;
+          gsap.set(overlay, { display: "none" });
+        },
       });
 
-      gsap.to(glyphText, {
+      tl.set(overlay, {
+        display: "flex",
         opacity: 1,
-        y: 0,
-        duration: 0.3,
-        ease: "power2.out",
-        delay: 0.08,
-      });
-
-      // FAIL-SAFE: Never allow screen to remain locked if route navigation stalls
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        dismissTransition();
-      }, 1200);
+        clipPath: `circle(0% at ${clickX}px ${clickY}px)`,
+      })
+      .set(glyphText, {
+        opacity: 0,
+        scale: 0.84,
+      })
+      .to(overlay, {
+        clipPath: `circle(150% at ${clickX}px ${clickY}px)`,
+        duration: 0.54,
+        ease: "power3.inOut",
+      })
+      .to(
+        glyphText,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.4,
+          ease: "power2.out",
+        },
+        "-=0.34"
+      )
+      // Brief elegant plateau while page changes in background
+      .to({}, { duration: 0.14 })
+      // Smooth reveal contraction to center
+      .to(glyphText, {
+        opacity: 0,
+        scale: 1.08,
+        duration: 0.22,
+        ease: "power2.in",
+      })
+      .to(
+        overlay,
+        {
+          clipPath: "circle(0% at 50% 50%)",
+          duration: 0.52,
+          ease: "power3.inOut",
+        },
+        "-=0.1"
+      );
     };
 
     window.addEventListener("click", handleAnchorClick, true);
 
     return () => {
       window.removeEventListener("click", handleAnchorClick, true);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [pathname, prefersReduced]);
-
-  const dismissTransition = () => {
-    const overlay = overlayRef.current;
-    const glyphText = glyphTextRef.current;
-    if (!overlay || !glyphText) return;
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-
-    gsap.killTweensOf([overlay, glyphText]);
-    const tl = gsap.timeline({
-      onComplete: () => {
-        isTransitioningRef.current = false;
-        gsap.set(overlay, { display: "none" });
-      },
-    });
-
-    tl.to(glyphText, { opacity: 0, y: -20, duration: 0.2, ease: "power2.in" });
-    tl.to(overlay, { opacity: 0, scale: 1.04, duration: 0.3, ease: "power2.inOut" }, "-=0.08");
-  };
-
-  // When pathname changes and overlay was active, dismiss smoothly
-  useEffect(() => {
-    if (!isTransitioningRef.current || prefersReduced) return;
-    dismissTransition();
   }, [pathname, prefersReduced]);
 
   if (prefersReduced) return null;

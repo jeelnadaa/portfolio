@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import { siteConfig } from "@/data/site";
-import { useSound } from "@/hooks/useSound";
 
 const KONAMI_SEQUENCE = [
   "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
@@ -11,7 +10,6 @@ const KONAMI_SEQUENCE = [
 ];
 
 export function EasterEggs() {
-  const { playSlash } = useSound();
   const keyIndex = useRef(0);
 
   useEffect(() => {
@@ -36,7 +34,6 @@ export function EasterEggs() {
         keyIndex.current++;
         if (keyIndex.current === KONAMI_SEQUENCE.length) {
           keyIndex.current = 0;
-          playSlash();
           const current = document.documentElement.getAttribute("data-theme") || "dark";
           const next = current === "dark" ? "bone" : "dark";
           document.documentElement.setAttribute("data-theme", next);
@@ -50,7 +47,7 @@ export function EasterEggs() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [playSlash]);
+  }, []);
 
   return null;
 }

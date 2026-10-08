@@ -8,7 +8,6 @@ import { GhostGlyph } from "@/components/ui/GhostGlyph";
 import { ProjectPlaceholder } from "@/components/ui/ProjectPlaceholder";
 import { BoneImage } from "@/components/ui/BoneImage";
 import { Lightbox } from "@/components/project/Lightbox";
-import { useSound } from "@/hooks/useSound";
 import { useIsFinePointer } from "@/hooks/useMedia";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +19,6 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const { playMarble } = useSound();
   const isFine = useIsFinePointer();
 
   // Floating preview image for list view
@@ -120,10 +118,7 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
               <div
                 key={p.slug}
                 onClick={() => setActiveLightboxIndex(idx)}
-                onMouseEnter={() => {
-                  setHoveredIndex(idx);
-                  playMarble();
-                }}
+                onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 data-cursor="VIEW"
                 className={cn(
@@ -190,10 +185,7 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
               <div
                 key={p.slug}
                 onClick={() => setActiveLightboxIndex(idx)}
-                onMouseEnter={() => {
-                  setHoveredIndex(idx);
-                  playMarble();
-                }}
+                onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 data-cursor="VIEW"
                 className="group py-6 px-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-surface/60 transition-colors cursor-pointer select-none"

@@ -5,9 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/data/site";
 import { TextRoll } from "@/components/ui/TextRoll";
-import { SoundToggle } from "@/components/layout/SoundToggle";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 import { useBengaluruTime } from "@/hooks/useTime";
+import { useLenis } from "@/lib/lenis";
 import { cn } from "@/lib/utils";
 
 interface NavProps {
@@ -24,6 +24,7 @@ const NAV_ITEMS = [
 
 export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
   const pathname = usePathname();
+  const lenis = useLenis();
   const [scrolledPast, setScrolledPast] = useState(false);
   const [navVisible, setNavVisible] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -156,10 +157,21 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
                 key={item.href}
                 href={item.href}
                 onClick={(e) => {
-                  if (item.href === "/#armory" && pathname === "/") {
-                    e.preventDefault();
-                    const el = document.getElementById("armory");
-                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                  if (item.href === "/#armory") {
+                    try {
+                      sessionStorage.setItem("scroll_to_armory", "true");
+                    } catch {}
+                    if (pathname === "/") {
+                      e.preventDefault();
+                      const el = document.getElementById("armory");
+                      if (el) {
+                        if (lenis) {
+                          lenis.scrollTo(el, { offset: -40, duration: 1.2 });
+                        } else {
+                          el.scrollIntoView({ behavior: "smooth" });
+                        }
+                      }
+                    }
                   }
                 }}
                 className="py-1"
@@ -194,9 +206,6 @@ export function Nav({ githubStats = { stars: 42, repos: 18 } }: NavProps) {
               <span className="text-muted/60">/</span>
               <span>{githubStats.repos}</span>
             </a>
-
-            {/* Sound Toggle */}
-            <SoundToggle />
 
             {/* Resume Button */}
             <a

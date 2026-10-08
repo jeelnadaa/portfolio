@@ -9,7 +9,6 @@ import { GhostGlyph } from "@/components/ui/GhostGlyph";
 import { ProjectPlaceholder } from "@/components/ui/ProjectPlaceholder";
 import { BoneImage } from "@/components/ui/BoneImage";
 import { Lightbox } from "@/components/project/Lightbox";
-import { useSound } from "@/hooks/useSound";
 import { cn } from "@/lib/utils";
 
 // Static seed data for initial render
@@ -152,7 +151,6 @@ export default function WorkPage() {
   const [selectedTag, setSelectedTag] = useState<string>("ALL");
   const [sortOrder, setSortOrder] = useState<"featured" | "newest">("featured");
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number | null>(null);
-  const { playMarble } = useSound();
 
   // Extract all unique tags
   const allTags = useMemo(() => {
@@ -249,7 +247,6 @@ export default function WorkPage() {
               <div
                 key={p.slug}
                 onClick={() => setActiveLightboxIndex(idx)}
-                onMouseEnter={() => playMarble()}
                 data-cursor="VIEW"
                 className="group relative border border-rule bg-surface/50 p-6 flex flex-col justify-between transition-all duration-300 cursor-pointer select-none hover:-translate-y-1.5 hover:border-bone/80 shadow-md"
               >

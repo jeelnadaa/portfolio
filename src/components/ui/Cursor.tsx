@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { useIsFinePointer, usePrefersReducedMotion } from "@/hooks/useMedia";
-import { useSound } from "@/hooks/useSound";
 
 const GREEK_LABELS: Record<string, string> = {
   OPEN: "ΑΝΟΙΓΜΑ",
@@ -17,7 +16,6 @@ const GREEK_LABELS: Record<string, string> = {
 export function Cursor() {
   const isFine = useIsFinePointer();
   const prefersReduced = usePrefersReducedMotion();
-  const { playSlash } = useSound();
 
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
@@ -100,8 +98,6 @@ export function Cursor() {
     };
 
     const onClick = (e: MouseEvent) => {
-      playSlash();
-
       // Sun ring pulse
       if (pulseRef.current) {
         gsap.killTweensOf(pulseRef.current);
@@ -157,7 +153,7 @@ export function Cursor() {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mousedown", onClick);
     };
-  }, [isFine, prefersReduced, playSlash]);
+  }, [isFine, prefersReduced]);
 
   if (!isFine || prefersReduced) return null;
 
@@ -196,8 +192,8 @@ export function Cursor() {
           backgroundColor: cursorState.isText
             ? "var(--bone)"
             : cursorState.isHover
-            ? "rgba(233, 227, 210, 0.08)"
-            : "transparent",
+              ? "rgba(233, 227, 210, 0.08)"
+              : "transparent",
         }}
       >
         {/* Reticle Tick marks (when not hovered and not text) */}

@@ -65,7 +65,18 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           <Link
             key={link.href}
             href={link.href}
-            onClick={onClose}
+            onClick={() => {
+              onClose();
+              if (link.href === "/#armory") {
+                try {
+                  sessionStorage.setItem("scroll_to_armory", "true");
+                } catch {}
+                if (typeof window !== "undefined" && window.location.pathname === "/") {
+                  const el = document.getElementById("armory");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }
+              }
+            }}
             className="group flex items-baseline justify-between py-2 border-b border-rule/30 text-bone hover:text-sun transition-colors"
           >
             <div className="flex items-baseline gap-4">

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback, createContext, useContext } from "react";
+import React, { createContext, useContext, useCallback, useRef } from "react";
 
 interface SoundContextType {
+  playMetalSlice: () => void;
   soundEnabled: boolean;
   toggleSound: () => void;
   playSlash: () => void;
@@ -11,6 +12,7 @@ interface SoundContextType {
 }
 
 const SoundContext = createContext<SoundContextType>({
+  playMetalSlice: () => {},
   soundEnabled: false,
   toggleSound: () => {},
   playSlash: () => {},
@@ -23,113 +25,37 @@ export function useSound() {
 }
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
-  const [soundEnabled, setSoundEnabled] = useState(false);
-  const [hasAudioFiles, setHasAudioFiles] = useState(false);
+  const metalAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  const ambientAudioRef = useRef<HTMLAudioElement | null>(null);
-  const slashAudioRef = useRef<HTMLAudioElement | null>(null);
-  const marbleAudioRef = useRef<HTMLAudioElement | null>(null);
-  const lastMarbleTime = useRef(0);
-
-  // Restore sound preference from localStorage on mount
-  useEffect(() => {
+  // Exclusively for the opening metal slice animation
+  const playMetalSlice = useCallback(() => {
     try {
-      const saved = localStorage.getItem("solarquack_sfx");
-      if (saved === "true") {
-        setSoundEnabled(true);
+      if (!metalAudioRef.current) {
+        metalAudioRef.current = new Audio("/audio/sfx-slash.mp3");
+        metalAudioRef.current.volume = 0.65;
       }
+      metalAudioRef.current.currentTime = 0;
+      metalAudioRef.current.play().catch(() => {});
     } catch {}
   }, []);
 
-  // Check if audio files exist
-  useEffect(() => {
-    async function checkAudio() {
-      try {
-        const res = await fetch("/audio/sfx-slash.mp3", { method: "HEAD" });
-        if (res.ok) {
-          setHasAudioFiles(true);
-        }
-      } catch {
-        setHasAudioFiles(false);
-      }
-    }
-    checkAudio();
-  }, []);
-
-  // Initialize audio elements if enabled
-  useEffect(() => {
-    if (!hasAudioFiles) return;
-
-    if (!slashAudioRef.current) {
-      slashAudioRef.current = new Audio("/audio/sfx-slash.mp3");
-      slashAudioRef.current.volume = 0.3;
-    }
-    if (!marbleAudioRef.current) {
-      marbleAudioRef.current = new Audio("/audio/sfx-marble.mp3");
-      marbleAudioRef.current.volume = 0.2;
-    }
-    if (!ambientAudioRef.current) {
-      ambientAudioRef.current = new Audio("/audio/ambient-wind.mp3");
-      ambientAudioRef.current.volume = 0.15;
-      ambientAudioRef.current.loop = true;
-    }
-
-    if (soundEnabled) {
-      ambientAudioRef.current.play().catch(() => {});
-    } else {
-      ambientAudioRef.current.pause();
-    }
-
-    return () => {
-      ambientAudioRef.current?.pause();
-    };
-  }, [soundEnabled, hasAudioFiles]);
-
-  const toggleSound = useCallback(() => {
-    setSoundEnabled((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem("solarquack_sfx", String(next));
-      } catch {}
-      return next;
-    });
-  }, []);
-
-  const playSlash = useCallback(() => {
-    if (!soundEnabled || !hasAudioFiles) return;
-    try {
-      if (slashAudioRef.current) {
-        slashAudioRef.current.currentTime = 0;
-        slashAudioRef.current.play().catch(() => {});
-      }
-    } catch {}
-  }, [soundEnabled, hasAudioFiles]);
-
-  const playMarble = useCallback(() => {
-    if (!soundEnabled || !hasAudioFiles) return;
-    const now = Date.now();
-    if (now - lastMarbleTime.current < 400) return; // throttle 400ms
-    lastMarbleTime.current = now;
-    try {
-      if (marbleAudioRef.current) {
-        marbleAudioRef.current.currentTime = 0;
-        marbleAudioRef.current.play().catch(() => {});
-      }
-    } catch {}
-  }, [soundEnabled, hasAudioFiles]);
+  // All other SFX removed as requested
+  const playSlash = useCallback(() => {}, []);
+  const playMarble = useCallback(() => {}, []);
+  const toggleSound = useCallback(() => {}, []);
 
   return React.createElement(
     SoundContext.Provider,
     {
       value: {
-        soundEnabled,
+        playMetalSlice,
+        soundEnabled: false,
         toggleSound,
         playSlash,
         playMarble,
-        hasAudioFiles,
+        hasAudioFiles: false,
       },
     },
     children
   );
 }
-

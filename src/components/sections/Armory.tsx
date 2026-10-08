@@ -6,10 +6,12 @@ import { armoryGroups, armoryStats } from "@/data/skills";
 import { glyphs } from "@/data/glyphs";
 import { GhostGlyph } from "@/components/ui/GhostGlyph";
 import { useGsap } from "@/hooks/useGsap";
+import { useLenis } from "@/lib/lenis";
 import { countUp } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 export function Armory() {
+  const lenis = useLenis();
   const [filterQuery, setFilterQuery] = useState("");
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -17,6 +19,49 @@ export function Armory() {
   const langCountRef = useRef<HTMLSpanElement>(null);
   const frameCountRef = useRef<HTMLSpanElement>(null);
   const projCountRef = useRef<HTMLSpanElement>(null);
+
+  // Automatic smooth scroll to armory when navigated from other pages with /#armory
+  useEffect(() => {
+    const shouldScrollToArmory = () => {
+      if (typeof window === "undefined") return false;
+      return (
+        window.location.hash === "#armory" ||
+        sessionStorage.getItem("scroll_to_armory") === "true"
+      );
+    };
+
+    const performScroll = () => {
+      if (!shouldScrollToArmory()) return;
+      const el = document.getElementById("armory");
+      if (!el) return;
+
+      try {
+        sessionStorage.removeItem("scroll_to_armory");
+      } catch {}
+
+      if (lenis) {
+        lenis.scrollTo(el, { offset: -40, duration: 1.2 });
+      } else {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    // Staggered attempts to ensure scroll fires after layout, hydration, and fonts settle
+    performScroll();
+    const t1 = setTimeout(performScroll, 80);
+    const t2 = setTimeout(performScroll, 250);
+    const t3 = setTimeout(performScroll, 600);
+    const t4 = setTimeout(performScroll, 1100);
+
+    window.addEventListener("hashchange", performScroll);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+      window.removeEventListener("hashchange", performScroll);
+    };
+  }, [lenis]);
 
   useGsap(() => {
     if (langCountRef.current) countUp(langCountRef.current, armoryStats.languagesCount, 1.6);

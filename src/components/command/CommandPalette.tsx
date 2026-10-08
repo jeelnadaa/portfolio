@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
 import { siteConfig } from "@/data/site";
-import { useSound } from "@/hooks/useSound";
 import { useToast } from "@/components/ui/Toast";
 
 interface CommandItemEntry {
@@ -18,7 +17,6 @@ interface CommandItemEntry {
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const { toggleSound, soundEnabled } = useSound();
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -116,20 +114,13 @@ export function CommandPalette() {
       },
     },
     {
-      id: "toggle-sound",
-      label: `Toggle Sound (${soundEnabled ? "Mute" : "Enable"})`,
-      category: "Controls",
-      action: () => {
-        toggleSound();
-        showToast(`SFX: ${!soundEnabled ? "ON" : "OFF"}`);
-        setOpen(false);
-      },
-    },
-    {
       id: "add-project-docs",
       label: "Add Project CLI Guide (pnpm add-project)",
       category: "Controls",
       action: () => {
+        try {
+          sessionStorage.setItem("scroll_to_armory", "true");
+        } catch {}
         router.push("/#armory");
         showToast("CLI: pnpm add-project");
         setOpen(false);
