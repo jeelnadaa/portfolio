@@ -136,7 +136,7 @@ export default function AboutPage() {
             </p>
 
             {/* Now Block */}
-            <div className="mt-8 border border-rule bg-surface/50 p-6 space-y-4 font-mono">
+            <div className="mt-8 border border-rule bg-surface/50 p-6 space-y-4 font-mono overflow-hidden">
               <div className="flex items-center justify-between border-b border-rule pb-2 text-xs uppercase tracking-dossier text-muted">
                 <span>ACTIVE FOCUS // {honestStatus.lastUpdated.toUpperCase()}</span>
                 <span className="text-sun">STATE: LIVE</span>

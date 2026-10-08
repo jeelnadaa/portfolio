@@ -29,6 +29,6 @@ export const honestStatus = {
       status: "open",
     },
   ] as HonestStatusItem[],
-  nowReading: "Designing Data-Intensive Applications by Martin Kleppmann",
-  nowListening: "Dark ambient drone & procedural electronic audio while writing systems code",
+  nowReading: "Designing Data-Intensive Applications (Kleppmann)",
+  nowListening: "Dark Ambient Drone & Procedural Audio",
 };
