@@ -44,24 +44,30 @@ float bayer8(vec2 coord) {
 }
 
 void main() {
-  // 1. Initial depth sample
+  // 1. Strict base mask check: discard immediately if outside statue silhouette
+  float baseAlpha = texture2D(uMaskMap, vUv).r;
+  if (baseAlpha < 0.05) {
+    discard;
+  }
+
+  // 2. Depth sample
   float depth = texture2D(uDepthMap, vUv).r;
 
-  // 2. Parallax UV displacement based on mouse and depth
+  // 3. Parallax UV displacement based on mouse and depth
   vec2 displacedUv = vUv + (uMouse - 0.5) * depth * 0.035;
   displacedUv = clamp(displacedUv, vec2(0.001), vec2(0.999));
 
-  // 3. Alpha cutout from mask
+  // 4. Displaced alpha cutout from mask
   float alpha = texture2D(uMaskMap, displacedUv).r;
   if (alpha < 0.05) {
     discard;
   }
 
-  // 4. Sample continuous-tone original
+  // 5. Sample continuous-tone original
   vec4 colorSample = texture2D(uColorMap, displacedUv);
   float lum = dot(colorSample.rgb, vec3(0.299, 0.587, 0.114));
 
-  // Secondary safeguard: discard any background black pixels outside the marble
+  // 6. Secondary safeguard: discard any background black pixels
   if (lum < 0.02) {
     discard;
   }

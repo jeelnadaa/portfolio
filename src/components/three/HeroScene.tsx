@@ -8,6 +8,8 @@ import { heroVertexShader, heroFragmentShader } from "./shaders/heroShaders";
 import { BoneImage } from "@/components/ui/BoneImage";
 import { usePrefersReducedMotion } from "@/hooks/useMedia";
 
+const ASSET_VERSION = "20261008-5";
+
 function ShaderMesh({
   mousePos,
 }: {
@@ -16,11 +18,11 @@ function ShaderMesh({
   const meshRef = useRef<THREE.Mesh>(null);
   const { size, viewport } = useThree();
 
-  // Load textures
+  // Load textures with asset versioning to bust browser disk/memory cache
   const [colorMap, depthMap, maskMap] = useTexture([
-    "/art/hero-hercules.color.webp",
-    "/art/hero-hercules.depth.png",
-    "/art/hero-hercules.mask.png",
+    `/art/hero-hercules.color.webp?v=${ASSET_VERSION}`,
+    `/art/hero-hercules.depth.png?v=${ASSET_VERSION}`,
+    `/art/hero-hercules.mask.png?v=${ASSET_VERSION}`,
   ]);
 
   const lerpedMouse = useRef(new THREE.Vector2(0.5, 0.5));
@@ -74,14 +76,20 @@ function ShaderMesh({
     material.uniforms.uTorch.value.copy(lerpedTorch.current);
   });
 
-  // Calculate plane aspect ratio to preserve statue proportions and prevent top cut-off
+  // Calculate plane dimensions in reference CSS pixels so Hercules zooms in and out proportionally with browser zoom
   const imageAspect = 3388 / 5056; // 0.67
-  const planeHeight = Math.min(viewport.height * 0.86, viewport.width * 1.05);
+  const baseHeight = 780;
+  const mobileMax = viewport.width * 1.05;
+  const planeHeight = Math.min(baseHeight, mobileMax);
   const planeWidth = planeHeight * imageAspect;
 
   return (
-    <mesh ref={meshRef} position={[0, -viewport.height * 0.02, 0]}>
-      <planeGeometry args={[planeWidth, planeHeight, 1, 1]} />
+    <mesh
+      ref={meshRef}
+      position={[0, -planeHeight * 0.02, 0]}
+      scale={[planeWidth, planeHeight, 1]}
+    >
+      <planeGeometry args={[1, 1, 1, 1]} />
       <shaderMaterial
         vertexShader={heroVertexShader}
         fragmentShader={heroFragmentShader}
@@ -157,8 +165,8 @@ export function HeroScene({ className }: { className?: string }) {
       <div className={className || "relative w-full h-full flex items-center justify-center"}>
         <div className="relative w-full max-w-[540px] aspect-[3/4]">
           <BoneImage
-            src="/art/hero-hercules.bone.png"
-            hoverSrc="/art/hero-hercules.color.webp"
+            src={`/art/hero-hercules.bone.png?v=${ASSET_VERSION}`}
+            hoverSrc={`/art/hero-hercules.color.webp?v=${ASSET_VERSION}`}
             alt="Marble Hercules sculpture"
             fill
             priority
@@ -180,7 +188,7 @@ export function HeroScene({ className }: { className?: string }) {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative w-full max-w-[540px] aspect-[3/4]">
             <BoneImage
-              src="/art/hero-hercules.bone.png"
+              src={`/art/hero-hercules.bone.png?v=${ASSET_VERSION}`}
               alt="Marble Hercules sculpture"
               fill
               priority

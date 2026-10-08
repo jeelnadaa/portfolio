@@ -199,12 +199,12 @@ export function Preloader({ onComplete }: PreloaderProps) {
         />
       </div>
 
-      {/* Center Interactive Prompt */}
+      {/* Interactive Prompt below the circle */}
       <div
         ref={promptRef}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-4 pointer-events-none will-change-transform"
+        className="absolute top-[calc(50%+24vmin)] left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2 pointer-events-none will-change-transform"
       >
-        <div className="group flex items-center gap-3 px-6 py-3 rounded-full border border-bone/40 bg-[#070706]/85 backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.85)] transition-all duration-200">
+        <div className="group flex items-center gap-3 px-6 py-2.5 rounded-full border border-bone/40 bg-[#070706]/90 backdrop-blur-md shadow-[0_0_24px_rgba(0,0,0,0.9)] transition-all duration-200">
           <span className="w-2 h-2 rounded-full bg-sun animate-ping" />
           <span className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone group-hover:text-sun font-semibold">
             CLICK TO ENTER
@@ -213,8 +213,8 @@ export function Preloader({ onComplete }: PreloaderProps) {
             ✦
           </span>
         </div>
-        <div className="font-mono text-[10px] sm:text-xs uppercase tracking-dossier text-bone/60">
-          [ INITIATE SYSTEM WITH AUDIO ]
+        <div className="font-mono text-[10px] uppercase tracking-dossier text-bone/60">
+          [ INITIATE AUDIO & ARCHIVES ]
         </div>
       </div>
 
