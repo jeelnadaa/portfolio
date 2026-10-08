@@ -4,15 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { useIsFinePointer, usePrefersReducedMotion } from "@/hooks/useMedia";
 
-const GREEK_LABELS: Record<string, string> = {
-  OPEN: "ΑΝΟΙΓΜΑ",
-  VIEW: "ΠΡΟΒΟΛΗ",
-  COPY: "ΑΝΤΙΓΡΑΦΗ",
-  PLAY: "ΕΝΑΡΞΗ",
-  DRAG: "ΣΥΡΣΙΜΟ",
-  CLICK: "ΕΠΙΛΟΓΗ",
-};
-
 export function Cursor() {
   const isFine = useIsFinePointer();
   const prefersReduced = usePrefersReducedMotion();
@@ -23,8 +14,6 @@ export function Cursor() {
   const slashRef = useRef<HTMLDivElement>(null);
 
   const [cursorState, setCursorState] = useState<{
-    label?: string;
-    greek?: string;
     isText?: boolean;
     isTorch?: boolean;
     isHover?: boolean;
@@ -74,22 +63,14 @@ export function Cursor() {
       if (isInput) {
         setCursorState({ isText: true });
       } else if (cursorTarget) {
-        const val = cursorTarget.getAttribute("data-cursor") || "OPEN";
+        const val = cursorTarget.getAttribute("data-cursor");
         if (val === "torch") {
           setCursorState({ isTorch: true });
         } else {
-          setCursorState({
-            label: val,
-            greek: GREEK_LABELS[val] || "",
-            isHover: true,
-          });
+          setCursorState({ isHover: true });
         }
       } else if (target.closest("a, button, [role='button']")) {
-        setCursorState({
-          label: "OPEN",
-          greek: GREEK_LABELS["OPEN"],
-          isHover: true,
-        });
+        setCursorState({ isHover: true });
       } else {
         setCursorState({});
       }
@@ -183,16 +164,18 @@ export function Cursor() {
         aria-hidden="true"
         className="pointer-events-none fixed top-0 left-0 z-[99998] -translate-x-1/2 -translate-y-1/2 mix-blend-difference flex items-center justify-center transition-[width,height,background-color,border-color] duration-150 ease-out"
         style={{
-          width: cursorState.isHover ? 72 : cursorState.isText ? 2 : 44,
-          height: cursorState.isHover ? 72 : cursorState.isText ? 22 : 44,
+          width: cursorState.isHover ? 54 : cursorState.isText ? 2 : 44,
+          height: cursorState.isHover ? 54 : cursorState.isText ? 22 : 44,
           borderRadius: cursorState.isText ? 0 : "50%",
           border: cursorState.isText
             ? "none"
-            : "1px solid rgba(233, 227, 210, 0.4)",
+            : cursorState.isHover
+              ? "1.5px solid var(--sun)"
+              : "1px solid rgba(233, 227, 210, 0.4)",
           backgroundColor: cursorState.isText
             ? "var(--bone)"
             : cursorState.isHover
-              ? "rgba(233, 227, 210, 0.08)"
+              ? "rgba(217, 119, 6, 0.08)"
               : "transparent",
         }}
       >
@@ -204,20 +187,6 @@ export function Cursor() {
             <span className="absolute -left-1 h-[1px] w-2 bg-bone opacity-70" />
             <span className="absolute -right-1 h-[1px] w-2 bg-bone opacity-70" />
           </>
-        )}
-
-        {/* Hover Label Inside Ring */}
-        {cursorState.isHover && cursorState.label && (
-          <div className="flex flex-col items-center justify-center text-center select-none pointer-events-none">
-            <span className="font-mono text-[9px] font-bold tracking-dossier uppercase text-bone leading-none">
-              {cursorState.label}
-            </span>
-            {cursorState.greek && (
-              <span className="font-greek text-[7px] text-bone/60 leading-none mt-0.5">
-                {cursorState.greek}
-              </span>
-            )}
-          </div>
         )}
       </div>
 

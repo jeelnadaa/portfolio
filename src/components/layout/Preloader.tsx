@@ -10,6 +10,12 @@ interface PreloaderProps {
   onComplete?: () => void;
 }
 
+let hasPreloadedThisSession = false;
+
+export function isPreloadedSession(): boolean {
+  return hasPreloadedThisSession;
+}
+
 export function Preloader({ onComplete }: PreloaderProps) {
   const [visible, setVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,14 +30,11 @@ export function Preloader({ onComplete }: PreloaderProps) {
   const { playMetalSlice } = useSound();
 
   useEffect(() => {
-    // Check session storage
-    if (typeof window !== "undefined") {
-      const alreadyLoaded = sessionStorage.getItem("solarquack_preloaded");
-      if (alreadyLoaded || prefersReduced) {
-        setVisible(false);
-        if (onComplete) onComplete();
-        return;
-      }
+    // Only skip if already played in current in-memory SPA session (replays on page refresh)
+    if (hasPreloadedThisSession || prefersReduced) {
+      setVisible(false);
+      if (onComplete) onComplete();
+      return;
     }
 
     const container = containerRef.current;
@@ -47,9 +50,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
     const counterObj = { count: 0 };
     const tl = gsap.timeline({
       onComplete: () => {
-        try {
-          sessionStorage.setItem("solarquack_preloaded", "true");
-        } catch {}
+        hasPreloadedThisSession = true;
         setVisible(false);
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));
@@ -146,9 +147,8 @@ export function Preloader({ onComplete }: PreloaderProps) {
     );
 
     const handleSkip = () => {
-      try {
-        sessionStorage.setItem("solarquack_preloaded", "true");
-      } catch {}
+      hasPreloadedThisSession = true;
+      playMetalSlice();
       setVisible(false);
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));
@@ -171,7 +171,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
     <div
       ref={containerRef}
       className="fixed inset-0 z-[100000] cursor-pointer overflow-hidden bg-bg select-none will-change-opacity"
-      title="Click to skip"
+      title="Click to enter"
     >
       {/* Top Sliced Half */}
       <div
@@ -212,6 +212,11 @@ export function Preloader({ onComplete }: PreloaderProps) {
             boxShadow: "0 0 80px rgba(217, 119, 6, 0.4)",
           }}
         />
+
+        <div className="absolute bottom-8 left-8 font-mono text-[11px] uppercase tracking-dossier text-bone/60 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-sun animate-ping" />
+          <span>CLICK ANYWHERE TO ENTER</span>
+        </div>
 
         <div className="absolute bottom-8 right-8 font-mono text-3xl font-light text-bone/90 tracking-dossier">
           <span ref={counterRef}>000</span>

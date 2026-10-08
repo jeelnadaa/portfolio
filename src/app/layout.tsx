@@ -16,6 +16,7 @@ import { CornerMarks } from "@/components/layout/CornerMarks";
 import { Cursor } from "@/components/ui/Cursor";
 import { CommandPalette } from "@/components/command/CommandPalette";
 import { EasterEggs } from "@/components/layout/EasterEggs";
+import { ScrollToTop } from "@/components/ui/ScrollToTop";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -149,6 +150,9 @@ export default function RootLayout({
 
               {/* Main Content Viewport */}
               <div id="main-content">{children}</div>
+
+              {/* Scroll Back To Top Button */}
+              <ScrollToTop />
 
               {/* Global Dossier Footer */}
               <Footer />

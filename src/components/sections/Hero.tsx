@@ -16,6 +16,7 @@ import { useGsap } from "@/hooks/useGsap";
 import { gsap } from "@/lib/gsap";
 import { countUp } from "@/lib/motion";
 import { useIsFinePointer, usePrefersReducedMotion } from "@/hooks/useMedia";
+import { isPreloadedSession } from "@/components/layout/Preloader";
 import { cn } from "@/lib/utils";
 
 const GREEK_FLIP_CHARS = ["Ω", "Φ", "Α", "Κ", "Ε", "Λ", "Ο", "Σ", "Ι", "Σ", "Χ", "Υ", "Σ", "Τ", "Ε", "Χ", "Ν", "Η"];
@@ -57,9 +58,9 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
       flipTimers = [];
     };
 
-    // Entrance animation for giant name solarquack:
-    // Flips through random Greek capitals, then settles into Fraunces glyph
-    const playEntrance = () => {
+    // Entrance / Reform animation:
+    // Fades in slowly, scrambling Greek letters (proportional size 0.74em) into Fraunces English glyphs
+    const playFadeInWithGreek = () => {
       isVanished = false;
       clearFlipTimers();
 
@@ -67,7 +68,12 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
         if (!el) return;
         const finalChar = brandChars[idx];
         let flipCount = 0;
-        const totalFlips = 5;
+        const totalFlips = 6;
+
+        // Proportional Greek font size to prevent towering over lowercase Fraunces
+        el.style.fontSize = "0.74em";
+        el.style.fontFamily = "var(--font-didot)";
+        el.textContent = GREEK_FLIP_CHARS[idx % GREEK_FLIP_CHARS.length];
 
         const flipInterval = setInterval(() => {
           flipCount++;
@@ -75,51 +81,41 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
             clearInterval(flipInterval);
             el.textContent = finalChar;
             el.style.fontFamily = "var(--font-fraunces)";
+            el.style.fontSize = "";
           } else {
             el.textContent = GREEK_FLIP_CHARS[(idx + flipCount) % GREEK_FLIP_CHARS.length];
             el.style.fontFamily = "var(--font-didot)";
+            el.style.fontSize = "0.74em";
           }
-        }, 50 + idx * 8);
+        }, 80 + idx * 8);
         flipTimers.push(flipInterval);
 
-        gsap.fromTo(
-          el,
-          { yPercent: 25, opacity: 0 },
-          {
-            yPercent: 0,
-            opacity: 1,
-            duration: 0.85,
-            delay: 0.1 + idx * 0.03,
-            ease: "power2.out",
-          }
-        );
+        gsap.to(el, {
+          yPercent: 0,
+          opacity: 1,
+          duration: 1.25,
+          delay: idx * 0.035,
+          ease: "power2.out",
+        });
       });
 
       if (sunDiscRef.current) {
-        gsap.fromTo(
-          sunDiscRef.current,
-          { opacity: 0, scale: 0.8 },
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.95,
-            ease: "power2.out",
-          }
-        );
+        gsap.to(sunDiscRef.current, {
+          opacity: 1,
+          scale: 1,
+          duration: 1.3,
+          ease: "power2.out",
+        });
       }
     };
 
-    // Check if preloader is active or already completed
-    const isPreloaded =
-      typeof window !== "undefined" &&
-      sessionStorage.getItem("solarquack_preloaded");
-
-    if (isPreloaded) {
-      playEntrance();
+    // Check if preloader is active or already completed in this session
+    if (isPreloadedSession()) {
+      playFadeInWithGreek();
     } else {
       // Keep hidden until sliced orange circle preloader finishes and fades
       letterRefs.current.forEach((el) => {
-        if (el) gsap.set(el, { opacity: 0, yPercent: 25 });
+        if (el) gsap.set(el, { opacity: 0, yPercent: 20 });
       });
       if (sunDiscRef.current) {
         gsap.set(sunDiscRef.current, { opacity: 0, scale: 0.8 });
@@ -129,129 +125,58 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
       const onPreloaderDone = () => {
         if (entranceTriggered) return;
         entranceTriggered = true;
-        playEntrance();
+        playFadeInWithGreek();
       };
 
       window.addEventListener("solarquack:preloader-done", onPreloaderDone, { once: true });
-      setTimeout(onPreloaderDone, 2200); // Safety fallback
+      setTimeout(onPreloaderDone, 2400); // Safety fallback
     }
 
-    // Vanish animation on click or scroll:
-    // User clicks or scrolls down -> animate to Greek letters and fade out
+    // Vanish on scroll down:
+    // Pure smooth fade out without converting to Greek letters, slow visible pace
     const triggerVanish = () => {
       if (isVanished) return;
       isVanished = true;
       clearFlipTimers();
 
+      // Keep letters as English brand letters on fade out (no Greek letters)
       letterRefs.current.forEach((el, idx) => {
         if (!el) return;
-        let count = 0;
-        const timer = setInterval(() => {
-          count++;
-          el.textContent = GREEK_FLIP_CHARS[(idx + count) % GREEK_FLIP_CHARS.length];
-          el.style.fontFamily = "var(--font-didot)";
-          if (count >= 5) clearInterval(timer);
-        }, 40);
-        flipTimers.push(timer);
+        el.textContent = brandChars[idx];
+        el.style.fontFamily = "var(--font-fraunces)";
+        el.style.fontSize = "";
       });
 
-      const oddLetters = letterRefs.current.filter((_, i) => i % 2 !== 0);
-      const evenLetters = letterRefs.current.filter((_, i) => i % 2 === 0);
-
-      gsap.to(oddLetters, {
-        yPercent: -18,
+      gsap.to(letterRefs.current, {
         opacity: 0,
-        duration: 0.7,
-        stagger: 0.02,
+        yPercent: -12,
+        duration: 1.1,
         ease: "power2.inOut",
-      });
-
-      gsap.to(evenLetters, {
-        yPercent: 18,
-        opacity: 0,
-        duration: 0.7,
         stagger: 0.02,
-        ease: "power2.inOut",
       });
 
       if (sunDiscRef.current) {
         gsap.to(sunDiscRef.current, {
           opacity: 0,
-          scale: 0.75,
-          duration: 0.7,
+          scale: 0.78,
+          duration: 1.1,
           ease: "power2.inOut",
         });
       }
     };
 
-    // Bringing back (scroll to top or click) -> reverses Greek letters back to English and fades in smoothly
-    const triggerReform = () => {
-      if (!isVanished) return;
-      isVanished = false;
-      clearFlipTimers();
-
-      letterRefs.current.forEach((el, idx) => {
-        if (!el) return;
-        const finalChar = brandChars[idx];
-        let count = 0;
-        const total = 5;
-
-        const timer = setInterval(() => {
-          count++;
-          if (count >= total) {
-            clearInterval(timer);
-            el.textContent = finalChar;
-            el.style.fontFamily = "var(--font-fraunces)";
-          } else {
-            el.textContent = GREEK_FLIP_CHARS[(idx + count) % GREEK_FLIP_CHARS.length];
-            el.style.fontFamily = "var(--font-didot)";
-          }
-        }, 48);
-        flipTimers.push(timer);
-
-        gsap.to(el, {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power2.out",
-          delay: idx * 0.02,
-        });
-      });
-
-      if (sunDiscRef.current) {
-        gsap.to(sunDiscRef.current, {
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: "power2.out",
-        });
-      }
-    };
-
-    // Scroll trigger: vanish immediately once scrolled down > 25px, reverse at top
-    const handleScrollVanish = () => {
-      if (window.scrollY > 25) {
+    // Scroll trigger: vanish on scroll down > 30px, fade in with Greek on scroll back to top <= 10px
+    const handleScroll = () => {
+      if (window.scrollY > 30) {
         triggerVanish();
-      } else if (window.scrollY <= 5) {
-        triggerReform();
+      } else if (window.scrollY <= 10) {
+        if (isVanished) {
+          playFadeInWithGreek();
+        }
       }
     };
 
-    window.addEventListener("scroll", handleScrollVanish, { passive: true });
-
-    // Click anywhere on hero section toggles vanish/reform
-    const heroEl = containerRef.current;
-    const handleHeroClick = (e: MouseEvent) => {
-      // Don't intercept button or link clicks
-      const target = e.target as HTMLElement;
-      if (target.closest("a, button, input")) return;
-      if (!isVanished) {
-        triggerVanish();
-      } else {
-        triggerReform();
-      }
-    };
-    heroEl?.addEventListener("click", handleHeroClick);
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     // Ruins parallax zoom
     if (ruinsRef.current) {
@@ -268,8 +193,7 @@ export function Hero({ stats = { repos: 18, stars: 42, projects: 6, commits: 348
     }
 
     return () => {
-      window.removeEventListener("scroll", handleScrollVanish);
-      heroEl?.removeEventListener("click", handleHeroClick);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [stats, prefersReduced]);
 
