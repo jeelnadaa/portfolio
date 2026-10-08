@@ -1,0 +1,60 @@
+---
+title: "Project Epsilon"
+slug: "project-epsilon"
+order: 5
+year: "2024"
+role: "Systems Developer"
+duration: "2 weeks"
+status: "placeholder"
+summary: "TODO: Minimalist fast key-value store engine built on memory-mapped files and append-only logs."
+tagline: "Minimalist fast key-value store engine."
+stack: ["C++", "Linux", "POSIX", "CMake"]
+tags: ["Systems", "Storage", "C++"]
+github: "https://github.com/jeelnadaa/portfolio"
+live: null
+demo_video: null
+cover: null
+gallery: []
+metrics:
+  - label: "READ IOPS"
+    value: "180K"
+    suffix: "ops/s"
+  - label: "WRITE IOPS"
+    value: "95K"
+    suffix: "ops/s"
+featured: true
+glyph: "Ε"
+stackReasons:
+  - tool: "C++"
+    reason: "Zero-cost abstractions and deterministic control over cache lines and heap allocations."
+  - tool: "Linux POSIX"
+    reason: "Direct `mmap()` syscall control and `msync()` flushing primitives."
+architecture:
+  nodes:
+    - id: "client"
+      label: "IPC Client"
+      type: "client"
+    - id: "engine"
+      label: "SkipList Index"
+      type: "service"
+    - id: "mmap"
+      label: "Memory Map"
+      type: "storage"
+  edges:
+    - from: "client"
+      to: "engine"
+    - from: "engine"
+      to: "mmap"
+---
+
+## 01 // PROBLEM
+TODO: Conventional file I/O involves repetitive user-space to kernel-space buffer copies during high-frequency index point lookups.
+
+## 02 // APPROACH
+TODO: Leveraged memory-mapped regions with lock-free concurrent SkipLists to support parallel reader threads without read-write lock contention.
+
+## 03 // BUILD
+TODO: Constructed a compact SSTable compactor running in a dedicated background worker thread with I/O priority throttling.
+
+## 04 // LEARNED
+TODO: Writing past memory mapped boundaries requires explicit signal handling to trap SIGSEGV and resize the backing descriptor gracefully.

@@ -1,0 +1,194 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+[data-theme="dark"] {
+  --bg: #070706;
+  --surface: #0f0f0d;
+  --bone: #e9e3d2;
+  --muted: #8c8778;
+  --rule: rgba(233, 227, 210, 0.16);
+  --sun: #e5381b;
+  --gold: #c9a24b;
+  --color-scheme: dark;
+}
+
+[data-theme="bone"] {
+  --bg: #e9e3d2;
+  --surface: #ddd6c3;
+  --bone: #070706;
+  --muted: #6a6557;
+  --rule: rgba(7, 7, 6, 0.18);
+  --sun: #c8260b;
+  --gold: #9c7a2e;
+  --color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--bone);
+  color-scheme: var(--color-scheme);
+  font-family: var(--font-geist), -apple-system, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: var(--bg);
+  color: var(--bone);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Accessible focus visible rings */
+:focus-visible {
+  outline: 2px solid var(--sun) !important;
+  outline-offset: 3px !important;
+}
+
+/* Custom selection */
+::selection {
+  background: var(--sun);
+  color: #070706;
+}
+
+/* Dotted leader for dossier specs */
+.dossier-leader {
+  flex-grow: 1;
+  border-bottom: 1px dotted var(--rule);
+  margin: 0 0.5rem;
+  min-width: 1rem;
+  transform: translateY(-4px);
+}
+
+/* Static Film Grain Layer */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9990;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Ordered Bayer 4x4 Dither Texture Overlay */
+.bayer-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9989;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  background-image: radial-gradient(var(--bone) 1px, transparent 0);
+  background-size: 4px 4px;
+}
+
+/* Hero vertical grid lines */
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  z-index: 1;
+  opacity: 0.04;
+}
+.hero-grid-lines div {
+  border-right: 1px solid var(--bone);
+}
+.hero-grid-lines div:last-child {
+  border-right: none;
+}
+
+/* Hairline borders */
+.hairline-b {
+  border-bottom: 1px solid var(--rule);
+}
+.hairline-t {
+  border-top: 1px solid var(--rule);
+}
+.hairline-l {
+  border-left: 1px solid var(--rule);
+}
+.hairline-r {
+  border-right: 1px solid var(--rule);
+}
+.hairline-all {
+  border: 1px solid var(--rule);
+}
+
+/* Dossier button hover fill */
+.btn-dossier {
+  position: relative;
+  overflow: hidden;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.btn-dossier::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--bone);
+  transform: translateY(100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+}
+.btn-dossier:hover::after {
+  transform: translateY(0%);
+}
+.btn-dossier:hover {
+  color: var(--bg);
+}
+.btn-dossier > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Primary Sun variant */
+.btn-dossier-sun {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--sun);
+  color: #070706;
+  border-color: var(--sun);
+  font-weight: 600;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.btn-dossier-sun:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* Print Stylesheet */
+@media print {
+  .grain-overlay,
+  .bayer-overlay,
+  .custom-cursor,
+  .nav-header,
+  .nav-footer,
+  .corner-mark,
+  .command-palette-backdrop,
+  .sound-toggle-btn {
+    display: none !important;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .print-page {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "hero-hercules": {
+    "width": 3388,
+    "height": 5056,
+    "aspectRatio": 0.6701,
+    "colorWebp": "/art/hero-hercules.color.webp",
+    "colorAvif": "/art/hero-hercules.color.avif",
+    "bonePng": "/art/hero-hercules.bone.png",
+    "maskPng": "/art/hero-hercules.mask.png",
+    "depthPng": "/art/hero-hercules.depth.png"
+  },
+  "ruins-columns": {
+    "width": 5504,
+    "height": 3072,
+    "aspectRatio": 1.7917,
+    "colorWebp": "/art/ruins-columns.color.webp",
+    "colorAvif": "/art/ruins-columns.color.avif",
+    "bonePng": "/art/ruins-columns.bone.png",
+    "maskPng": "/art/ruins-columns.mask.png"
+  },
+  "fist-sword": {
+    "width": 3712,
+    "height": 4608,
+    "aspectRatio": 0.8056,
+    "colorWebp": "/art/fist-sword.color.webp",
+    "colorAvif": "/art/fist-sword.color.avif",
+    "bonePng": "/art/fist-sword.bone.png",
+    "maskPng": "/art/fist-sword.mask.png"
+  },
+  "hand-laurel": {
+    "width": 3712,
+    "height": 4608,
+    "aspectRatio": 0.8056,
+    "colorWebp": "/art/hand-laurel.color.webp",
+    "colorAvif": "/art/hand-laurel.color.avif",
+    "bonePng": "/art/hand-laurel.bone.png",
+    "maskPng": "/art/hand-laurel.mask.png"
+  },
+  "forge-anvil": {
+    "width": 3712,
+    "height": 4608,
+    "aspectRatio": 0.8056,
+    "colorWebp": "/art/forge-anvil.color.webp",
+    "colorAvif": "/art/forge-anvil.color.avif",
+    "bonePng": "/art/forge-anvil.bone.png",
+    "maskPng": "/art/forge-anvil.mask.png"
+  },
+  "bust-fractured": {
+    "width": 4096,
+    "height": 4096,
+    "aspectRatio": 1,
+    "colorWebp": "/art/bust-fractured.color.webp",
+    "colorAvif": "/art/bust-fractured.color.avif",
+    "bonePng": "/art/bust-fractured.bone.png",
+    "maskPng": "/art/bust-fractured.mask.png"
+  }
+}
