@@ -13,7 +13,7 @@ import { AboutTeaser } from "@/components/sections/AboutTeaser";
 import { Faq } from "@/components/sections/Faq";
 import { ContactCta } from "@/components/sections/ContactCta";
 
-export const revalidate = 3600; // ISR 1 hour
+export const revalidate = 86400; // ISR 24 hours (86,400 seconds)
 
 export default async function HomePage() {
   const [projects, githubData] = await Promise.all([

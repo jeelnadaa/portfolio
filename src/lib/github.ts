@@ -105,7 +105,7 @@ export async function getGithubData(): Promise<GithubData> {
       }
     }`;
 
-    const revalidateSeconds = process.env.NODE_ENV === "development" ? 15 : 3600;
+    const revalidateSeconds = process.env.NODE_ENV === "development" ? 15 : 86400; // 24 hours (86,400s)
 
     const res = await fetch("https://api.github.com/graphql", {
       method: "POST",
