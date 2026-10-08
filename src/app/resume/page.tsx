@@ -260,7 +260,7 @@ export default function ResumePage() {
                     05 // TECHNICAL REPERTOIRE
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
-                    {armoryGroups.slice(0, 4).map((grp) => (
+                    {armoryGroups.map((grp) => (
                       <div key={grp.id} className="border border-rule p-3 space-y-1">
                         <div className="text-[10px] text-muted uppercase tracking-dossier">
                           {grp.title}

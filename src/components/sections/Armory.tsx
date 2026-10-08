@@ -157,15 +157,15 @@ export function Armory() {
             <div className="font-display text-4xl sm:text-5xl text-bone">
               <span ref={langCountRef}>0</span>
             </div>
-            <div className="text-xs sm:text-sm text-bone/70 tracking-dossier font-medium">C++, TYPESCRIPT, PYTHON & MORE</div>
+            <div className="text-xs sm:text-sm text-bone/70 tracking-dossier font-medium">JAVA, PYTHON, C, SQL & MORE</div>
           </div>
 
           <div className="space-y-2 sm:border-l sm:border-rule sm:pl-8">
-            <div className="text-xs sm:text-sm tracking-dossier uppercase text-muted font-medium">FRAMEWORKS & ENGINES</div>
+            <div className="text-xs sm:text-sm tracking-dossier uppercase text-muted font-medium">BACKEND, ML & SYSTEMS</div>
             <div className="font-display text-4xl sm:text-5xl text-bone">
               <span ref={frameCountRef}>0</span>
             </div>
-            <div className="text-xs sm:text-sm text-bone/70 tracking-dossier font-medium">NEXT.JS, THREE.JS, PYTORCH</div>
+            <div className="text-xs sm:text-sm text-bone/70 tracking-dossier font-medium">FASTAPI, PYTORCH, TENSORFLOW, FLASK</div>
           </div>
 
           <div className="space-y-2 sm:border-l sm:border-rule sm:pl-8">
