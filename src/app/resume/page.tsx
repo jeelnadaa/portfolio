@@ -151,7 +151,7 @@ export default function ResumePage() {
                     01 // EXECUTIVE SUMMARY
                   </div>
                   <p className="font-sans text-base sm:text-lg text-bone/90 leading-relaxed">
-                    Third-year Computer Science student at PES University in Bengaluru (CGPA 8.43). Focused on systems programming, distributed messaging architectures, and low-latency graphical shaders. Passionate about verifiable software that runs with zero runtime bloat.
+                    Third-year Computer Science student at PES University in Bengaluru (CGPA 8.43). Focused on systems programming, distributed messaging architectures, and production multimodal AI pipelines. Passionate about verifiable software that runs with zero runtime bloat.
                   </p>
                 </section>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { siteConfig } from "@/data/site";
 import { glyphs } from "@/data/glyphs";
 import { GhostGlyph } from "@/components/ui/GhostGlyph";
 import { BoneImage } from "@/components/ui/BoneImage";
@@ -8,11 +9,7 @@ import { useGsap } from "@/hooks/useGsap";
 import { gsap } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/hooks/useMedia";
 
-const STATEMENT_WORDS = [
-  "I", "am", "a", "computer", "science", "student", "at", "PES", "University", "in", "Bengaluru.",
-  "I", "engineer", "distributed", "backend", "utilities,", "fast", "local-first", "interfaces,",
-  "and", "low-latency", "graphics", "shaders", "with", "uncompromising", "taste."
-];
+const STATEMENT_WORDS = siteConfig.statementWords;
 
 export function WhatItIs() {
   const containerRef = useRef<HTMLDivElement>(null);

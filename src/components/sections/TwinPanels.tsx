@@ -218,7 +218,7 @@ export function TwinPanels() {
                   Craft.
                 </h3>
                 <p className="font-sans text-bone/85 text-base sm:text-lg leading-relaxed max-w-md">
-                  Multimodal AI architectures, hybrid RAG with reranking, zero-permission local-first Android suites, and pixel-precise WebGL shaders.
+                  Multimodal AI architectures, hybrid RAG with reranking, zero-permission local-first Android suites, and event-driven distributed brokers.
                 </p>
               </div>
             </div>

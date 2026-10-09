@@ -36,8 +36,18 @@ export function GithubBlock({ data }: GithubBlockProps) {
   const followersCountRef = useRef<HTMLSpanElement>(null);
   const commitsCountRef = useRef<HTMLSpanElement>(null);
 
-  // Sync prop changes
+  // Sync prop changes or from localStorage
   useEffect(() => {
+    try {
+      const cached = localStorage.getItem("solarquack:telemetry");
+      if (cached) {
+        const fresh = JSON.parse(cached);
+        if (fresh?.user && (fresh.user.totalCommits >= (data.user.totalCommits || 0))) {
+          setCurrentData(fresh);
+          return;
+        }
+      }
+    } catch {}
     setCurrentData(data);
   }, [data]);
 
@@ -68,6 +78,9 @@ export function GithubBlock({ data }: GithubBlockProps) {
       const res = await fetch("/api/github", { cache: "no-store" });
       if (!res.ok) throw new Error("Sync failed");
       const freshData: GithubData = await res.json();
+      try {
+        localStorage.setItem("solarquack:telemetry", JSON.stringify(freshData));
+      } catch {}
       setCurrentData(freshData);
       window.dispatchEvent(new CustomEvent("solarquack:telemetry-sync", { detail: freshData }));
       showToast("GITHUB TELEMETRY SYNCHRONIZED ✓");

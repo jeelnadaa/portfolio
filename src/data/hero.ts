@@ -11,13 +11,13 @@ export const heroConfig = {
     { key: "COLLEGE", value: "PES University (CSE '27)" },
     { key: "STACK", value: "Java, Python, C, FastAPI, PyTorch" },
     { key: "STATUS", value: "Open to internships" },
-    { key: "OPEN SOURCE", value: "45+ repositories" },
+    { key: "OPEN SOURCE", value: "32+ repositories" },
   ],
   stats: [
-    { label: "REPOS", value: 45, suffix: "" },
+    { label: "REPOS", value: 32, suffix: "" },
     { label: "STARS", value: 0, suffix: "★" },
     { label: "PROJECTS", value: 5, suffix: "" },
-    { label: "COMMITS", value: 408, suffix: "/yr" },
+    { label: "COMMITS", value: 1073, suffix: "/yr" },
   ],
   marqueeItems: [
     "ΙΣΧΥΣ",
@@ -42,6 +42,6 @@ export const heroConfig = {
     "✦",
     "ΚΑΤΑΣΤΑΣΗ",
     "✦",
-    "WEBGL / SHADERS",
+    "MULTIMODAL AI",
   ],
 };

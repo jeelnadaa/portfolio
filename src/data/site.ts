@@ -24,6 +24,11 @@ export const siteConfig = {
   systemLabel: "SYSTEM DOSSIER",
   repoUrl: "https://github.com/jeelnadaa/portfolio",
   version: "1.0.0",
+  statementWords: [
+    "I", "am", "a", "computer", "science", "student", "at", "PES", "University", "in", "Bengaluru.",
+    "I", "engineer", "distributed", "backend", "utilities,", "fast", "local-first", "interfaces,",
+    "and", "production", "multimodal", "AI", "pipelines", "with", "uncompromising", "taste."
+  ],
 } as const;
 
 export type SiteConfig = typeof siteConfig;

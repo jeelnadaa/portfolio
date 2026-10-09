@@ -43,8 +43,23 @@ export function Hero({ stats: initialStats = { repos: 18, stars: 42, projects: 6
 
   const brandChars = siteConfig.brand.split("");
 
-  // Sync initialStats when prop updates
+  // Sync initialStats when prop updates or from localStorage
   useEffect(() => {
+    try {
+      const cached = localStorage.getItem("solarquack:telemetry");
+      if (cached) {
+        const fresh = JSON.parse(cached);
+        if (fresh?.user && (fresh.user.totalCommits >= (initialStats.commits || 0))) {
+          setStats((prev) => ({
+            ...prev,
+            repos: fresh.user.public_repos,
+            stars: fresh.user.totalStars,
+            commits: fresh.user.totalCommits,
+          }));
+          return;
+        }
+      }
+    } catch {}
     setStats(initialStats);
   }, [initialStats]);
 
@@ -82,6 +97,9 @@ export function Hero({ stats: initialStats = { repos: 18, stars: 42, projects: 6
       const res = await fetch("/api/github", { cache: "no-store" });
       if (!res.ok) throw new Error("Sync failed");
       const freshData: GithubData = await res.json();
+      try {
+        localStorage.setItem("solarquack:telemetry", JSON.stringify(freshData));
+      } catch {}
       setStats((prev) => ({
         ...prev,
         repos: freshData.user.public_repos,

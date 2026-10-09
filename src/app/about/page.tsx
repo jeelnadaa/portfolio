@@ -132,7 +132,7 @@ export default function AboutPage() {
               What drew me into programming was the immediacy of building high-performance systems from first principles. Rather than relying on heavyweight abstractions, I spend my time understanding sequential disk I/O, binary wire framing protocols, multi-threaded concurrency, and how distributed commit logs operate under load.
             </p>
             <p>
-              Beyond systems infrastructure, I build production multimodal applications—from fine-tuning ResNet-50 vision classifiers and architecting 3-stage hybrid RAG pipelines for agriculture to crafting 100% offline local-first Android suites and creative WebGL depth shaders.
+              Beyond systems infrastructure, I build production multimodal applications—from fine-tuning ResNet-50 vision classifiers and architecting 3-stage hybrid RAG pipelines for agriculture to crafting 100% offline local-first Android suites and low-latency TCP sockets.
             </p>
 
             {/* Now Block */}
