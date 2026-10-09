@@ -27,9 +27,13 @@ export async function generateMetadata({ params }: CaseStudyProps): Promise<Meta
   return {
     title: `${project.title} · ${siteConfig.brand}`,
     description: project.summary,
+    alternates: {
+      canonical: `/work/${project.slug}`,
+    },
     openGraph: {
       title: `${project.title} — ${siteConfig.legalName}`,
       description: project.summary,
+      url: `${siteConfig.url}/work/${project.slug}`,
       type: "article",
     },
   };

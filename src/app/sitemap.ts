@@ -1,8 +1,9 @@
 import { MetadataRoute } from "next";
 import { getAllProjects } from "@/lib/projects";
+import { siteConfig } from "@/data/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://solarquack.in";
+  const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || siteConfig.url || "https://solarquack.in";
   const projects = await getAllProjects();
 
   const projectRoutes: MetadataRoute.Sitemap = projects.map((p) => ({

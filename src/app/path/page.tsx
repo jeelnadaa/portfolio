@@ -10,6 +10,9 @@ import { Tag } from "@/components/ui/Tag";
 export const metadata: Metadata = {
   title: `Path | The Engineering Journey | ${siteConfig.brand}`,
   description: `Chronological roadmap, academic education at PES University, and engineering milestones for ${siteConfig.legalName} (${siteConfig.brand}).`,
+  alternates: {
+    canonical: "/path",
+  },
 };
 
 export default function PathPage() {

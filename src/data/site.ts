@@ -1,6 +1,7 @@
 export const siteConfig = {
   brand: "solarquack",
   legalName: "Jeel Nada",
+  url: "https://solarquack.in",
   role: "CSE Student / Software Developer",
   college: "PES University, B.Tech CSE, class of 2027, CGPA 8.43",
   location: "Bengaluru, India",

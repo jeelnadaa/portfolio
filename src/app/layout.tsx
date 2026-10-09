@@ -39,32 +39,49 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://solarquack.in"),
+  metadataBase: new URL(process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || siteConfig.url || "https://solarquack.in"),
   title: {
     default: `${siteConfig.brand} | ${siteConfig.legalName}, CSE Student & Developer`,
     template: `%s · ${siteConfig.brand}`,
   },
-  description: `Portfolio of ${siteConfig.brand} (${siteConfig.legalName}), CSE student and developer in Bengaluru.`,
+  description: `Official portfolio of ${siteConfig.brand} (${siteConfig.legalName}), CSE student and software developer in Bengaluru building systems, distributed brokers, ML tools, and creative web applications.`,
   keywords: [
     "solarquack",
+    "solarquack.in",
+    "Solarquack",
     "Jeel Nada",
+    "jeelnada",
+    "jeelnadaa",
+    "solarquack portfolio",
+    "solarquack developer",
+    "Jeel Nada portfolio",
     "Creative Developer",
     "CSE Student",
     "Systems Programming",
-    "WebGL",
-    "Next.js",
+    "PES University",
     "Bengaluru",
+    "Kafka Clone",
+    "PlantIQ",
+    "Quacky",
   ],
-  authors: [{ name: siteConfig.legalName, url: siteConfig.github }],
+  authors: [
+    { name: siteConfig.legalName, url: siteConfig.url },
+    { name: siteConfig.brand, url: siteConfig.url },
+  ],
   creator: siteConfig.brand,
+  publisher: siteConfig.brand,
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: "/icon.svg",
     shortcut: "/favicon.svg",
+    apple: "/icon.svg",
   },
   openGraph: {
     title: `${siteConfig.brand} | ${siteConfig.legalName}, CSE Student & Developer`,
-    description: `Portfolio of ${siteConfig.brand} (${siteConfig.legalName}), CSE student and developer.`,
-    url: "https://solarquack.dev",
+    description: `Official portfolio of ${siteConfig.brand} (${siteConfig.legalName}), CSE student and software developer.`,
+    url: siteConfig.url || "https://solarquack.in",
     siteName: siteConfig.brand,
     locale: "en_US",
     type: "website",
@@ -72,7 +89,21 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: `${siteConfig.brand} | ${siteConfig.legalName}`,
-    description: `Portfolio of ${siteConfig.brand} (${siteConfig.legalName}), CSE student and developer.`,
+    description: `Official portfolio of ${siteConfig.brand} (${siteConfig.legalName}), CSE student and software developer.`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || process.env.GOOGLE_SITE_VERIFICATION,
   },
 };
 
@@ -81,20 +112,58 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const jsonLdPerson = {
+  const jsonLdGraph = {
     "@context": "https://schema.org",
-    "@type": "Person",
-    name: siteConfig.legalName,
-    alternateName: siteConfig.brand,
-    jobTitle: siteConfig.role,
-    email: siteConfig.email,
-    telephone: siteConfig.phone,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: siteConfig.location,
-    },
-    url: siteConfig.github,
-    sameAs: [siteConfig.github, siteConfig.linkedin, siteConfig.instagram],
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${siteConfig.url}/#website`,
+        url: siteConfig.url,
+        name: siteConfig.brand,
+        alternateName: ["Solarquack", "solarquack.in", "Jeel Nada Portfolio"],
+        description: `Official portfolio of ${siteConfig.brand} (${siteConfig.legalName}), CSE student and software developer.`,
+        inLanguage: "en-US",
+        publisher: {
+          "@id": `${siteConfig.url}/#person`,
+        },
+      },
+      {
+        "@type": "Person",
+        "@id": `${siteConfig.url}/#person`,
+        name: siteConfig.legalName,
+        alternateName: [siteConfig.brand, "Solarquack"],
+        jobTitle: siteConfig.role,
+        url: siteConfig.url,
+        email: siteConfig.email,
+        telephone: siteConfig.phone,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: siteConfig.location,
+        },
+        alumniOf: {
+          "@type": "CollegeOrUniversity",
+          name: "PES University",
+        },
+        sameAs: [
+          siteConfig.github,
+          siteConfig.linkedin,
+          siteConfig.instagram,
+          siteConfig.repoUrl,
+        ],
+      },
+      {
+        "@type": "ProfilePage",
+        "@id": `${siteConfig.url}/#profilepage`,
+        url: siteConfig.url,
+        name: `${siteConfig.brand} | ${siteConfig.legalName}, CSE Student & Developer`,
+        isPartOf: {
+          "@id": `${siteConfig.url}/#website`,
+        },
+        mainEntity: {
+          "@id": `${siteConfig.url}/#person`,
+        },
+      },
+    ],
   };
 
   return (
@@ -119,7 +188,7 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdPerson) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdGraph) }}
         />
       </head>
       <body className="antialiased selection:bg-sun selection:text-bg">
