@@ -1,16 +1,9 @@
 import React from "react";
 import type { Project } from "@/lib/schema";
-import { CodeBlock } from "@/components/project/CodeBlock";
 import { Diagram } from "@/components/project/Diagram";
 
 interface ProjectNarrativeProps {
   project: Project;
-}
-
-interface CodeBlockData {
-  type: "code";
-  lang: string;
-  code: string;
 }
 
 interface OrderedListData {
@@ -28,61 +21,13 @@ interface ParagraphData {
   text: string;
 }
 
-type NarrativeBlock = CodeBlockData | OrderedListData | UnorderedListData | ParagraphData;
+type NarrativeBlock = OrderedListData | UnorderedListData | ParagraphData;
 
 interface NarrativeSection {
   title: string;
   blocks: NarrativeBlock[];
 }
 
-function resolveFilename(slug: string, lang: string, code: string): string {
-  // If it's an ASCII layout / diagram
-  if (!lang || lang === "text" || code.includes("+-------")) {
-    return "wire-protocol.spec";
-  }
-
-  // Exact project-specific authentic filenames
-  switch (slug) {
-    case "kafka-clone":
-      return "CommitLog.java";
-    case "plantiq-capstone":
-      return "hybrid_rag.py";
-    case "quacky":
-      return "TextAnalyzer.kt";
-    case "moody-foody":
-      return "order_routes.py";
-    case "portfolio":
-      return "ditherShader.glsl";
-    default:
-      break;
-  }
-
-  // Fallbacks by language
-  switch (lang.toLowerCase()) {
-    case "java":
-      return "Main.java";
-    case "python":
-    case "py":
-      return "main.py";
-    case "kotlin":
-    case "kt":
-      return "Main.kt";
-    case "glsl":
-      return "shader.glsl";
-    case "ts":
-    case "typescript":
-      return "index.ts";
-    case "tsx":
-      return "Component.tsx";
-    case "js":
-      return "index.js";
-    case "cpp":
-    case "c++":
-      return "main.cpp";
-    default:
-      return `${slug}.${lang}`;
-  }
-}
 
 function renderInline(text: string): React.ReactNode {
   if (!text) return null;
@@ -149,21 +94,13 @@ function parseBlocks(markdown: string): NarrativeBlock[] {
       continue;
     }
 
-    // Code block
+    // Code block: deliberately skipped so we do not display isolated code snippets
     if (line.trim().startsWith("```")) {
-      const lang = line.trim().slice(3).trim();
-      const codeLines: string[] = [];
       i++;
       while (i < lines.length && !lines[i].trim().startsWith("```")) {
-        codeLines.push(lines[i]);
         i++;
       }
       i++; // skip closing ```
-      blocks.push({
-        type: "code",
-        lang,
-        code: codeLines.join("\n"),
-      });
       continue;
     }
 
@@ -345,6 +282,7 @@ export function ProjectNarrative({ project }: ProjectNarrativeProps) {
               <Diagram
                 nodes={project.architecture.nodes}
                 edges={project.architecture.edges}
+                projectSlug={project.slug}
               />
             )}
           </div>
@@ -448,21 +386,6 @@ export function ProjectNarrative({ project }: ProjectNarrativeProps) {
                   );
                 }
 
-                if (block.type === "code") {
-                  return (
-                    <CodeBlock
-                      key={bIdx}
-                      code={block.code}
-                      language={block.lang || "text"}
-                      filename={resolveFilename(
-                        project.slug,
-                        block.lang,
-                        block.code
-                      )}
-                    />
-                  );
-                }
-
                 return null;
               })}
 
@@ -472,6 +395,7 @@ export function ProjectNarrative({ project }: ProjectNarrativeProps) {
                   <Diagram
                     nodes={project.architecture.nodes}
                     edges={project.architecture.edges}
+                    projectSlug={project.slug}
                   />
                 </div>
               )}
