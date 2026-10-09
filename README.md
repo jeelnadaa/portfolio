@@ -78,7 +78,7 @@ RESEND_API_KEY=
 CONTACT_TO_EMAIL=jeelnadaa@gmail.com
 
 # Canonical URL
-NEXT_PUBLIC_SITE_URL=https://solarquack.dev
+SITE_URL=https://solarquack.in
 ```
 
 ---

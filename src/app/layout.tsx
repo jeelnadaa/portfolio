@@ -39,7 +39,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://solarquack.dev"),
+  metadataBase: new URL(process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://solarquack.in"),
   title: {
     default: `${siteConfig.brand} | ${siteConfig.legalName}, CSE Student & Developer`,
     template: `%s · ${siteConfig.brand}`,
