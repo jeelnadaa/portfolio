@@ -71,10 +71,11 @@ export async function getGithubData(options?: { forceFresh?: boolean }): Promise
         name
         followers { totalCount }
         following { totalCount }
-        repositories(first: 100, ownerAffiliations: OWNER, orderBy: {field: UPDATED_AT, direction: DESC}) {
+        repositories(first: 100, ownerAffiliations: OWNER, privacy: PUBLIC, orderBy: {field: UPDATED_AT, direction: DESC}) {
           totalCount
           nodes {
             name
+            isPrivate
             stargazerCount
             forkCount
             isFork
@@ -138,6 +139,7 @@ export async function getGithubData(options?: { forceFresh?: boolean }): Promise
 
     type RepoNode = {
       name: string;
+      isPrivate: boolean;
       stargazerCount: number;
       forkCount: number;
       isFork: boolean;
@@ -180,7 +182,7 @@ export async function getGithubData(options?: { forceFresh?: boolean }): Promise
       }));
 
     const repos: GithubRepo[] = nodes
-      .filter((r) => !r.isFork)
+      .filter((r) => !r.isFork && !r.isPrivate)
       .slice(0, 4)
       .map((r) => ({
         name: r.name,
