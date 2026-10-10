@@ -5,6 +5,7 @@ import Link from "next/link";
 import { type Project } from "@/lib/schema";
 import { ProjectPlaceholder } from "@/components/ui/ProjectPlaceholder";
 import { BoneImage } from "@/components/ui/BoneImage";
+import { VideoPlayer } from "@/components/project/VideoPlayer";
 import { Tag } from "@/components/ui/Tag";
 import { Button } from "@/components/ui/Button";
 
@@ -20,7 +21,11 @@ export function Lightbox({ project, onClose, onNext, onPrev }: LightboxProps) {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.defaultPrevented) return;
       if (e.key === "ArrowRight" && onNext) onNext();
       if (e.key === "ArrowLeft" && onPrev) onPrev();
     };
@@ -56,23 +61,52 @@ export function Lightbox({ project, onClose, onNext, onPrev }: LightboxProps) {
             <span className="text-sun font-bold">{project.glyph}</span>
             <span>PROJECT {String(project.order).padStart(2, "0")} // DOSSIER</span>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="hidden sm:inline font-mono text-[10px] text-muted">
-              ← PREV / NEXT →
-            </span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 font-mono text-[10px] text-muted">
+              {onPrev && (
+                <button
+                  onClick={onPrev}
+                  data-cursor="CLICK"
+                  className="hover:text-sun border border-rule/50 px-1.5 py-0.5 transition-colors uppercase tracking-dossier"
+                  title="Previous project [←]"
+                >
+                  ← PREV
+                </button>
+              )}
+              {onNext && (
+                <button
+                  onClick={onNext}
+                  data-cursor="CLICK"
+                  className="hover:text-sun border border-rule/50 px-1.5 py-0.5 transition-colors uppercase tracking-dossier"
+                  title="Next project [→]"
+                >
+                  NEXT →
+                </button>
+              )}
+            </div>
             <button
               onClick={onClose}
               data-cursor="CLICK"
-              className="font-mono text-xs uppercase tracking-dossier text-bone hover:text-sun border border-rule px-2 py-0.5"
+              className="font-mono text-xs uppercase tracking-dossier text-bone hover:text-sun border border-rule px-2 py-0.5 transition-colors"
             >
               ESC ✕
             </button>
           </div>
         </div>
 
-        {/* Media Cover */}
+        {/* Media Cover / Video Player */}
         <div className="relative w-full aspect-[16/9] bg-bg overflow-hidden border-b border-rule">
-          {project.cover ? (
+          {project.demo_video ? (
+            <VideoPlayer
+              key={project.slug}
+              src={project.demo_video}
+              poster={project.cover}
+              title={project.title}
+              order={project.order}
+              glyph={project.glyph}
+              aspectRatio="16/9"
+            />
+          ) : project.cover ? (
             <BoneImage
               src={project.cover}
               alt={project.title}

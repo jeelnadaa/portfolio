@@ -4,6 +4,7 @@ import { getAllProjects, getProjectBySlug, getNextProject } from "@/lib/projects
 import { siteConfig } from "@/data/site";
 import { ProjectPlaceholder } from "@/components/ui/ProjectPlaceholder";
 import { BoneImage } from "@/components/ui/BoneImage";
+import { VideoPlayer } from "@/components/project/VideoPlayer";
 import { Button } from "@/components/ui/Button";
 import { ProjectNarrative } from "@/components/project/ProjectNarrative";
 import { Gallery } from "@/components/project/Gallery";
@@ -98,7 +99,7 @@ export default async function CaseStudyPage({ params }: CaseStudyProps) {
                 </Button>
               )}
               {project.demo_video && (
-                <Button href={project.demo_video} variant="outline" external arrow>
+                <Button href="#video-dossier" variant="outline" arrow>
                   Watch demo
                 </Button>
               )}
@@ -108,9 +109,21 @@ export default async function CaseStudyPage({ params }: CaseStudyProps) {
             <MetaTable project={project} />
           </div>
 
-          {/* 2. Cover Plate */}
-          <div className="relative w-full aspect-[16/10] border border-rule bg-surface overflow-hidden">
-            {project.cover ? (
+          {/* 2. Cover Plate / Video Dossier */}
+          <div
+            id="video-dossier"
+            className="relative w-full aspect-[16/10] border border-rule bg-surface overflow-hidden scroll-mt-28"
+          >
+            {project.demo_video ? (
+              <VideoPlayer
+                src={project.demo_video}
+                poster={project.cover}
+                title={project.title}
+                order={project.order}
+                glyph={project.glyph}
+                aspectRatio="16/10"
+              />
+            ) : project.cover ? (
               <BoneImage
                 src={project.cover}
                 alt={project.title}

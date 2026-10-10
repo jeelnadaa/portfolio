@@ -153,6 +153,19 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
                   ) : (
                     <ProjectPlaceholder seed={p.slug} order={p.order} glyph={p.glyph} />
                   )}
+
+                  {/* Playable Video Dossier Indicator */}
+                  {p.demo_video && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-11 h-11 border border-bone/60 bg-surface/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105 shadow-xl">
+                        <span className="w-0 h-0 border-y-[6px] border-y-transparent border-l-[10px] border-l-sun translate-x-0.5" />
+                      </div>
+                      <div className="absolute bottom-2 right-2 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-dossier text-bone bg-bg/85 backdrop-blur-sm border border-rule/80 px-2 py-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-sun animate-pulse" />
+                        <span>VIDEO DOSSIER</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Info */}
