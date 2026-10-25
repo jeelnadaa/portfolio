@@ -1,19 +1,20 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { glyphs } from "@/data/glyphs";
-import { GhostGlyph } from "@/components/ui/GhostGlyph";
 import { BoneImage } from "@/components/ui/BoneImage";
 import { SpecRow } from "@/components/ui/SpecRow";
 import { useGsap } from "@/hooks/useGsap";
 import { gsap } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/hooks/useMedia";
 import { cn } from "@/lib/utils";
+import { foundationsData } from "@/data/foundations";
 
 export function TwinPanels() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [hoveredPanel, setHoveredPanel] = useState<"strength" | "craft" | null>(null);
+  const [hoveredPanel, setHoveredPanel] = useState<"strength" | "intelligence" | null>(null);
   const prefersReduced = usePrefersReducedMotion();
+  const { sectionIndex, sectionTitle, panels } = foundationsData;
+  const { left, right } = panels;
 
   const glyphLeftRef = useRef<HTMLDivElement>(null);
   const glyphRightRef = useRef<HTMLDivElement>(null);
@@ -103,19 +104,19 @@ export function TwinPanels() {
         {/* Section Header */}
         <div className="flex items-center justify-between border-b border-rule pb-3.5 font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted font-medium">
           <div className="flex items-center gap-3">
-            <span className="text-sun font-bold">01 - 02 //</span>
-            <span>FOUNDATIONS</span>
+            <span className="text-sun font-bold">{sectionIndex}</span>
+            <span>{sectionTitle}</span>
           </div>
           <div className="flex items-center gap-4 text-bone/70">
-            <span>{glyphs.strength.greekWord}</span>
+            <span>{left.greekWord}</span>
             <span>✦</span>
-            <span>{glyphs.craft.greekWord}</span>
+            <span>{right.greekWord}</span>
           </div>
         </div>
 
         {/* Twin Panels Grid */}
         <div className="flex flex-col lg:flex-row gap-8 transition-all duration-500">
-          {/* Left Panel: STRENGTH (ΙΣΧΥΣ) */}
+          {/* Left Panel: STRENGTH */}
           <div
             onMouseEnter={() => setHoveredPanel("strength")}
             onMouseLeave={() => setHoveredPanel(null)}
@@ -123,31 +124,31 @@ export function TwinPanels() {
               "relative border border-rule bg-surface/40 p-6 sm:p-10 flex flex-col justify-between transition-all duration-500 overflow-hidden",
               "flex-1",
               hoveredPanel === "strength" && "lg:flex-[1.35] border-bone/60",
-              hoveredPanel === "craft" && "opacity-50"
+              hoveredPanel === "intelligence" && "opacity-50"
             )}
           >
-            {/* Ghost Glyph I */}
+            {/* Ghost Glyph */}
             <div
               ref={glyphLeftRef}
               aria-hidden="true"
               className="absolute -top-12 -right-12 font-greek text-[260px] text-bone/5 pointer-events-none select-none"
             >
-              {glyphs.strength.giantLetter}
+              {left.giantLetter}
             </div>
 
             <div className="space-y-6">
               <div className="font-mono text-xs sm:text-sm tracking-dossier uppercase text-sun font-semibold flex items-center justify-between border-b border-rule pb-2.5">
-                <span>01 // STRENGTH</span>
-                <span className="font-greek">{glyphs.strength.greekWord}</span>
+                <span>{left.badgeNumeral} {left.badgeLabel}</span>
+                <span className="font-greek">{left.greekWord}</span>
               </div>
 
               {/* Art Frame */}
               <div className="relative w-full aspect-[4/5] border border-rule/50 bg-bg overflow-hidden">
                 <div ref={imgLeftRef} className="relative w-full h-full">
                   <BoneImage
-                    src="/art/fist-sword.bone.png"
-                    hoverSrc="/art/fist-sword.color.webp"
-                    alt="Classical fist gripping sword sculpture"
+                    src={left.image.src}
+                    hoverSrc={left.image.hoverSrc}
+                    alt={left.image.alt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 540px"
                     className="object-cover"
@@ -157,55 +158,55 @@ export function TwinPanels() {
 
               <div>
                 <h3 className="font-display text-4xl sm:text-5xl text-bone font-light mb-2">
-                  Strength.
+                  {left.title}
                 </h3>
                 <p className="font-sans text-bone/85 text-base sm:text-lg leading-relaxed max-w-md">
-                  Deterministic systems programming, raw TCP socket wire framing, append-only commit logs, and high-throughput concurrency.
+                  {left.description}
                 </p>
               </div>
             </div>
 
             {/* Mini Spec Rows */}
             <div className="mt-8 pt-4 border-t border-rule space-y-1">
-              <SpecRow label="CORE BROKER" value="Pure Java / TCP Sockets" />
-              <SpecRow label="STORAGE ENGINE" value="Append-Only Commit Logs" />
-              <SpecRow label="DATA PERSISTENCE" value="MySQL 8 & Room SQLite" />
+              {left.specs.map((spec) => (
+                <SpecRow key={spec.label} label={spec.label} value={spec.value} />
+              ))}
             </div>
           </div>
 
-          {/* Right Panel: CRAFT (ΤΕΧΝΗ) */}
+          {/* Right Panel: INTELLIGENCE */}
           <div
-            onMouseEnter={() => setHoveredPanel("craft")}
+            onMouseEnter={() => setHoveredPanel("intelligence")}
             onMouseLeave={() => setHoveredPanel(null)}
             className={cn(
               "relative border border-rule bg-surface/40 p-6 sm:p-10 flex flex-col justify-between transition-all duration-500 overflow-hidden",
               "flex-1",
-              hoveredPanel === "craft" && "lg:flex-[1.35] border-bone/60",
+              hoveredPanel === "intelligence" && "lg:flex-[1.35] border-bone/60",
               hoveredPanel === "strength" && "opacity-50"
             )}
           >
-            {/* Ghost Glyph T */}
+            {/* Ghost Glyph */}
             <div
               ref={glyphRightRef}
               aria-hidden="true"
               className="absolute -top-12 -right-12 font-greek text-[260px] text-bone/5 pointer-events-none select-none"
             >
-              {glyphs.craft.giantLetter}
+              {right.giantLetter}
             </div>
 
             <div className="space-y-6">
               <div className="font-mono text-xs sm:text-sm tracking-dossier uppercase text-sun font-semibold flex items-center justify-between border-b border-rule pb-2.5">
-                <span>02 // CRAFT</span>
-                <span className="font-greek">{glyphs.craft.greekWord}</span>
+                <span>{right.badgeNumeral} {right.badgeLabel}</span>
+                <span className="font-greek">{right.greekWord}</span>
               </div>
 
               {/* Art Frame */}
               <div className="relative w-full aspect-[4/5] border border-rule/50 bg-bg overflow-hidden">
                 <div ref={imgRightRef} className="relative w-full h-full">
                   <BoneImage
-                    src="/art/hand-laurel.bone.png"
-                    hoverSrc="/art/hand-laurel.color.webp"
-                    alt="Classical hand holding laurel branch sculpture"
+                    src={right.image.src}
+                    hoverSrc={right.image.hoverSrc}
+                    alt={right.image.alt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 540px"
                     className="object-cover"
@@ -215,19 +216,19 @@ export function TwinPanels() {
 
               <div>
                 <h3 className="font-display text-4xl sm:text-5xl text-bone font-light mb-2">
-                  Craft.
+                  {right.title}
                 </h3>
                 <p className="font-sans text-bone/85 text-base sm:text-lg leading-relaxed max-w-md">
-                  Multimodal AI architectures, hybrid RAG with reranking, zero-permission local-first Android suites, and event-driven distributed brokers.
+                  {right.description}
                 </p>
               </div>
             </div>
 
             {/* Mini Spec Rows */}
             <div className="mt-8 pt-4 border-t border-rule space-y-1">
-              <SpecRow label="COMPUTER VISION" value="ResNet-50 (96.4% Top-1)" />
-              <SpecRow label="HYBRID RAG" value="BM25 + Dense + Cross-Encoder" />
-              <SpecRow label="OFFLINE SUITE" value="100% Offline Android App" />
+              {right.specs.map((spec) => (
+                <SpecRow key={spec.label} label={spec.label} value={spec.value} />
+              ))}
             </div>
           </div>
         </div>
