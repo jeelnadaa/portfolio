@@ -83,7 +83,7 @@ function renderInline(text: string): React.ReactNode {
 
 function parseBlocks(markdown: string): NarrativeBlock[] {
   const blocks: NarrativeBlock[] = [];
-  const lines = markdown.split("\n");
+  const lines = markdown.split(/\r?\n/);
   let i = 0;
 
   while (i < lines.length) {
@@ -226,7 +226,7 @@ function parseBlocks(markdown: string): NarrativeBlock[] {
 
 function parseSections(content: string): NarrativeSection[] {
   if (!content) return [];
-  const lines = content.split("\n");
+  const lines = content.split(/\r?\n/);
   const sections: NarrativeSection[] = [];
   let currentTitle = "";
   let currentLines: string[] = [];
