@@ -8,7 +8,7 @@ import { heroVertexShader, heroFragmentShader } from "./shaders/heroShaders";
 import { BoneImage } from "@/components/ui/BoneImage";
 import { usePrefersReducedMotion } from "@/hooks/useMedia";
 
-const ASSET_VERSION = "20261025-1";
+const ASSET_VERSION = "20261025-4";
 
 function ShaderMesh({
   mousePos,

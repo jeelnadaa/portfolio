@@ -281,8 +281,8 @@ export function Hero({ stats: initialStats = { repos: 18, stars: 42, projects: 6
       >
         <h1 className="font-display font-light text-bone/35 tracking-tightest leading-none text-[clamp(3.8rem,14vw,17.5rem)] flex items-center justify-between w-full max-w-7xl">
           <span className="sr-only">{siteConfig.heroHeading}</span>
-          {/* Left Wing: "solar" (s, o, l, a, r) - shifted slightly right so 'r' tucks behind Hercules' arm */}
-          <div className="flex-1 flex justify-between pr-1 sm:pr-2 md:pr-3 translate-x-3 sm:translate-x-6 md:translate-x-10">
+          {/* Left Wing: "solar" (s, o, l, a, r); its last letters run behind Hercules */}
+          <div className="flex-1 flex justify-between">
             {brandChars.slice(0, 5).map((char, idx) => (
               <span
                 key={idx}
@@ -301,11 +301,11 @@ export function Hero({ stats: initialStats = { repos: 18, stars: 42, projects: 6
             ))}
           </div>
 
-          {/* Central Architectural Gap for Hercules statue */}
-          <div className="w-10 sm:w-20 md:w-32 lg:w-44 shrink-0 pointer-events-none" aria-hidden="true" />
+          {/* No gap: the statue (z-30) stands in front of the letters (z-20) */}
+          <div className="w-[0.25em] shrink-0 pointer-events-none" aria-hidden="true" />
 
           {/* Right Wing: "quack" (q, u, a, c, k) */}
-          <div className="flex-1 flex justify-between pl-2 sm:pl-4 md:pl-6">
+          <div className="flex-1 flex justify-between">
             {brandChars.slice(5).map((char, localIdx) => {
               const idx = localIdx + 5;
               return (

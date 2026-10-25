@@ -67,8 +67,9 @@ void main() {
   vec4 colorSample = texture2D(uColorMap, displacedUv);
   float lum = dot(colorSample.rgb, vec3(0.299, 0.587, 0.114));
 
-  // 6. Secondary safeguard: discard any background black pixels
-  if (lum < 0.02) {
+  // 6. Secondary safeguard: discard background pixels the mask edge still covers,
+  // otherwise they draw as a black halo beside the figure
+  if (lum < 0.07) {
     discard;
   }
 
@@ -91,9 +92,10 @@ void main() {
   float torch = smoothstep(uTorchRadius, 0.0, torchDist) * uTorchStrength;
 
   // 7. Smooth continuous tone marble (no noisy dither dots)
-  // Base statue: deep, moody, dark chiaroscuro marble
-  vec3 darkMarble = colorSample.rgb * 0.72;
-  darkMarble = pow(darkMarble, vec3(1.18)) * 0.90;
+  // Base statue: deep, moody, dark chiaroscuro marble.
+  // A steep curve sinks the shadows to near black while the lit marble keeps
+  // its tone, so the figure reads as solid in front of the brand letters.
+  vec3 darkMarble = pow(colorSample.rgb, vec3(1.9)) * 1.25;
   darkMarble += uBone * glintBoost * 0.45;
 
   // Inside torch: smoothly reveals full continuous marble tone with rim lighting
