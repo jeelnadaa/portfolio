@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
+import { buildHeroTextures } from "./hero-textures.mjs";
 
 const RAW_DIR = path.resolve(process.cwd(), "assets-raw");
 const OUT_DIR = path.resolve(process.cwd(), "public/art");
@@ -448,6 +449,7 @@ async function main() {
   if (heroData) {
     await processDepthMap(heroData);
     manifest["hero-hercules"].depthPng = "/art/hero-hercules.depth.png";
+    await buildHeroTextures();
   }
 
   // Write manifest.json

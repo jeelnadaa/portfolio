@@ -32,6 +32,8 @@ export function BoneImage({
 }: BoneImageProps) {
   const [hasError, setHasError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  // The colour image is only fetched once someone hovers or focuses the frame
+  const [wantsHover, setWantsHover] = useState(false);
 
   if (hasError) {
     const filename = src.split("/").pop() || "asset";
@@ -45,9 +47,15 @@ export function BoneImage({
         fill && "w-full h-full",
         containerClassName
       )}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => {
+        setWantsHover(true);
+        setIsHovered(true);
+      }}
       onMouseLeave={() => setIsHovered(false)}
-      onFocus={() => setIsHovered(true)}
+      onFocus={() => {
+        setWantsHover(true);
+        setIsHovered(true);
+      }}
       onBlur={() => setIsHovered(false)}
       tabIndex={0}
       data-cursor="VIEW"
@@ -70,7 +78,7 @@ export function BoneImage({
       />
 
       {/* Hover: Color/greyscale continuous-tone cross-fade */}
-      {hoverSrc && (
+      {hoverSrc && wantsHover && (
         <Image
           src={hoverSrc}
           alt={`${alt} detailed view`}

@@ -8,7 +8,7 @@ import { heroVertexShader, heroFragmentShader } from "./shaders/heroShaders";
 import { BoneImage } from "@/components/ui/BoneImage";
 import { usePrefersReducedMotion } from "@/hooks/useMedia";
 
-const ASSET_VERSION = "20261008-5";
+const ASSET_VERSION = "20261025-1";
 
 function ShaderMesh({
   mousePos,
@@ -20,9 +20,9 @@ function ShaderMesh({
 
   // Load textures with asset versioning to bust browser disk/memory cache
   const [colorMap, depthMap, maskMap] = useTexture([
-    `/art/hero-hercules.color.webp?v=${ASSET_VERSION}`,
-    `/art/hero-hercules.depth.png?v=${ASSET_VERSION}`,
-    `/art/hero-hercules.mask.png?v=${ASSET_VERSION}`,
+    `/art/hero-hercules.color.tex.webp?v=${ASSET_VERSION}`,
+    `/art/hero-hercules.depth.tex.webp?v=${ASSET_VERSION}`,
+    `/art/hero-hercules.mask.tex.webp?v=${ASSET_VERSION}`,
   ]);
 
   const lerpedMouse = useRef(new THREE.Vector2(0.5, 0.5));
