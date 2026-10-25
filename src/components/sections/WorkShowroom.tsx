@@ -117,12 +117,21 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
             {featured.map((p, idx) => (
               <div
                 key={p.slug}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${p.title}`}
                 onClick={() => setActiveLightboxIndex(idx)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setActiveLightboxIndex(idx);
+                  }
+                }}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 data-cursor="VIEW"
                 className={cn(
-                  "group relative border border-rule bg-surface/50 p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 cursor-pointer select-none",
+                  "group relative border border-rule bg-surface/50 p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 cursor-pointer select-none focus-visible:border-bone/70",
                   "hover:-translate-y-1.5 hover:border-bone/70 hover:shadow-xl",
                   hoveredIndex !== null && hoveredIndex !== idx && "opacity-45",
                   // Offset second row slightly for asymmetric look
@@ -157,7 +166,13 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
                   {/* Playable Video Dossier Indicator */}
                   {p.demo_video && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-11 h-11 border border-bone/60 bg-surface/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105 shadow-xl">
+                      <div
+                        className={cn(
+                          "w-11 h-11 border border-bone/60 bg-surface/80 backdrop-blur-sm flex items-center justify-center group-hover:opacity-100 transition-all duration-300 group-hover:scale-105 shadow-xl",
+                          // Touch screens have no hover, so the play button stays visible there
+                          isFine ? "opacity-0" : "opacity-100"
+                        )}
+                      >
                         <span className="w-0 h-0 border-y-[6px] border-y-transparent border-l-[10px] border-l-sun translate-x-0.5" />
                       </div>
                       <div className="absolute bottom-2 right-2 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-dossier text-bone bg-bg/85 backdrop-blur-sm border border-rule/80 px-2 py-0.5">
@@ -176,6 +191,19 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
                   <p className="font-mono text-sm sm:text-base text-muted leading-relaxed line-clamp-2">
                     {p.tagline}
                   </p>
+                  {p.metrics.length > 0 && (
+                    <dl className="flex flex-wrap gap-x-4 gap-y-1 pt-1 font-mono text-xs uppercase tracking-dossier">
+                      {p.metrics.slice(0, 2).map((m) => (
+                        <div key={m.label} className="flex items-baseline gap-1.5">
+                          <dt className="text-muted">{m.label}</dt>
+                          <dd className="text-sun font-semibold">
+                            {m.value}
+                            {m.suffix}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )}
                 </div>
 
                 {/* Tags */}
@@ -197,7 +225,16 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
             {featured.map((p, idx) => (
               <div
                 key={p.slug}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${p.title}`}
                 onClick={() => setActiveLightboxIndex(idx)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setActiveLightboxIndex(idx);
+                  }
+                }}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 data-cursor="VIEW"

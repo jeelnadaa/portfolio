@@ -14,7 +14,12 @@ interface CommandItemEntry {
   action: () => void;
 }
 
-export function CommandPalette() {
+export interface CommandPaletteProject {
+  slug: string;
+  title: string;
+}
+
+export function CommandPalette({ projects }: { projects: CommandPaletteProject[] }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const { showToast } = useToast();
@@ -44,13 +49,16 @@ export function CommandPalette() {
     { id: "nav-contact", label: "Navigate: Transmission (/contact)", category: "Navigation", action: () => { router.push("/contact"); setOpen(false); } },
     { id: "nav-log", label: "Navigate: Changelog (/log)", category: "Navigation", action: () => { router.push("/log"); setOpen(false); } },
 
-    // Projects
-    { id: "proj-kafka", label: "Project: Distributed Message Broker (Kafka Clone)", category: "Projects", action: () => { router.push("/work/kafka-clone"); setOpen(false); } },
-    { id: "proj-plantiq", label: "Project: PlantIQ (Coffee Agronomy Platform)", category: "Projects", action: () => { router.push("/work/plantiq-capstone"); setOpen(false); } },
-    { id: "proj-quacky", label: "Project: Quacky (Offline Android Suite)", category: "Projects", action: () => { router.push("/work/quacky"); setOpen(false); } },
-    { id: "proj-moody", label: "Project: Moody Foody (AI Ordering Chatbot)", category: "Projects", action: () => { router.push("/work/moody-foody"); setOpen(false); } },
-    { id: "proj-sift", label: "Project: Sift (Personal Email Assistant)", category: "Projects", action: () => { router.push("/work/sift"); setOpen(false); } },
-    { id: "proj-portfolio", label: "Project: Solarquack (Marble Dossier Portfolio)", category: "Projects", action: () => { router.push("/work/portfolio"); setOpen(false); } },
+    // Projects (from src/content/projects, in showroom order)
+    ...projects.map<CommandItemEntry>((p) => ({
+      id: `proj-${p.slug}`,
+      label: `Project: ${p.title}`,
+      category: "Projects",
+      action: () => {
+        router.push(`/work/${p.slug}`);
+        setOpen(false);
+      },
+    })),
 
     // Transmission
     {

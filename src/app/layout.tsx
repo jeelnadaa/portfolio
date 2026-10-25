@@ -15,6 +15,7 @@ import { Grain } from "@/components/layout/Grain";
 import { CornerMarks } from "@/components/layout/CornerMarks";
 import { Cursor } from "@/components/ui/Cursor";
 import { CommandPalette } from "@/components/command/CommandPalette";
+import { getAllProjects } from "@/lib/projects";
 import { EasterEggs } from "@/components/layout/EasterEggs";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 
@@ -107,11 +108,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const paletteProjects = (await getAllProjects())
+    .filter((p) => p.status !== "placeholder")
+    .map((p) => ({ slug: p.slug, title: p.title }));
+
   const jsonLdGraph = {
     "@context": "https://schema.org",
     "@graph": [
@@ -209,7 +214,7 @@ export default function RootLayout({
               <Cursor />
               <Preloader />
               <PageTransition />
-              <CommandPalette />
+              <CommandPalette projects={paletteProjects} />
               <EasterEggs />
 
               {/* Navigation Header */}

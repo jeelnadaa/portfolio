@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const EXPLORE_LINKS = [
   { href: "/work", label: "Work" },
   { href: "/#armory", label: "Armory" },
-  { href: "/#path", label: "Path" },
+  { href: "/path", label: "Path" },
   { href: "/about", label: "About" },
   { href: "/log", label: "Log" },
 ];

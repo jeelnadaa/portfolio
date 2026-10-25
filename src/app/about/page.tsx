@@ -10,6 +10,7 @@ import { PortraitPlaceholder } from "@/components/ui/PortraitPlaceholder";
 import { BoneImage } from "@/components/ui/BoneImage";
 import { Button } from "@/components/ui/Button";
 import { SpecRow } from "@/components/ui/SpecRow";
+import { Faq } from "@/components/sections/Faq";
 import { useGsap } from "@/hooks/useGsap";
 import { gsap, Draggable } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/hooks/useMedia";
@@ -245,6 +246,9 @@ export default function AboutPage() {
           </div>
         </div>
       </div>
+
+      {/* Questions: ΕΡΩΤΗΣΕΙΣ (moved here from the home page) */}
+      <Faq />
     </main>
   );
 }

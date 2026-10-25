@@ -18,6 +18,10 @@ export const siteConfig = {
   availableFrom: null as string | null, // ISO date string e.g. "2027-06-01" or null
   openStatus: "Open to internships",
   heroPositioning: "CSE student in Bengaluru building systems, ML tools, and distinctive web apps.",
+  // Plain facts shown under the hero line at every screen size
+  heroFacts: ["Jeel Nada", "PES University, CSE '27", "Bengaluru", "Open to Summer 2027 internships"],
+  // Accessible name for the hero h1 (the visible letters are decorative)
+  heroHeading: "Jeel Nada (solarquack), CSE student and developer",
   taglineDisplay: "Built with strength. Shipped with taste.",
   taglineGreek: "ΙΣΧΥΣ ΚΑΙ ΤΕΧΝΗ",
   authorDossier: "Jeel Nada // solarquack",

@@ -280,6 +280,7 @@ export function Hero({ stats: initialStats = { repos: 18, stars: 42, projects: 6
         className="absolute top-[32%] sm:top-[34%] left-0 right-0 -translate-y-1/2 z-20 flex justify-center items-center pointer-events-none px-4 sm:px-8 select-none"
       >
         <h1 className="font-display font-light text-bone/35 tracking-tightest leading-none text-[clamp(3.8rem,14vw,17.5rem)] flex items-center justify-between w-full max-w-7xl">
+          <span className="sr-only">{siteConfig.heroHeading}</span>
           {/* Left Wing: "solar" (s, o, l, a, r) - shifted slightly right so 'r' tucks behind Hercules' arm */}
           <div className="flex-1 flex justify-between pr-1 sm:pr-2 md:pr-3 translate-x-3 sm:translate-x-6 md:translate-x-10">
             {brandChars.slice(0, 5).map((char, idx) => (
@@ -458,7 +459,15 @@ export function Hero({ stats: initialStats = { repos: 18, stars: 42, projects: 6
             <p className="font-mono text-base sm:text-lg text-bone/90 leading-relaxed uppercase tracking-dossier font-medium">
               {siteConfig.heroPositioning}
             </p>
-            <div className="flex items-center gap-4">
+            <ul className="flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs sm:text-sm uppercase tracking-dossier text-muted font-medium">
+              {siteConfig.heroFacts.map((fact, idx) => (
+                <li key={fact} className="flex items-center gap-3">
+                  {idx > 0 && <span aria-hidden="true" className="text-sun">·</span>}
+                  <span>{fact}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <Magnetic strength={0.3}>
                 <Button href="#work" variant="sun" arrow className="text-xs sm:text-sm">
                   View work
@@ -469,9 +478,16 @@ export function Hero({ stats: initialStats = { repos: 18, stars: 42, projects: 6
                   Source code
                 </Button>
               </Magnetic>
-              <span className="hidden sm:inline font-mono text-xs sm:text-sm text-muted tracking-dossier font-medium">
-                ★ {stats.stars} stars
-              </span>
+              <Magnetic strength={0.3}>
+                <Button
+                  href={siteConfig.resumePdf}
+                  variant="outline"
+                  download={siteConfig.resumeDownloadName}
+                  className="text-xs sm:text-sm"
+                >
+                  Download résumé
+                </Button>
+              </Magnetic>
             </div>
           </div>
 

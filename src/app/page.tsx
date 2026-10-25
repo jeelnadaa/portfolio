@@ -7,10 +7,8 @@ import { TwinPanels } from "@/components/sections/TwinPanels";
 import { WorkShowroom } from "@/components/sections/WorkShowroom";
 import { Armory } from "@/components/sections/Armory";
 import { GithubBlock } from "@/components/sections/GithubBlock";
-import { Path } from "@/components/sections/Path";
 import { Status } from "@/components/sections/Status";
 import { AboutTeaser } from "@/components/sections/AboutTeaser";
-import { Faq } from "@/components/sections/Faq";
 import { ContactCta } from "@/components/sections/ContactCta";
 
 export const revalidate = 86400; // ISR 24 hours (86,400 seconds)
@@ -36,14 +34,14 @@ export default async function HomePage() {
       {/* Marquee Strip below Hero */}
       <Marquee />
 
+      {/* 6.D Work Showroom: ΕΡΓΑ (projects come right after the hero) */}
+      <WorkShowroom projects={projects} />
+
       {/* 6.B What It Is: ΕΓΩ */}
       <WhatItIs />
 
       {/* 6.C Twin Panels: ΙΣΧΥΣ & ΤΕΧΝΗ */}
       <TwinPanels />
-
-      {/* 6.D Work Showroom: ΕΡΓΑ */}
-      <WorkShowroom projects={projects} />
 
       {/* 6.E Armory: ΟΠΛΟΘΗΚΗ */}
       <Armory />
@@ -51,8 +49,7 @@ export default async function HomePage() {
       {/* 6.F GitHub Live: ΚΩΔΙΚΑΣ */}
       <GithubBlock data={githubData} />
 
-      {/* 6.G Path Timeline: ΠΟΡΕΙΑ */}
-      <Path />
+      {/* 6.G Path timeline lives on /path */}
 
       {/* 6.H Honest Status: ΚΑΤΑΣΤΑΣΗ */}
       <Status />
@@ -60,8 +57,7 @@ export default async function HomePage() {
       {/* 6.I About Teaser with Forge Art */}
       <AboutTeaser />
 
-      {/* 6.J Questions: ΕΡΩΤΗΣΕΙΣ */}
-      <Faq />
+      {/* 6.J Questions live on /about */}
 
       {/* 6.K Contact Transmission CTA */}
       <ContactCta />

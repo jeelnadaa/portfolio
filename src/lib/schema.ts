@@ -47,6 +47,8 @@ export const ProjectFrontmatterSchema = z.object({
   gallery: z.array(z.string()).default([]),
   metrics: z.array(ProjectMetricSchema).default([]),
   featured: z.boolean().default(false),
+  // One-line description for the résumé page; projects without it are left off
+  resume_blurb: z.string().optional(),
   glyph: z.string(), // Α-Ω
   stackReasons: z.array(ProjectStackItemSchema).optional().default([]),
   architecture: ProjectArchitectureSchema.optional(),
