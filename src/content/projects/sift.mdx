@@ -1,0 +1,113 @@
+---
+title: "Sift — Personal Email Assistant"
+slug: "sift"
+order: 6
+year: "2026"
+role: "Solo Full-Stack Developer"
+duration: "3 days"
+status: "live"
+summary: "A self-hosted email assistant that watches all my Gmail accounts, runs my own rules first, calls a small LLM with my own key only for what the rules can't settle, and pushes priority mail to an Android app."
+tagline: "Rules first, a small LLM only when needed, priority mail on my phone."
+stack:
+  - Python
+  - FastAPI
+  - PostgreSQL
+  - Kotlin
+  - Jetpack Compose
+  - React
+  - TypeScript
+  - Firebase Cloud Messaging
+  - Gmail API
+tags:
+  - Full-Stack
+  - Self-Hosted
+  - AI
+  - Android
+  - Email
+github: "https://github.com/jeelnadaa/sift"
+live: "https://sift.solarquack.in"
+demo_video: "/videos/projects/sift.mp4"
+cover: "/images/projects/sift-thumb.webp"
+gallery: []
+metrics:
+  - label: "PUSH TO PHONE"
+    value: "< 1.5"
+    suffix: " s"
+  - label: "AI CALLS ON BANK MAIL"
+    value: "0"
+    suffix: ""
+  - label: "BACKEND TESTS"
+    value: "190"
+    suffix: "+"
+featured: true
+glyph: "Ζ"
+stackReasons:
+  - tool: "FastAPI & PostgreSQL"
+    reason: "One Postgres does the data and the job queue (SKIP LOCKED), so the laptop runs Sift with no Redis and no Docker."
+  - tool: "Kotlin & Jetpack Compose"
+    reason: "A native app gets FCM data messages, its own notification channel per priority, and a battery-optimization exemption so urgent mail actually rings."
+architecture:
+  nodes:
+    - id: "gmail"
+      label: "Gmail (poll or Pub/Sub)"
+      type: "client"
+    - id: "scheduler"
+      label: "Scheduler & Job Queue"
+      type: "service"
+    - id: "pipeline"
+      label: "Rules → Heuristics → LLM"
+      type: "worker"
+    - id: "postgres"
+      label: "PostgreSQL"
+      type: "storage"
+    - id: "fcm"
+      label: "FCM → Android App"
+      type: "client"
+  edges:
+    - from: "gmail"
+      to: "scheduler"
+      label: "What changed?"
+    - from: "scheduler"
+      to: "pipeline"
+      label: "check_account job"
+    - from: "pipeline"
+      to: "postgres"
+      label: "Mail, timelines, to-dos"
+    - from: "pipeline"
+      to: "fcm"
+      label: "Urgent / normal / digest"
+---
+
+## 01 // PROBLEM
+I have more than one Gmail account and placement season is running. The mail that matters (an online test that closes tonight, a fraud alert) arrives next to bank debit notices, newsletters and college circulars. Gmail's own notifications ring for all of it or none of it.
+
+I wanted one thing that reads every account, stays quiet about the noise, and makes my phone ring for the few mails that need me now. I also didn't want to pay an AI to read a bank debit, so the AI had to be the last step, not the first.
+
+## 02 // APPROACH
+Every new mail goes through the same order, and the first step that decides wins:
+
+1. **My rules.** They match the sender's authenticated domain (DKIM/SPF/DMARC from Gmail's own headers), so a spoofed "bank" mail never matches a bank rule.
+2. **Free signals.** Gmail's Promotions and Social tabs, and subject templates I silenced before.
+3. **A small LLM, only if I added my own key.** It returns the category, company, deadlines and links in one call, under a daily token cap.
+4. **Otherwise normal priority.** Anything that fails is delivered, never hidden.
+
+Detection is a setting: poll Gmail every few seconds for free, or use Gmail watch + Pub/Sub. If push breaks, the scheduler notices missing mail and falls back to polling on its own.
+
+## 03 // BUILD
+Sift is a FastAPI backend with a worker and a scheduler, a Kotlin + Compose Android app, and a React web app served by the same API. It runs on my laptop and is reachable at sift.solarquack.in through a Cloudflare Tunnel.
+
+- **Priority notifications:** urgent, normal and digest each get their own Android channel. Urgent pushes are re-sent every 5 minutes until the phone confirms it got them.
+- **Company timelines:** placement mail (announcement, registration, test, interview, result) lands on one timeline per company across all accounts. When Sift can't tell which company a mail is about, the notification asks with one-tap buttons and remembers the answer.
+- **To-dos and reminders:** mail that needs action becomes a to-do, with reminders 24 h and 2 h before the deadline.
+- **Rules editor:** a live "N of your last 500 mails would match" preview, rules written in plain English (I review the draft before it saves), and a first scan that reads 30 days of headers, with no bodies and no AI, so I can silence senders in bulk.
+- **Reader, search and compose:** conversations are fetched live from Gmail and never stored, remote images stay blocked until I load them, search takes Gmail syntax plus Sift's own filters, and replies are real Gmail drafts with undo send and send later.
+
+Before anything reaches the LLM, phone numbers, roll numbers, Aadhaar/PAN and long numbers are redacted.
+
+## 04 // LEARNED
+The hardest bugs only showed up on real mail:
+- The first real mail deadlocked the worker. I locked the account row `FOR UPDATE`, and inserting the message on another connection needed a key-share lock on that same row. Switching to `FOR NO KEY UPDATE` with a lock timeout fixed it, and a regression test now goes through the real path.
+- My college placement cell showed up as "unverified" because its mail comes through a Google Groups list. The pes.edu results only exist in Gmail's ARC summary. Sift now trusts ARC only when Gmail reports `arc=pass` and Google sealed it, so forged ARC sets still fail.
+- The model read "tonight" as a date in 2023 because I never told it today's date. It also pushed a real person's short mail down to digest. Now the received time goes into the prompt, and mail without bulk signals never drops below normal.
+
+The push to my phone takes 0.1–1.4 s. The whole trip from Gmail to phone is about 23 s, and most of that is Gmail waiting around 17 s before it reports a new message. I can't fix that part, so I measured it instead of guessing.

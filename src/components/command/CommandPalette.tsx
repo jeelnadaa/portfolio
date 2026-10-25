@@ -49,6 +49,7 @@ export function CommandPalette() {
     { id: "proj-plantiq", label: "Project: PlantIQ (Coffee Agronomy Platform)", category: "Projects", action: () => { router.push("/work/plantiq-capstone"); setOpen(false); } },
     { id: "proj-quacky", label: "Project: Quacky (Offline Android Suite)", category: "Projects", action: () => { router.push("/work/quacky"); setOpen(false); } },
     { id: "proj-moody", label: "Project: Moody Foody (AI Ordering Chatbot)", category: "Projects", action: () => { router.push("/work/moody-foody"); setOpen(false); } },
+    { id: "proj-sift", label: "Project: Sift (Personal Email Assistant)", category: "Projects", action: () => { router.push("/work/sift"); setOpen(false); } },
     { id: "proj-portfolio", label: "Project: Solarquack (Marble Dossier Portfolio)", category: "Projects", action: () => { router.push("/work/portfolio"); setOpen(false); } },
 
     // Transmission

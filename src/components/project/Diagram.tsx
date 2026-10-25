@@ -91,6 +91,17 @@ const CANONICAL_PRESETS: Record<
       githubapi: { x: 960, y: 220 },
     },
   },
+  sift: {
+    width: 1300,
+    height: 380,
+    positions: {
+      gmail: { x: 140, y: 100 },
+      scheduler: { x: 480, y: 100 },
+      pipeline: { x: 820, y: 100 },
+      fcm: { x: 1150, y: 100 },
+      postgres: { x: 820, y: 260 },
+    },
+  },
 };
 
 /**
