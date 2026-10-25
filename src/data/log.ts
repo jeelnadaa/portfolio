@@ -10,6 +10,15 @@ export interface LogEntry {
 
 export const logEntries: LogEntry[] = [
   {
+    id: "log-hero-statue",
+    date: "2026-10-25",
+    monthYear: "October 2026",
+    version: "v1.7.1",
+    title: "Solid Hercules in Front of the Brandmark",
+    body: "The hero statue looked faded because its mask had been regenerated wrong (horizontal stripes in a different pose), so the shader drew the marble through gaps. The mask texture is now cut from the statue image itself, which also removes the black halo beside the head. Shadows are deeper, and the solarquack letters no longer leave a gap for the statue: they run behind it.",
+    tags: ["WebGL", "Shaders", "Hero"],
+  },
+  {
     id: "log-home-content",
     date: "2026-10-25",
     monthYear: "October 2026",
