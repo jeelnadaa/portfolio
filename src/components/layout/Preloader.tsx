@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { gsap } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/hooks/useMedia";
 import { useSound } from "@/hooks/useSound";
@@ -12,12 +13,37 @@ interface PreloaderProps {
 
 let hasPreloadedThisSession = false;
 
+const SESSION_KEY = "solarquack:entered";
+// Plays on its own after this delay; a click or key press only makes it faster
+const AUTO_ENTER_MS = 1500;
+
+function readEnteredFlag(): boolean {
+  try {
+    return window.sessionStorage.getItem(SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markEntered() {
+  hasPreloadedThisSession = true;
+  try {
+    window.sessionStorage.setItem(SESSION_KEY, "1");
+  } catch {
+    // Storage blocked: the in-memory flag still covers this page load
+  }
+}
+
 export function isPreloadedSession(): boolean {
-  return hasPreloadedThisSession;
+  if (hasPreloadedThisSession) return true;
+  if (typeof window === "undefined") return false;
+  // Inner pages never show the gate, and it plays once per browser tab session
+  return window.location.pathname !== "/" || readEnteredFlag();
 }
 
 export function Preloader({ onComplete }: PreloaderProps) {
-  const [visible, setVisible] = useState(true);
+  const pathname = usePathname();
+  const [visible, setVisible] = useState(pathname === "/");
   const containerRef = useRef<HTMLDivElement>(null);
   const topHalfRef = useRef<HTMLDivElement>(null);
   const bottomHalfRef = useRef<HTMLDivElement>(null);
@@ -31,26 +57,12 @@ export function Preloader({ onComplete }: PreloaderProps) {
   const prefersReduced = usePrefersReducedMotion();
   const { playMetalSlice } = useSound();
 
-  useEffect(() => {
-    // Only skip if already played in current in-memory SPA session (replays on page refresh)
-    if (hasPreloadedThisSession || prefersReduced) {
-      setVisible(false);
-      if (onComplete) onComplete();
-      return;
-    }
-
-    const slash = slashLineRef.current;
-    if (slash) {
-      gsap.set(slash, { strokeDashoffset: 2500, opacity: 0 });
-    }
-  }, [prefersReduced, onComplete]);
-
-  const handleInitiate = () => {
+  const handleInitiate = useCallback((fromUserGesture: boolean) => {
     if (hasTriggeredRef.current) return;
     hasTriggeredRef.current = true;
 
-    // Immediately trigger metal slice sound on direct user click gesture
-    playMetalSlice();
+    // Browsers only allow audio after a real click or key press
+    if (fromUserGesture) playMetalSlice();
 
     const container = containerRef.current;
     const topHalf = topHalfRef.current;
@@ -62,7 +74,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
     const prompt = promptRef.current;
 
     if (!container || !topHalf || !bottomHalf || !slash || !sunTop || !sunBottom) {
-      hasPreloadedThisSession = true;
+      markEntered();
       setVisible(false);
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));
@@ -74,7 +86,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
     const counterObj = { count: 0 };
     const tl = gsap.timeline({
       onComplete: () => {
-        hasPreloadedThisSession = true;
+        markEntered();
         setVisible(false);
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));
@@ -161,24 +173,48 @@ export function Preloader({ onComplete }: PreloaderProps) {
       },
       0.55
     );
-  };
+  }, [playMetalSlice, onComplete]);
+
+  useEffect(() => {
+    // Skip on inner pages, after the first play in this tab, and for reduced motion
+    if (pathname !== "/" || isPreloadedSession() || prefersReduced) {
+      hasPreloadedThisSession = true;
+      setVisible(false);
+      window.dispatchEvent(new CustomEvent("solarquack:preloader-done"));
+      if (onComplete) onComplete();
+      return;
+    }
+
+    const slash = slashLineRef.current;
+    if (slash) {
+      gsap.set(slash, { strokeDashoffset: 2500, opacity: 0 });
+    }
+
+    const autoTimer = window.setTimeout(() => handleInitiate(false), AUTO_ENTER_MS);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Tab") return;
+      handleInitiate(true);
+    };
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      window.clearTimeout(autoTimer);
+      window.removeEventListener("keydown", onKey);
+    };
+    // Runs once per mount; the gate never comes back after a client-side navigation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!visible) return null;
 
   return (
     <div
       ref={containerRef}
-      onClick={handleInitiate}
+      onClick={() => handleInitiate(true)}
       className="fixed inset-0 z-[100000] cursor-pointer overflow-hidden bg-bg select-none will-change-opacity"
       title="Click anywhere to enter"
       tabIndex={0}
       role="button"
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          handleInitiate();
-        }
-      }}
     >
       {/* Top Sliced Half */}
       <div
@@ -206,14 +242,14 @@ export function Preloader({ onComplete }: PreloaderProps) {
       >
         <div className="group flex items-center gap-3 px-6 py-2.5 rounded-full border border-bone/40 bg-[#070706]/90 backdrop-blur-md shadow-[0_0_24px_rgba(0,0,0,0.9)] transition-all duration-200">
           <span className="w-2 h-2 rounded-full bg-sun animate-ping" />
-          <span className="font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone group-hover:text-sun font-semibold">
+          <span className="whitespace-nowrap font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone group-hover:text-sun font-semibold">
             CLICK TO ENTER
           </span>
           <span className="font-mono text-xs text-bone/60 group-hover:text-sun">
             ✦
           </span>
         </div>
-        <div className="font-mono text-[10px] uppercase tracking-dossier text-bone/60">
+        <div className="whitespace-nowrap font-mono text-[10px] uppercase tracking-dossier text-bone/60">
           [ INITIATE AUDIO & ARCHIVES ]
         </div>
       </div>
