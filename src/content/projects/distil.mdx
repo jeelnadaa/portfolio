@@ -1,0 +1,118 @@
+---
+title: "Distil — Local-First Study App"
+slug: "distil"
+order: 1
+year: "2026"
+role: "Solo Full-Stack Developer"
+duration: "2 days"
+status: "building"
+summary: "A study app that runs on my computer: it reads a whole textbook, lists every item in it with a link back to the line it came from, checks in code that the plan covers all of them, then teaches, tests and schedules reviews."
+tagline: "Every item in the book gets found, planned, taught and tested."
+stack:
+  - TypeScript
+  - Node.js 24
+  - Svelte 5
+  - Hono
+  - SQLite
+  - Zod
+  - Vite
+  - Vitest
+  - GitHub Actions
+tags:
+  - Full-Stack
+  - Local-First
+  - AI
+  - Education
+  - Desktop
+github: "https://github.com/jeelnadaa/distil"
+live: null
+demo_video: "/videos/projects/distil.mp4"
+cover: "/images/projects/distil-thumb.webp"
+gallery: []
+metrics:
+  - label: "QUOTES FOUND IN THE SOURCE"
+    value: "96.7"
+    suffix: " %"
+  - label: "ITEMS FROM AN 847-PAGE BOOK"
+    value: "944"
+    suffix: ""
+  - label: "TESTS PASSING"
+    value: "264"
+    suffix: ""
+featured: true
+resume_blurb: "Local-first study app: reads a whole textbook into a ledger of items pinned to their source lines, checks in code that the plan covers all of them, then teaches, tests and schedules reviews. Node 24, Svelte 5, SQLite, 264 tests."
+glyph: "Η"
+stackReasons:
+  - tool: "Node 24 & node:sqlite"
+    reason: "Node runs the TypeScript directly and ships SQLite, so the server has no build step and no native modules to compile on install."
+  - tool: "No Electron"
+    reason: "The Windows app ships Node with the code and opens in an Edge app window, so web and desktop stay one code path."
+architecture:
+  nodes:
+    - id: "material"
+      label: "PDFs, Slides, Links, YouTube"
+      type: "client"
+    - id: "reader"
+      label: "Reader & Auditor"
+      type: "worker"
+    - id: "planner"
+      label: "Planner + Coverage Check"
+      type: "service"
+    - id: "teacher"
+      label: "Lessons, Exams, Cards"
+      type: "service"
+    - id: "sqlite"
+      label: "SQLite on My Disk"
+      type: "storage"
+    - id: "models"
+      label: "My Own Model Keys"
+      type: "client"
+  edges:
+    - from: "material"
+      to: "reader"
+      label: "Page by page"
+    - from: "reader"
+      to: "planner"
+      label: "Coverage ledger"
+    - from: "planner"
+      to: "teacher"
+      label: "Every item placed"
+    - from: "reader"
+      to: "sqlite"
+      label: "Items + source anchors"
+    - from: "teacher"
+      to: "models"
+      label: "Counted tokens"
+---
+
+## 01 // PROBLEM
+A chat tutor teaches what you think to ask. An exam asks the rest. With an 847-page textbook, I have no way to tell from a chat what I never touched.
+
+So the thing to build wasn't a better answer. It was a list of everything in the material, and a way to prove that the plan, the lessons and the checks cover that list.
+
+## 02 // APPROACH
+Everything hangs off one table, the coverage ledger:
+
+1. **Read.** Each page is mined for concepts, definitions, formulas, examples and procedures. Every item keeps the quote it came from, so opening its source highlights the actual line.
+2. **Plan.** The model proposes the lessons, and code rejects any plan that leaves an item out. Then it schedules the lessons up to the exam date.
+3. **Teach.** One step at a time, with citations to the book, figures when words aren't enough, and a check after each step. A wrong answer gets a repair before the lesson moves on.
+4. **Test and keep.** Practice sets and timed mock exams are marked point by point against a mark scheme, including photos of handwriting. What I miss becomes a flashcard on a spaced schedule.
+
+The teaching loop and the knowledge graph build on ideas from [LearnHarness](https://github.com/amosblomqvist/learnharness) by amosblomqvist. No code is copied; the ledger, the coverage check and the rest are what I added.
+
+## 03 // BUILD
+The server is Hono on Node 24, the UI is Svelte 5, and the data is one SQLite file on my disk. Any model works through my own key, with an ordered fallback list when one is busy or out of quota, and a usage page that shows where every token went.
+
+- **Windows app:** a per-user PowerShell install with no admin rights. It ships Node, opens in its own window, and installs updates from a feed after checking each download's SHA-256.
+- **Backups:** one zip that leaves keys out and restores at the next start.
+- **Releases:** every push to main is meant to run the tests, package the app and publish a GitHub release. The workflow is written, and the first push will be its first real test.
+- **The film on this page:** it's the real app running in iframes on an HTML stage, where every frame is a function of time, captured over the Chrome DevTools Protocol and piped to ffmpeg. The narration timings drive the subtitles and the cuts, and the music is synthesised in NumPy on the same beat grid.
+
+## 04 // LEARNED
+The hardest bugs only showed up on a real textbook:
+- PDF text and what a model quotes back differ in ways that don't change the words: ligatures, words hyphenated across a line break, curly quotes. Matching only on case and spacing found 92.2 % of quotes. Normalising both sides and keeping each character's original offset took it to 96.7 %. The rest are rewritten maths and paraphrases, and those items link to the start of their section instead.
+- The same pass cut repeated titles from 28 to 1 and merged items from 997 down to 944. The film was shot before that merge, which is why it says 996.
+- Opening a source in a long PDF landed on the wrong place. Sections above it render lazily with `content-visibility`, so they change height after the scroll has finished. It now settles on the quote over a few frames.
+- The Windows install broke on paths over 260 characters inside a dependency. Copying with robocopy and pruning files the app never loads fixed it.
+
+What isn't proven yet: only Google AI Studio has been tested on a real model, and the other providers only against fakes. Handwriting marking has run through its code path, but not yet on a real photo with a real model.

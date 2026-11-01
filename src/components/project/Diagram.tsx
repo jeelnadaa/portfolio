@@ -91,6 +91,18 @@ const CANONICAL_PRESETS: Record<
       githubapi: { x: 960, y: 220 },
     },
   },
+  distil: {
+    width: 1300,
+    height: 380,
+    positions: {
+      material: { x: 140, y: 100 },
+      reader: { x: 480, y: 100 },
+      planner: { x: 820, y: 100 },
+      teacher: { x: 1150, y: 100 },
+      sqlite: { x: 480, y: 260 },
+      models: { x: 1150, y: 260 },
+    },
+  },
   sift: {
     width: 1300,
     height: 380,
