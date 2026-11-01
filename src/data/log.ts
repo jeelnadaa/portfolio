@@ -10,6 +10,15 @@ export interface LogEntry {
 
 export const logEntries: LogEntry[] = [
   {
+    id: "log-distil",
+    date: "2026-11-01",
+    monthYear: "November 2026",
+    version: "v1.8.0",
+    title: "Distil Joins the Work",
+    body: "Added Distil, a local-first study app, with its case study and launch film, and put it first in the showroom. The showroom holds six projects, so this portfolio's own card moved to the archive on /work.",
+    tags: ["Content", "Projects"],
+  },
+  {
     id: "log-hero-statue",
     date: "2026-10-25",
     monthYear: "October 2026",
