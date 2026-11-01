@@ -358,6 +358,12 @@ export function VideoPlayer({
     if (hideControlsTimerRef.current) clearTimeout(hideControlsTimerRef.current);
   };
 
+  // Metadata can load before hydration attaches the handler, which would leave the duration at zero.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video && video.readyState >= 1) setDuration(video.duration);
+  }, []);
+
   // Clean pause on unmount
   useEffect(() => {
     const video = videoRef.current;
