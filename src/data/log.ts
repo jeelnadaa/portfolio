@@ -10,6 +10,15 @@ export interface LogEntry {
 
 export const logEntries: LogEntry[] = [
   {
+    id: "log-seo",
+    date: "2026-11-03",
+    monthYear: "November 2026",
+    version: "v1.8.1",
+    title: "Easier to Find by Name",
+    body: "Page titles now use my name instead of the dossier labels, and /about opens with a plain line saying who I am. Case study sections are real headings, the structured data describes me properly, every page has its own share card, and the sitemap includes /path and only gives dates for real edits.",
+    tags: ["SEO", "Content"],
+  },
+  {
     id: "log-distil",
     date: "2026-11-01",
     monthYear: "November 2026",
