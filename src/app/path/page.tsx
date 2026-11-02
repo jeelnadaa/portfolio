@@ -8,10 +8,15 @@ import { GhostGlyph } from "@/components/ui/GhostGlyph";
 import { Tag } from "@/components/ui/Tag";
 
 export const metadata: Metadata = {
-  title: `Path | The Engineering Journey | ${siteConfig.brand}`,
+  title: `${siteConfig.legalName}'s Engineering Path`,
   description: `Chronological roadmap, academic education at PES University, and engineering milestones for ${siteConfig.legalName} (${siteConfig.brand}).`,
   alternates: {
     canonical: "/path",
+  },
+  openGraph: {
+    title: `${siteConfig.legalName}'s Engineering Path · ${siteConfig.brand}`,
+    description: `Education at PES University and engineering milestones for ${siteConfig.legalName} (${siteConfig.brand}).`,
+    images: ["/opengraph-image"],
   },
 };
 

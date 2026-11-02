@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact · Transmission Terminal",
+  title: "Contact Jeel Nada",
   description:
     "Direct communication channels to solarquack (Jeel Nada) for engineering internships, software roles, and systems development inquiries.",
   alternates: {
     canonical: "/contact",
   },
   openGraph: {
-    title: "Contact · Transmission Terminal · solarquack",
+    title: "Contact Jeel Nada · solarquack",
     description:
       "Direct communication channels to solarquack (Jeel Nada) for engineering inquiries.",
   },

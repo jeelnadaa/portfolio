@@ -104,7 +104,7 @@ export default function AboutPage() {
             <span className="font-greek text-bone/60">{glyphs.about.greekWord}</span>
           </div>
           <h1 className="font-display text-5xl sm:text-7xl text-bone font-light tracking-tight">
-            About.
+            About {siteConfig.legalName}.
           </h1>
         </div>
 
@@ -126,6 +126,7 @@ export default function AboutPage() {
           </div>
 
           <div className="lg:col-span-7 space-y-8 font-sans text-base sm:text-lg text-bone/80 leading-relaxed">
+            <p>{siteConfig.aboutIntro}</p>
             <p>
               I am a third-year Computer Science Engineering student at PES University in Bengaluru (class of 2027, maintaining an 8.43 CGPA). My technical education centers around data structures, object-oriented programming, distributed systems, and database management systems.
             </p>

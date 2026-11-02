@@ -77,7 +77,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon.svg",
     shortcut: "/favicon.svg",
-    apple: "/icon.svg",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: `${siteConfig.brand} | ${siteConfig.legalName}, CSE Student & Developer`,
@@ -89,8 +89,6 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.brand} | ${siteConfig.legalName}`,
-    description: `Official portfolio of ${siteConfig.brand} (${siteConfig.legalName}), CSE student and software developer.`,
   },
   robots: {
     index: true,
@@ -125,7 +123,7 @@ export default async function RootLayout({
         "@id": `${siteConfig.url}/#website`,
         url: siteConfig.url,
         name: siteConfig.brand,
-        alternateName: ["Solarquack", "solarquack.in", "Jeel Nada Portfolio"],
+        alternateName: ["Solarquack", "Solar Quack", "solarquack.in", "Jeel Nada Portfolio"],
         description: `Official portfolio of ${siteConfig.brand} (${siteConfig.legalName}), CSE student and software developer.`,
         inLanguage: "en-US",
         publisher: {
@@ -136,14 +134,19 @@ export default async function RootLayout({
         "@type": "Person",
         "@id": `${siteConfig.url}/#person`,
         name: siteConfig.legalName,
-        alternateName: [siteConfig.brand, "Solarquack"],
+        givenName: siteConfig.givenName,
+        familyName: siteConfig.familyName,
+        alternateName: siteConfig.alternateNames,
+        description: siteConfig.personDescription,
+        image: `${siteConfig.url}/avatar.jpg`,
         jobTitle: siteConfig.role,
         url: siteConfig.url,
         email: siteConfig.email,
-        telephone: siteConfig.phone,
+        knowsAbout: siteConfig.knowsAbout,
         address: {
           "@type": "PostalAddress",
-          addressLocality: siteConfig.location,
+          addressLocality: siteConfig.locationCity,
+          addressCountry: siteConfig.locationCountry,
         },
         alumniOf: {
           "@type": "CollegeOrUniversity",
@@ -153,20 +156,7 @@ export default async function RootLayout({
           siteConfig.github,
           siteConfig.linkedin,
           siteConfig.instagram,
-          siteConfig.repoUrl,
         ],
-      },
-      {
-        "@type": "ProfilePage",
-        "@id": `${siteConfig.url}/#profilepage`,
-        url: siteConfig.url,
-        name: `${siteConfig.brand} | ${siteConfig.legalName}, CSE Student & Developer`,
-        isPartOf: {
-          "@id": `${siteConfig.url}/#website`,
-        },
-        mainEntity: {
-          "@id": `${siteConfig.url}/#person`,
-        },
       },
     ],
   };

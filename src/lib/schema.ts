@@ -33,6 +33,8 @@ export const ProjectFrontmatterSchema = z.object({
   slug: z.string(),
   order: z.number().int(),
   year: z.string(),
+  // ISO date the case study last changed, used by the sitemap
+  updated: z.string().optional(),
   role: z.string(),
   duration: z.string(),
   status: z.enum(["live", "building", "archived", "placeholder"]),

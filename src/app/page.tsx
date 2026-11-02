@@ -1,5 +1,6 @@
 import { getAllProjects } from "@/lib/projects";
 import { getGithubData } from "@/lib/github";
+import { siteConfig } from "@/data/site";
 import { Hero } from "@/components/sections/Hero";
 import { Marquee } from "@/components/ui/Marquee";
 import { WhatItIs } from "@/components/sections/WhatItIs";
@@ -26,8 +27,27 @@ export default async function HomePage() {
     commits: githubData.user.totalCommits,
   };
 
+  const profilePageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${siteConfig.url}/#profilepage`,
+    url: siteConfig.url,
+    name: `${siteConfig.brand} | ${siteConfig.legalName}, CSE Student & Developer`,
+    isPartOf: {
+      "@id": `${siteConfig.url}/#website`,
+    },
+    mainEntity: {
+      "@id": `${siteConfig.url}/#person`,
+    },
+  };
+
   return (
     <main className="w-full min-h-screen bg-bg text-bone overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageJsonLd) }}
+      />
+
       {/* 6.A Hero: ΦΑΚΕΛΟΣ */}
       <Hero stats={heroStats} />
 

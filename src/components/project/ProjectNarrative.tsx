@@ -271,9 +271,9 @@ export function ProjectNarrative({ project }: ProjectNarrativeProps) {
     return (
       <div className="space-y-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 border-b border-rule pb-10">
-          <div className="md:col-span-4 font-mono text-xs uppercase tracking-dossier text-muted">
+          <h2 className="md:col-span-4 font-mono text-xs uppercase tracking-dossier text-muted">
             01 // ARCHITECTURE & OVERVIEW
-          </div>
+          </h2>
           <div className="md:col-span-8 space-y-6">
             <p className="font-sans text-sm sm:text-base text-bone/80 leading-relaxed">
               {project.summary}
@@ -304,9 +304,9 @@ export function ProjectNarrative({ project }: ProjectNarrativeProps) {
             className="grid grid-cols-1 md:grid-cols-12 gap-8 border-b border-rule pb-10"
           >
             {/* Left Header */}
-            <div className="md:col-span-4 font-mono text-xs uppercase tracking-dossier text-muted">
+            <h2 className="md:col-span-4 font-mono text-xs uppercase tracking-dossier text-muted">
               {section.title}
-            </div>
+            </h2>
 
             {/* Right Narrative Body */}
             <div className="md:col-span-8 space-y-6 font-sans text-sm sm:text-base text-bone/80 leading-relaxed">

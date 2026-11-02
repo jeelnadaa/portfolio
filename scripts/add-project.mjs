@@ -230,6 +230,7 @@ Options:
     slug,
     order: replacedOrder,
     year: projectData.year || new Date().getFullYear().toString(),
+    updated: new Date().toISOString().slice(0, 10),
     role: projectData.role || "Developer",
     duration: projectData.duration || "2 weeks",
     status: projectData.status || "live",

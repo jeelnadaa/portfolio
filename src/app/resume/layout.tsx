@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Résumé · Curriculum Vitae",
+  title: "Jeel Nada's Résumé",
   description:
     "Technical curriculum vitae and credentials of solarquack (Jeel Nada), 3rd-year Computer Science Engineering student at PES University Bengaluru.",
   alternates: {
     canonical: "/resume",
   },
   openGraph: {
-    title: "Résumé · Curriculum Vitae · solarquack",
+    title: "Jeel Nada's Résumé · solarquack",
     description:
       "Technical curriculum vitae and credentials of solarquack (Jeel Nada).",
   },

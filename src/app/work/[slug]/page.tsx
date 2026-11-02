@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: CaseStudyProps): Promise<Meta
   if (!project) return { title: `Not Found · ${siteConfig.brand}` };
 
   return {
-    title: `${project.title} · ${siteConfig.brand}`,
+    title: `${project.title} · ${siteConfig.legalName} (${siteConfig.brand})`,
     description: project.summary,
     alternates: {
       canonical: `/work/${project.slug}`,
@@ -36,6 +36,7 @@ export async function generateMetadata({ params }: CaseStudyProps): Promise<Meta
       description: project.summary,
       url: `${siteConfig.url}/work/${project.slug}`,
       type: "article",
+      images: ["/opengraph-image"],
     },
   };
 }
@@ -50,12 +51,13 @@ export default async function CaseStudyPage({ params }: CaseStudyProps) {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
     name: project.title,
+    url: `${siteConfig.url}/work/${project.slug}`,
     description: project.summary,
     programmingLanguage: project.stack,
     author: {
       "@type": "Person",
+      "@id": `${siteConfig.url}/#person`,
       name: siteConfig.legalName,
-      alternateName: siteConfig.brand,
     },
     codeRepository: project.github || undefined,
   };

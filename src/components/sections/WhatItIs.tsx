@@ -83,7 +83,7 @@ export function WhatItIs() {
                   }}
                   className="inline-block mr-2.5 transition-opacity"
                 >
-                  {word}
+                  {word}{" "}
                 </span>
               ))}
             </h2>
