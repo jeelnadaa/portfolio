@@ -17,7 +17,7 @@ export function MetaTable({ project }: { project: Project }) {
       <SpecRow
         label="STATUS"
         value={project.status.toUpperCase()}
-        valueClassName={project.status === "live" ? "text-sun" : "text-bone"}
+        valueClassName={project.status === "live" || project.status === "done" ? "text-sun" : "text-bone"}
       />
       <SpecRow
         label="AUTHOR"

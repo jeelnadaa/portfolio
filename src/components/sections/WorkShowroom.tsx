@@ -214,6 +214,24 @@ export function WorkShowroom({ projects }: WorkShowroomProps) {
                     </span>
                   ))}
                 </div>
+
+                {/* Website link */}
+                {p.live && (
+                  <a
+                    href={p.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    data-cursor="OPEN"
+                    className="inline-flex items-center gap-2 self-start min-h-[44px] mt-2 font-mono text-xs sm:text-sm uppercase tracking-dossier text-bone hover:text-sun transition-colors"
+                  >
+                    <span className="border-b border-rule hover:border-sun pb-0.5">
+                      {p.live.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                    </span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                )}
               </div>
             ))}
           </div>

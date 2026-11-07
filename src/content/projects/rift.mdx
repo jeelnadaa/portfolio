@@ -1,0 +1,112 @@
+---
+title: "Rift — Native Download Manager"
+slug: "rift"
+order: 1
+year: "2026"
+updated: "2026-11-08"
+role: "Solo Desktop & Systems Developer"
+duration: "1 day"
+status: "live"
+summary: "A native download manager for Windows, macOS and Linux that runs a BitTorrent engine and its own multi-connection HTTP/FTP downloader in one window, shows only measured speeds, and takes links straight from a browser extension."
+tagline: "Torrents and direct links in one native app, with speeds that are measured."
+stack:
+  - C++20
+  - Qt 6 / QML
+  - libtorrent
+  - libcurl
+  - SQLite
+  - CMake
+  - Browser Extension (MV3)
+  - GitHub Actions
+  - Cloudflare Workers
+tags:
+  - Desktop
+  - Systems
+  - Networking
+  - Cross-Platform
+github: "https://github.com/jeelnadaa/rift"
+live: "https://rift.solarquack.in"
+demo_video: "/videos/projects/rift.mp4"
+cover: "/images/projects/rift-thumb.webp"
+gallery: []
+metrics:
+  - label: "LANES PER HTTP FILE"
+    value: "8"
+    suffix: ""
+  - label: "PLATFORMS PER RELEASE"
+    value: "3"
+    suffix: ""
+  - label: "PARALLEL LAUNCHES → INSTANCES"
+    value: "25 → 1"
+    suffix: ""
+featured: true
+resume_blurb: "Native download manager for Windows, macOS and Linux: a libtorrent BitTorrent engine and my own segmented HTTP/FTP downloader in one Qt/QML app, a browser extension over Native Messaging, and in-app updates verified against SHA256SUMS. C++20, Qt 6, libcurl."
+glyph: "Θ"
+stackReasons:
+  - tool: "C++20 & Qt 6 QML"
+    reason: "One native app on three systems, with a QML UI that a mock backend can load in tests, so every QML warning fails the build."
+  - tool: "libtorrent & libcurl"
+    reason: "libtorrent handles the BitTorrent protocol; my own engine on libcurl splits each HTTP file into lanes, steals work between them and resumes after a crash."
+architecture:
+  nodes:
+    - id: "browser"
+      label: "Browser Extension"
+      type: "client"
+    - id: "host"
+      label: "Native Messaging Host"
+      type: "service"
+    - id: "app"
+      label: "Qt App & Controller"
+      type: "service"
+    - id: "torrent"
+      label: "libtorrent Engine"
+      type: "worker"
+    - id: "http"
+      label: "rift-get (HTTP/FTP)"
+      type: "worker"
+    - id: "sqlite"
+      label: "SQLite Library"
+      type: "storage"
+  edges:
+    - from: "browser"
+      to: "host"
+      label: "Download with Rift"
+    - from: "host"
+      to: "app"
+      label: "User-only local socket"
+    - from: "app"
+      to: "torrent"
+      label: "Magnets, .torrent"
+    - from: "app"
+      to: "http"
+      label: "Direct links"
+    - from: "app"
+      to: "sqlite"
+      label: "Downloads + settings"
+---
+
+## 01 // PROBLEM
+I kept a torrent client open for some files and a separate download manager for the rest, and neither one's speed number matched what actually arrived on disk.
+
+So the goal was one calm native app for both kinds of download, where every number on screen is something that was measured.
+
+## 02 // APPROACH
+- **Two engines, one list.** Torrents go through libtorrent (v1, v2 and hybrid, sequential download, per-file priorities, DHT, PEX, uTP). Direct links go through `rift-get`, my own HTTP/FTP engine. Both land in one list with filters, search, bulk actions and a details panel.
+- **Lanes.** `rift-get` splits each file into segments across eight connections, steals work from slow lanes, notices stalls and retries with backoff. Partial files resume after a crash with `If-Range`, and finished files can be checked against SHA-256, SHA-1 or MD5.
+- **Honest speeds.** Only measured speeds are shown, totals add up, and one bandwidth arbiter covers torrents and HTTP together.
+- **Browser hand-off.** An MV3 extension for Chrome, Edge, Brave and Firefox adds *Download with Rift*. It talks to the app over Native Messaging and a user-only local socket, so the only network port Rift opens is the BitTorrent one.
+
+## 03 // BUILD
+The core logic (segments, speed, units, paths) is plain C++20 with its own unit tests. The UI is QML with the design tokens in one file, and a UI harness loads the real QML against a mock backend so screenshots of both themes come out without libtorrent or curl.
+
+- **Releases:** every push to main bumps the patch version, builds Windows (MSVC, vcpkg, Inno Setup), macOS arm64 and x64 (DMG), Linux (AppImage, DEB, RPM, tar.gz) and the extension zips, writes `SHA256SUMS` and publishes a GitHub release.
+- **Updates:** the app checks GitHub releases, downloads its own asset in the background, checks it against `SHA256SUMS` and installs when Rift exits.
+- **Website:** a static site on Cloudflare Workers at rift.solarquack.in, with a download page that uses the real release asset names.
+- **The film on this page:** the real QML app recorded frame by frame with Qt's animation clock stepped at 30 fps, with synthesised music and a neural voice on the same beat grid.
+
+## 04 // LEARNED
+- Opening the browser with Rift closed started dozens of Rift processes in a loop. A per-user lock file now keeps Rift single-instance even while the first one is still starting, only a real download may launch it, and the extension rate-limits take-overs. Afterwards 25 parallel launches left one Rift, and 15 parallel downloads started one Rift and all finished.
+- Qt 6.8 on Windows drew every weight of the display font as regular. I reproduced it on the same Qt build CI uses and fixed it by switching to Qt's FreeType font engine for older Qt versions.
+- Ubuntu 22.04's libtorrent 2.0.5 is missing a flag the newer one has, so torrents there started with every file switched off. The build now detects it at compile time.
+
+What isn't done yet: the builds aren't code-signed, so Windows SmartScreen and macOS Gatekeeper ask once. RSS, search plugins and streaming are planned after 1.0.

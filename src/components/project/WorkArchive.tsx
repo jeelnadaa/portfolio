@@ -127,6 +127,7 @@ export function WorkArchive({ projects }: WorkArchiveProps) {
                       "text-[10px] px-1.5 py-0.2 border",
                       p.status === "live" && "border-sun text-sun",
                       p.status === "placeholder" && "border-rule text-muted",
+                      p.status === "done" && "border-bone/60 text-bone",
                       p.status === "building" && "border-gold text-gold"
                     )}
                   >

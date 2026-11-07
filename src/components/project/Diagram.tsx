@@ -103,6 +103,30 @@ const CANONICAL_PRESETS: Record<
       models: { x: 1150, y: 260 },
     },
   },
+  rift: {
+    width: 1300,
+    height: 380,
+    positions: {
+      browser: { x: 140, y: 100 },
+      host: { x: 480, y: 100 },
+      app: { x: 820, y: 100 },
+      torrent: { x: 1150, y: 100 },
+      http: { x: 1150, y: 260 },
+      sqlite: { x: 820, y: 260 },
+    },
+  },
+  flux: {
+    width: 1300,
+    height: 380,
+    positions: {
+      ui: { x: 140, y: 100 },
+      agent: { x: 140, y: 260 },
+      api: { x: 480, y: 180 },
+      engine: { x: 820, y: 100 },
+      live: { x: 820, y: 260 },
+      disk: { x: 1150, y: 100 },
+    },
+  },
   sift: {
     width: 1300,
     height: 380,

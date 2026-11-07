@@ -1,0 +1,113 @@
+---
+title: "Flux — Live Audio Editor with MCP"
+slug: "flux"
+order: 2
+year: "2026"
+updated: "2026-11-08"
+role: "Solo Audio & Desktop Developer"
+duration: "6 days"
+status: "done"
+summary: "A non-destructive audio editor for Windows, macOS and Linux that puts presets on everything the computer plays or on the mic, live, clones a voice only with the owner's recorded consent, and exposes all 162 of its commands to AI agents over MCP."
+tagline: "Presets on everything your computer plays, and an agent can drive every tool."
+stack:
+  - Rust
+  - Tauri
+  - JavaScript
+  - cpal
+  - symphonia
+  - MCP
+  - Playwright
+  - GitHub Actions
+  - Cloudflare Pages
+tags:
+  - Desktop
+  - Audio
+  - AI
+  - MCP
+  - Cross-Platform
+github: "https://github.com/jeelnadaa/flux"
+live: "https://flux.solarquack.in"
+demo_video: "/videos/projects/flux.mp4"
+cover: "/images/projects/flux-thumb.webp"
+gallery: []
+metrics:
+  - label: "MCP TOOLS"
+    value: "162"
+    suffix: ""
+  - label: "LIVE PRESETS"
+    value: "41"
+    suffix: ""
+  - label: "CONTROLS WITH TOOLTIPS"
+    value: "2784"
+    suffix: ""
+featured: true
+resume_blurb: "Non-destructive audio editor in Rust and Tauri: one renderer for playback and export (real-time nulls against offline below 1e-5), 45 effects, live presets on system audio and the mic, consent-gated voice cloning, and 162 commands exposed to AI agents over MCP."
+glyph: "Ι"
+stackReasons:
+  - tool: "Rust engine"
+    reason: "Playback and export share one 32-bit float renderer, so what you hear is what you export: the two null below 1e-5."
+  - tool: "One command registry"
+    reason: "The UI, the MCP server and the tests all call the same 162 methods, so an agent can do anything a person can, and the tests cover both."
+architecture:
+  nodes:
+    - id: "ui"
+      label: "Tauri Desktop UI"
+      type: "client"
+    - id: "agent"
+      label: "AI Agent (MCP)"
+      type: "client"
+    - id: "api"
+      label: "Command Registry (162)"
+      type: "service"
+    - id: "engine"
+      label: "flux-core Engine"
+      type: "worker"
+    - id: "live"
+      label: "Live Router"
+      type: "worker"
+    - id: "disk"
+      label: "Projects on Disk"
+      type: "storage"
+  edges:
+    - from: "ui"
+      to: "api"
+      label: "Same calls"
+    - from: "agent"
+      to: "api"
+      label: "stdio, token-protected port"
+    - from: "api"
+      to: "engine"
+      label: "Edits, render, export"
+    - from: "api"
+      to: "live"
+      label: "Presets + modulators"
+    - from: "engine"
+      to: "disk"
+      label: "Atomic, journaled saves"
+---
+
+## 01 // PROBLEM
+Effects like 8D or slowed-and-reverb usually live inside one app: you export a file, process it, and play it back. I wanted them on whatever the computer is already playing, and on my mic, as it happens.
+
+I also wanted an AI agent to be able to do everything the editor can, not a short list of tools someone remembered to wire up.
+
+## 02 // APPROACH
+- **One engine.** `flux-core` decodes WAV, AIFF, FLAC, MP3, OGG, M4A and ALAC, never touches the source file, and renders playback and export through the same code. An unprocessed render is bit-exact with the source.
+- **Live.** Flux captures an output device or a microphone, runs it through a preset and plays it to any output, with meters and a bypass. There are 41 built-in presets, and a designer builds new ones from 39 effects in parallel lanes, moved by LFOs, step sequencers, envelope followers and macros.
+- **Voice cloning, with consent.** Flux checks the graphics chip and memory and picks a local MIT-licensed model. A voice is only made from the owner's consent recording, and scripts can include laughs, hesitations like `[hmm]` and exact pauses.
+- **Agents.** Every one of the 162 methods is an MCP tool. The server drives the running app through a token-protected localhost port, or works headless when the app is closed.
+
+## 03 // BUILD
+The engine is Rust, the desktop shell is Tauri, and the MCP server is its own crate. Edits are undoable, and undo followed by redo gives an identical project hash. Projects save atomically with a journal for crash recovery.
+
+- **Tests:** 85 Rust tests and 16 end-to-end checks in Playwright on the real engine. One of them opens all 92 screens and fails if any of the 2784 controls has no tooltip.
+- **Website:** a landing page and a download page on Cloudflare Pages at flux.solarquack.in. The download page reads the latest GitHub release in the visitor's browser and offers the right installer for their computer.
+- **Releases:** CI and release workflows build and publish the desktop app on every push, with an updater signing key kept out of the repo.
+
+## 04 // LEARNED
+- Parameter changes clicked. Gliding each change over 20 ms took the largest sample jump on a -24 dB change from 0.34 to 0.0078.
+- Auto-master missed its loudness target until the limiter trim became iterative. It now lands within 0.25 LU.
+- Flux can't show up as an output device for other apps without a signed kernel audio driver. So it captures an output device and plays to another, and tells you to install a virtual cable when you want the processed mic in a call app.
+- On case-insensitive Windows, a `.gitignore` pattern for release folders also matched `crates/flux-core/`. Anchoring it to the repo root fixed it.
+
+What isn't done yet: speaking in a cloned voice waits for permission to download the model, so it reports what it would use instead of faking a result. The first GitHub release run and listening checks are still to come.

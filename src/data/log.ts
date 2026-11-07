@@ -10,6 +10,15 @@ export interface LogEntry {
 
 export const logEntries: LogEntry[] = [
   {
+    id: "log-rift-flux",
+    date: "2026-11-08",
+    monthYear: "November 2026",
+    version: "v1.9.0",
+    title: "Rift and Flux Join the Work",
+    body: "Added Rift, a native download manager, and Flux, a live audio editor that AI agents can drive over MCP, each with a case study and launch film, at the front of the showroom. Distil is now done. Showroom cards link straight to each project's website: Rift, Flux, Distil and Sift. The showroom still holds six projects, so Quacky and Moody Foody moved to the archive on /work.",
+    tags: ["Content", "Projects"],
+  },
+  {
     id: "log-seo",
     date: "2026-11-03",
     monthYear: "November 2026",

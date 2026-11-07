@@ -37,7 +37,7 @@ export const ProjectFrontmatterSchema = z.object({
   updated: z.string().optional(),
   role: z.string(),
   duration: z.string(),
-  status: z.enum(["live", "building", "archived", "placeholder"]),
+  status: z.enum(["live", "done", "building", "archived", "placeholder"]),
   summary: z.string(),
   tagline: z.string(),
   stack: z.array(z.string()),
