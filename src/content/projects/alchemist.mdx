@@ -1,0 +1,109 @@
+---
+title: "Alchemist — Local-First Video Studio"
+slug: "alchemist"
+order: 1
+year: "2026"
+updated: "2026-11-13"
+role: "Solo Desktop Developer"
+duration: "3 days"
+status: "live"
+summary: "A free desktop video studio for Windows, macOS and Linux: record the screen with a smooth cursor and instant replay, edit with auto-zoom, captions and silence removal, convert between formats, and shrink any video to an exact size. It runs on the computer, nothing is uploaded, and the installer is 23 MB."
+tagline: "Every video tool. One light app."
+stack:
+  - Rust
+  - Tauri v2
+  - TypeScript
+  - FFmpeg
+  - GitHub Actions
+  - Cloudflare Workers
+tags:
+  - Desktop
+  - Video
+  - Cross-Platform
+  - Open Source
+github: "https://github.com/jeelnadaa/alchemist"
+live: "https://alchemist.solarquack.in"
+demo_video: "/videos/projects/alchemist.mp4"
+cover: "/images/projects/alchemist-thumb.webp"
+gallery: []
+metrics:
+  - label: "INSTALLER SIZE"
+    value: "23"
+    suffix: " MB"
+  - label: "IDLE IN TRAY"
+    value: "1.8"
+    suffix: " MB"
+  - label: "RELEASE BUILDS"
+    value: "6"
+    suffix: ""
+featured: true
+resume_blurb: "Local-first video studio for Windows, macOS and Linux: screen recording with instant replay and a redrawn smooth cursor, a timeline editor, format conversion and compression to an exact size, all on one FFmpeg engine. CI builds and smoke-tests six targets and publishes signed auto-updates. Rust, Tauri v2, TypeScript, FFmpeg."
+glyph: "Λ"
+stackReasons:
+  - tool: "Rust & Tauri v2"
+    reason: "A 23 MB installer instead of a bundled browser, a tray that idles at 1.8 MB, and one place for capture, the job queue and signature checks."
+  - tool: "FFmpeg as a sidecar"
+    reason: "Every recording, export and conversion is one FFmpeg process with progress on a pipe, so a crash in a job can't take the app down."
+architecture:
+  nodes:
+    - id: "ui"
+      label: "TypeScript UI"
+      type: "client"
+    - id: "core"
+      label: "Rust Core (Tauri)"
+      type: "service"
+    - id: "ffmpeg"
+      label: "FFmpeg Jobs"
+      type: "worker"
+    - id: "capture"
+      label: "Screen & Sound Capture"
+      type: "worker"
+    - id: "disk"
+      label: "Projects on this PC"
+      type: "storage"
+    - id: "releases"
+      label: "Signed Releases (GitHub)"
+      type: "storage"
+  edges:
+    - from: "ui"
+      to: "core"
+      label: "Commands, events"
+    - from: "core"
+      to: "capture"
+      label: "Record, replay buffer"
+    - from: "core"
+      to: "ffmpeg"
+      label: "Export, convert, shrink"
+    - from: "core"
+      to: "disk"
+      label: "Projects, recordings"
+    - from: "releases"
+      to: "core"
+      label: "Verified updates"
+---
+
+## 01 // PROBLEM
+Making one tutorial clip took me four apps: a recorder, an editor, a converter, and a website to get the file under an upload limit. Each one wanted an account, a subscription or an upload, and the editors took longer to open than the clip was long.
+
+I wanted one small app that does all four on my own computer and opens fast enough that I don't think about it.
+
+## 02 // APPROACH
+- **Record without the clutter.** Full screen, a window or an area, with mic and computer sound on separate tracks. The cursor can be left out of the picture and redrawn later as a smooth, resizable pointer with click ripples and keystroke labels.
+- **Instant replay.** A rolling buffer keeps the last 15 seconds to 5 minutes; a hotkey saves them to their own Replays folder. The hotkey is only taken while replay is on, so it never steals a shortcut from another app.
+- **Edit in a few clicks.** A timeline with splits, speed, freeze frames and transitions, automatic zoom on clicks, captions, and one-click removal of silent pauses.
+- **Shrink to an exact size.** Pick 10, 25 or 50 MB and it works out the bitrate and resolution, encodes, and scores the result with VMAF.
+
+## 03 // BUILD
+The core is Rust on Tauri v2; the UI is plain TypeScript with screens loaded on demand. Every job is its own FFmpeg process with progress on a pipe.
+
+- **Sync:** video segments, audio and the mouse log are stamped with wall-clock time, so sound and the redrawn cursor line up with the picture across pauses.
+- **Releases:** release-please picks the version from commit messages; CI builds, tests and smoke-tests Windows, macOS and Linux on x64 and ARM, then publishes installers, portable builds, checksums and a signed update manifest. The app updates itself and checks the signature first.
+- **Website:** a static site on Cloudflare Workers at alchemist.solarquack.in, with a download page that lists the real release files.
+- **The film on this page:** the app's real screens captured with Playwright, animated frame by frame in HTML, with a neural voice, word-timed subtitles and music written on a 120 BPM grid.
+
+## 04 // LEARNED
+- An export hung forever on Linux and nowhere else. Linux ships FFmpeg 7, whose threaded pipeline deadlocks on an endless `loop` filter when one input feeds several clips. Holding the frame with `tpad` instead fixed it, and the tests now run on both FFmpeg versions.
+- Windows sends nothing from a loopback device while the computer is silent, so recorded sound slowly fell behind the video. Filling the gaps against the clock fixed the drift.
+- Tray memory was 32.7 MB until the app dropped its window process on close and trimmed its working set: 1.8 MB now.
+
+What isn't done yet: the builds aren't code-signed, so Windows and macOS warn once, and live captions on the device are still to come.
