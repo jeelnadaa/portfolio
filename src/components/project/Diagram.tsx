@@ -103,6 +103,18 @@ const CANONICAL_PRESETS: Record<
       models: { x: 1150, y: 260 },
     },
   },
+  postplant: {
+    width: 1300,
+    height: 380,
+    positions: {
+      ui: { x: 140, y: 100 },
+      core: { x: 480, y: 100 },
+      api: { x: 820, y: 100 },
+      db: { x: 480, y: 260 },
+      advisor: { x: 820, y: 260 },
+      dataset: { x: 1150, y: 260 },
+    },
+  },
   rift: {
     width: 1300,
     height: 380,

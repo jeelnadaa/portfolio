@@ -10,6 +10,15 @@ export interface LogEntry {
 
 export const logEntries: LogEntry[] = [
   {
+    id: "log-postplant",
+    date: "2026-11-12",
+    monthYear: "November 2026",
+    version: "v1.10.0",
+    title: "Postplant Joins the Work",
+    body: "Added Postplant, an open-source Valorant companion for Windows, with a case study and a narrated launch film at the front of the showroom. Its card links to postplant.solarquack.in and the GitHub repo. The showroom still holds six projects, so PlantIQ moved to the archive on /work.",
+    tags: ["Content", "Projects"],
+  },
+  {
     id: "log-rift-flux",
     date: "2026-11-08",
     monthYear: "November 2026",
