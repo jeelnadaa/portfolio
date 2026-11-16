@@ -1,0 +1,109 @@
+---
+title: "Better Raw Accel — Mouse Accel Interface"
+slug: "better-rawaccel"
+order: 2
+year: "2026"
+updated: "2026-11-16"
+role: "Solo Desktop Developer"
+duration: "1 week"
+status: "live"
+summary: "A new settings window for Raw Accel, the kernel-mode mouse acceleration driver for Windows. A live plot that morphs as you edit, a marker that follows your hand speed, profiles, per-mouse settings, an aim test that ranks your profiles, and an MCP server so AI tools can drive the window while you watch. The driver and its math are untouched."
+tagline: "See the curve before you write it."
+stack:
+  - C#
+  - .NET Framework 4.8
+  - WebView2
+  - JavaScript
+  - MCP
+  - GitHub Actions
+  - Cloudflare Workers
+tags:
+  - Desktop
+  - Gaming
+  - AI Tooling
+  - Open Source
+github: "https://github.com/jeelnadaa/better-rawaccel"
+live: "https://accel.solarquack.in"
+demo_video: null
+cover: "/images/projects/better-rawaccel-thumb.webp"
+gallery: []
+metrics:
+  - label: "MCP TOOLS"
+    value: "45"
+    suffix: ""
+  - label: "ACCEL MODES"
+    value: "8"
+    suffix: ""
+  - label: "DOWNLOAD SIZE"
+    value: "1.1"
+    suffix: " MB"
+featured: true
+resume_blurb: "A new interface for the Raw Accel mouse driver on Windows: live curve plot computed by the driver's own code, profiles, per-device settings, an aim test, and an in-app MCP server with 45 tools. C#, .NET 4.8, WebView2."
+glyph: "Μ"
+stackReasons:
+  - tool: "C# & .NET Framework 4.8"
+    reason: "Raw Accel's wrapper.dll is .NET, so the host calls the driver's own math directly instead of copying it, and .NET 4.8 ships with Windows."
+  - tool: "WebView2 & plain JavaScript"
+    reason: "The plot, themes and morphing curve are easier in HTML and CSS than WinForms, with no build step, and WebView2 is already part of Windows 11."
+architecture:
+  nodes:
+    - id: "ui"
+      label: "Settings Window (WebView2)"
+      type: "client"
+    - id: "api"
+      label: "Api.cs (shared ops)"
+      type: "service"
+    - id: "mcp"
+      label: "MCP Server :47700"
+      type: "service"
+    - id: "engine"
+      label: "Engine + wrapper.dll"
+      type: "worker"
+    - id: "driver"
+      label: "Raw Accel Driver"
+      type: "service"
+    - id: "settings"
+      label: "settings.json"
+      type: "storage"
+  edges:
+    - from: "ui"
+      to: "api"
+      label: "Edits"
+    - from: "mcp"
+      to: "api"
+      label: "AI tools"
+    - from: "api"
+      to: "engine"
+      label: "Validate, curve"
+    - from: "engine"
+      to: "settings"
+      label: "Atomic write"
+    - from: "engine"
+      to: "driver"
+      label: "Apply"
+---
+
+## 01 // PROBLEM
+Raw Accel is the driver a lot of FPS players use for mouse acceleration, and its math is excellent. Its settings window is harder: you change a number, write it to the driver, then move the mouse to find out what you did. Some options exist only in the JSON file.
+
+I wanted to see the curve change while I typed, and to compare it with what the driver has right now, before writing anything.
+
+## 02 // APPROACH
+- **Live plot from the driver's own code.** The solid curve is what I'm editing, computed through Raw Accel's `wrapper.dll`; the dashed one is what the driver has now. A marker follows my real hand speed.
+- **Every option gets a control.** Angle snapping, speed cap, per-axis multipliers and smoothing were JSON-only before.
+- **Profiles and devices.** Multiple profiles, per-mouse DPI and polling rate, undo and redo, and an aim test that runs the same drill on each profile and ranks them, with a blind mode.
+- **Change only the window.** The driver, the math and the settings format are Raw Accel's, untouched, so `settings.json` still works with the original GUI and `writer.exe`.
+
+## 03 // BUILD
+The host is C# on .NET Framework 4.8 with a WebView2 window; the UI is plain HTML, CSS and JavaScript with no build step. One list of operations in `Api.cs` serves both the window and the MCP server.
+
+- **MCP server inside the app:** 45 tools on `127.0.0.1:47700`. They act on the open window, so you watch every edit happen, and nothing reaches the driver until `apply` is called. It refuses any request whose `Host` or `Origin` isn't local.
+- **Releases:** every push to main builds a 1.1 MB zip with the signed driver bundled. The app checks GitHub at start-up, verifies the SHA-256 and swaps the files when it closes.
+- **Website:** a static page on Cloudflare Workers at accel.solarquack.in.
+
+## 04 // LEARNED
+- Keeping one copy of the curve math, the driver's, removed a class of bugs where the plot and the mouse disagreed.
+- cm/360 and speed units were off until I accounted for the driver's DPI normalisation per device.
+- The hash check catches a damaged download; it doesn't prove who published it. The README says that rather than calling updates "secure".
+
+What isn't done yet: dragging, hovering and keyboard shortcuts were checked through MCP and window captures, not yet by hand on every control.

@@ -1,0 +1,106 @@
+---
+title: "DENT — Design Skill for AI Agents"
+slug: "dent"
+order: 1
+year: "2026"
+updated: "2026-11-16"
+role: "Solo Developer"
+duration: "3 days"
+status: "live"
+summary: "An open-source design skill for Claude Code, Codex, Cursor, Copilot and any agent that reads SKILL.md. It asks the few questions that matter, picks a direction instead of the default template, follows Google's Modern Web Guidance for web code, checks its own pages at six widths and scores the result against the request with evidence."
+tagline: "Make the agent stop shipping the average template."
+stack:
+  - Agent Skills (SKILL.md)
+  - Markdown
+  - Python
+  - Playwright
+  - Cloudflare Workers
+tags:
+  - AI Tooling
+  - Design
+  - Open Source
+github: "https://github.com/jeelnadaa/DENT"
+live: "https://dent.solarquack.in"
+demo_video: null
+cover: "/images/projects/dent-thumb.webp"
+gallery: []
+metrics:
+  - label: "COMMANDS"
+    value: "31"
+    suffix: ""
+  - label: "AESTHETIC STYLES"
+    value: "41"
+    suffix: ""
+  - label: "BENCHMARK AVG (/50)"
+    value: "43.8"
+    suffix: " vs 37.9"
+featured: true
+resume_blurb: "Open-source design skill for AI coding agents (Claude Code, Codex, Cursor, Copilot): a router that chains 31 commands, 13 quality gates with a runnable page checker, and a published with/without benchmark (43.8 vs 37.9 out of 50 across 8 builds)."
+glyph: "Ν"
+stackReasons:
+  - tool: "SKILL.md & Markdown"
+    reason: "One format every major agent already reads. SKILL.md stays around 330 lines and the 130+ reference files load only when a task needs them, so the agent's context stays small."
+  - tool: "Python & Playwright"
+    reason: "verify_page.py renders the page at six widths and checks overflow, contrast, labels, reduced motion and autoplay audio, so 'looks fine' becomes passed or failed."
+architecture:
+  nodes:
+    - id: "agent"
+      label: "Coding Agent"
+      type: "client"
+    - id: "router"
+      label: "/dent Router"
+      type: "service"
+    - id: "commands"
+      label: "31 Commands"
+      type: "worker"
+    - id: "refs"
+      label: "References & Catalogues"
+      type: "storage"
+    - id: "mwg"
+      label: "Modern Web Guidance"
+      type: "storage"
+    - id: "verify"
+      label: "verify_page.py & Score"
+      type: "worker"
+  edges:
+    - from: "agent"
+      to: "router"
+      label: "Request"
+    - from: "router"
+      to: "commands"
+      label: "Pipeline"
+    - from: "commands"
+      to: "refs"
+      label: "Loaded on demand"
+    - from: "commands"
+      to: "mwg"
+      label: "Web code guides"
+    - from: "commands"
+      to: "verify"
+      label: "Gates G1–G13"
+---
+
+## 01 // PROBLEM
+Ask any agent for a landing page and you get the same page: a violet gradient, a glowing orb, three equal cards and a "loved by 10,000+ teams" line nobody earned. It looks finished for a second, and the phone layout often scrolls sideways.
+
+I wanted the agent to work like a designer first and a code generator second, without me writing a long prompt every time.
+
+## 02 // APPROACH
+- **One command.** `/dent` reads the request, the project and the risk, then chains the right steps: plan, direction, build, verify, score. A bug report goes straight to the fix; a launch gets the full pipeline.
+- **Ask, or decide and say why.** It asks the few questions that change the result. If I skip them, it picks and shows its reasons.
+- **Name the cliché, then leave it.** A concept sentence, one of 41 styles or a named direction, and a hero built for that concept.
+- **Honesty is a gate.** No invented reviews, logos or numbers. Real proof or a clearly marked placeholder.
+- **Modern Web Guidance decides how web code is built.** Google Chrome's guidance is bundled and wins conflicts: native `<dialog>`, `popover` and anchor positioning before any library.
+
+## 03 // BUILD
+It's a set of Markdown skills and commands, plus Python scripts the agent runs. The plugin installs in Claude Code, Codex, Cursor, Copilot, Gemini CLI and anything else that reads `SKILL.md`.
+
+- **Checks:** `verify_page.py` renders each page at six widths with Playwright and fails on horizontal overflow, low contrast, unlabeled inputs, motion that ignores reduced-motion settings and autoplaying audio.
+- **Scoring:** the agent scores its own work against the request, needs evidence for each score, and `/dent:improve` fixes the top three gaps and scores again.
+- **Benchmark:** the same prompt built twice by Claude Code on Opus 5.5, once without DENT and once with it, across 8 builds. Average 37.9 without, 43.8 with, out of 50. Every result, deviation and screenshot is in the repo.
+- **Website:** a static page on Cloudflare Workers at dent.solarquack.in.
+
+## 04 // LEARNED
+- Rules written as prose got ignored in the first benchmark. Turning them into gates inside each command, with a script that fails the build, is what changed the output.
+- The biggest lift wasn't looks. All 7 web builds with DENT passed every automated check; all 7 without it failed at least one, and one invented "4.8 · 312 reviews".
+- The scores come from the same model family that wrote DENT, so they aren't independent. The README says so, and human reviews are welcome.

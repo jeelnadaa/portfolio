@@ -10,6 +10,15 @@ export interface LogEntry {
 
 export const logEntries: LogEntry[] = [
   {
+    id: "log-dent-better-rawaccel",
+    date: "2026-11-16",
+    monthYear: "November 2026",
+    version: "v1.12.0",
+    title: "DENT and Better Raw Accel Join the Work",
+    body: "Added DENT, an open-source design skill for AI coding agents, and Better Raw Accel, a new interface for the Raw Accel mouse driver, each with a case study at the front of the showroom. Their cards link to dent.solarquack.in, accel.solarquack.in and the GitHub repos. The showroom still holds six projects, so Sift and Distil moved to the archive on /work.",
+    tags: ["Content", "Projects"],
+  },
+  {
     id: "log-alchemist",
     date: "2026-11-13",
     monthYear: "November 2026",
