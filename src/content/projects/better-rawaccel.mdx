@@ -24,7 +24,7 @@ tags:
   - Open Source
 github: "https://github.com/jeelnadaa/better-rawaccel"
 live: "https://accel.solarquack.in"
-demo_video: null
+demo_video: "/videos/projects/better-rawaccel.mp4"
 cover: "/images/projects/better-rawaccel-thumb.webp"
 gallery: []
 metrics:
@@ -100,6 +100,7 @@ The host is C# on .NET Framework 4.8 with a WebView2 window; the UI is plain HTM
 - **MCP server inside the app:** 45 tools on `127.0.0.1:47700`. They act on the open window, so you watch every edit happen, and nothing reaches the driver until `apply` is called. It refuses any request whose `Host` or `Origin` isn't local.
 - **Releases:** every push to main builds a 1.1 MB zip with the signed driver bundled. The app checks GitHub at start-up, verifies the SHA-256 and swaps the files when it closes.
 - **Website:** a static page on Cloudflare Workers at accel.solarquack.in.
+- **The film on this page:** an SVG scene drawn frame by frame in HTML from one `seek(t)` function and captured with Playwright. The curves are the driver's real output pulled through the app's own MCP server, and the music and sound effects are synthesised in Python on a 128 BPM grid.
 
 ## 04 // LEARNED
 - Keeping one copy of the curve math, the driver's, removed a class of bugs where the plot and the mouse disagreed.
