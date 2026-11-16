@@ -21,7 +21,7 @@ tags:
   - Open Source
 github: "https://github.com/jeelnadaa/DENT"
 live: "https://dent.solarquack.in"
-demo_video: null
+demo_video: "/videos/projects/dent.mp4"
 cover: "/images/projects/dent-thumb.webp"
 gallery: []
 metrics:
@@ -99,6 +99,7 @@ It's a set of Markdown skills and commands, plus Python scripts the agent runs. 
 - **Scoring:** the agent scores its own work against the request, needs evidence for each score, and `/dent:improve` fixes the top three gaps and scores again.
 - **Benchmark:** the same prompt built twice by Claude Code on Opus 5.5, once without DENT and once with it, across 8 builds. Average 37.9 without, 43.8 with, out of 50. Every result, deviation and screenshot is in the repo.
 - **Website:** a static page on Cloudflare Workers at dent.solarquack.in.
+- **The film on this page:** made by DENT itself with `/dent:video` at All-out effort. One `render(t)` function in an HTML page draws every frame, Playwright captures them at 60 fps with real motion blur on the fast moves, and the custom DENT lettering, the music and the sound effects are all made in code. The picture and the score read the same cue sheet, so every hit lands on its frame.
 
 ## 04 // LEARNED
 - Rules written as prose got ignored in the first benchmark. Turning them into gates inside each command, with a script that fails the build, is what changed the output.

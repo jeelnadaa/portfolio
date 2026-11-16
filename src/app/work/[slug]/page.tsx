@@ -11,6 +11,7 @@ import { Gallery } from "@/components/project/Gallery";
 import { NextProject } from "@/components/project/NextProject";
 import { MetaTable } from "@/components/project/MetaTable";
 import { GhostGlyph } from "@/components/ui/GhostGlyph";
+import { cn } from "@/lib/utils";
 
 interface CaseStudyProps {
   params: { slug: string };
@@ -114,7 +115,11 @@ export default async function CaseStudyPage({ params }: CaseStudyProps) {
           {/* 2. Cover Plate / Video Dossier */}
           <div
             id="video-dossier"
-            className="relative w-full aspect-[16/10] border border-rule bg-surface overflow-hidden scroll-mt-28"
+            className={cn(
+              "relative w-full border border-rule bg-surface overflow-hidden scroll-mt-28",
+              // Films are 16:9: frame them at 16:9 so nothing is cropped; covers keep the 16:10 plate
+              project.demo_video ? "aspect-[16/9]" : "aspect-[16/10]"
+            )}
           >
             {project.demo_video ? (
               <VideoPlayer
@@ -123,7 +128,7 @@ export default async function CaseStudyPage({ params }: CaseStudyProps) {
                 title={project.title}
                 order={project.order}
                 glyph={project.glyph}
-                aspectRatio="16/10"
+                aspectRatio="16/9"
               />
             ) : project.cover ? (
               <BoneImage

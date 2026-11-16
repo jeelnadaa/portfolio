@@ -416,7 +416,7 @@ export function VideoPlayer({
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onClick={togglePlay}
-        className="w-full h-full object-cover cursor-pointer bg-bg"
+        className="w-full h-full object-contain cursor-pointer bg-bg"
       />
 
       {/* 2. Dossier Scanline & Grid Effect */}
